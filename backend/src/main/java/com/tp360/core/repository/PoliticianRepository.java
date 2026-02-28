@@ -10,6 +10,9 @@ import java.util.Optional;
 @Repository
 public interface PoliticianRepository extends JpaRepository<Politician, Long> {
     Optional<Politician> findByExternalId(String externalId);
-    
+
+    // For deduplication: find first exact name match
+    Optional<Politician> findFirstByNameIgnoreCase(String name);
+
     List<Politician> findByNameContainingIgnoreCase(String name);
 }

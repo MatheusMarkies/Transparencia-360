@@ -13,6 +13,7 @@ public class Promise {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "politician_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Politician politician;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -22,14 +23,43 @@ public class Promise {
     private LocalDate extractionDate;
 
     // Accessors
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Politician getPolitician() { return politician; }
-    public void setPolitician(Politician politician) { this.politician = politician; }
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
-    public String getSource() { return source; }
-    public void setSource(String source) { this.source = source; }
-    public LocalDate getExtractionDate() { return extractionDate; }
-    public void setExtractionDate(LocalDate extractionDate) { this.extractionDate = extractionDate; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Politician getPolitician() {
+        return politician;
+    }
+
+    public void setPolitician(Politician politician) {
+        this.politician = politician;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public LocalDate getExtractionDate() {
+        return extractionDate;
+    }
+
+    public void setExtractionDate(LocalDate extractionDate) {
+        this.extractionDate = extractionDate;
+    }
 }

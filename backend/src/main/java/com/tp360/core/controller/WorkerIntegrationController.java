@@ -34,4 +34,53 @@ public class WorkerIntegrationController {
         Vote saved = dataIngestionService.ingestVote(externalId, vote);
         return ResponseEntity.ok(saved);
     }
+
+    @PostMapping("/deduplicate")
+    public ResponseEntity<String> deduplicatePoliticians() {
+        int removed = dataIngestionService.deduplicatePoliticians();
+        return ResponseEntity.ok("Removed " + removed + " duplicate politicians");
+    }
+
+    @PostMapping("/politician/{externalId}/sessao")
+    public ResponseEntity<com.tp360.core.entities.neo4j.SessaoPlenarioNode> ingestSessaoPlenario(
+            @PathVariable String externalId,
+            @RequestBody com.tp360.core.entities.neo4j.SessaoPlenarioNode sessao) {
+        dataIngestionService.ingestSessaoPlenario(externalId, sessao);
+        return ResponseEntity.ok(sessao);
+    }
+
+    @PostMapping("/politician/{externalId}/despesa")
+    public ResponseEntity<com.tp360.core.entities.neo4j.DespesaNode> ingestDespesa(
+            @PathVariable String externalId,
+            @RequestBody com.tp360.core.entities.neo4j.DespesaNode despesa) {
+        dataIngestionService.ingestDespesa(externalId, despesa);
+        return ResponseEntity.ok(despesa);
+    }
+
+    // --- Emendas Pix Anomaly (Circular Graph) Endpoints ---
+
+    @PostMapping("/politician/{externalId}/emenda_pix/{municipioIbge}")
+    public ResponseEntity<com.tp360.core.entities.neo4j.EmendaNode> ingestEmendaPix(
+            @PathVariable String externalId,
+            @PathVariable String municipioIbge,
+            @RequestBody com.tp360.core.entities.neo4j.EmendaNode emenda) {
+        dataIngestionService.ingestEmendaPix(externalId, municipioIbge, emenda);
+        return ResponseEntity.ok(emenda);
+    }
+
+    @PostMapping("/municipio/{municipioIbge}/contrato")
+    public ResponseEntity<String> ingestContratoMunicipal(
+            @PathVariable String municipioIbge,
+            @RequestParam String empresaCnpj,
+            @RequestParam String empresaName) {
+        dataIngestionService.ingestContratoMunicipal(municipioIbge, empresaCnpj, empresaName);
+        return ResponseEntity.ok("Contrato registered successfully");
+    }
+
+    @PostMapping("/pessoa/societario")
+    public ResponseEntity<com.tp360.core.entities.neo4j.PessoaNode> ingestPessoaSocietaria(
+            @RequestBody com.tp360.core.dto.PessoaSocietariaDTO dto) {
+        dataIngestionService.ingestPessoaSocietaria(dto.getPessoa(), dto.getAssociadaCnpjs());
+        return ResponseEntity.ok(dto.getPessoa());
+    }
 }

@@ -13,6 +13,7 @@ public class Vote {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "politician_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Politician politician;
 
     @Column(nullable = false)
@@ -31,20 +32,67 @@ public class Vote {
     private String coherenceExplanation; // LLM output
 
     // Accessors
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Politician getPolitician() { return politician; }
-    public void setPolitician(Politician politician) { this.politician = politician; }
-    public String getPropositionExternalId() { return propositionExternalId; }
-    public void setPropositionExternalId(String propositionExternalId) { this.propositionExternalId = propositionExternalId; }
-    public String getPropositionSummary() { return propositionSummary; }
-    public void setPropositionSummary(String propositionSummary) { this.propositionSummary = propositionSummary; }
-    public String getVoteChoice() { return voteChoice; }
-    public void setVoteChoice(String voteChoice) { this.voteChoice = voteChoice; }
-    public LocalDate getVoteDate() { return voteDate; }
-    public void setVoteDate(LocalDate voteDate) { this.voteDate = voteDate; }
-    public Double getCoherenceScore() { return coherenceScore; }
-    public void setCoherenceScore(Double coherenceScore) { this.coherenceScore = coherenceScore; }
-    public String getCoherenceExplanation() { return coherenceExplanation; }
-    public void setCoherenceExplanation(String coherenceExplanation) { this.coherenceExplanation = coherenceExplanation; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Politician getPolitician() {
+        return politician;
+    }
+
+    public void setPolitician(Politician politician) {
+        this.politician = politician;
+    }
+
+    public String getPropositionExternalId() {
+        return propositionExternalId;
+    }
+
+    public void setPropositionExternalId(String propositionExternalId) {
+        this.propositionExternalId = propositionExternalId;
+    }
+
+    public String getPropositionSummary() {
+        return propositionSummary;
+    }
+
+    public void setPropositionSummary(String propositionSummary) {
+        this.propositionSummary = propositionSummary;
+    }
+
+    public String getVoteChoice() {
+        return voteChoice;
+    }
+
+    public void setVoteChoice(String voteChoice) {
+        this.voteChoice = voteChoice;
+    }
+
+    public LocalDate getVoteDate() {
+        return voteDate;
+    }
+
+    public void setVoteDate(LocalDate voteDate) {
+        this.voteDate = voteDate;
+    }
+
+    public Double getCoherenceScore() {
+        return coherenceScore;
+    }
+
+    public void setCoherenceScore(Double coherenceScore) {
+        this.coherenceScore = coherenceScore;
+    }
+
+    public String getCoherenceExplanation() {
+        return coherenceExplanation;
+    }
+
+    public void setCoherenceExplanation(String coherenceExplanation) {
+        this.coherenceExplanation = coherenceExplanation;
+    }
 }
