@@ -2,14 +2,12 @@ package com.tp360.core.service;
 
 import com.tp360.core.repositories.neo4j.PoliticoNodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-@Profile("!dev")
 public class Neo4jGraphService {
 
     @Autowired

@@ -125,12 +125,44 @@ public class DataIngestionService {
             if (data.getTeleportAnomalyDetails() != null) {
                 p.setTeleportAnomalyDetails(data.getTeleportAnomalyDetails());
             }
+            if (data.getNlpGazetteCount() != null) {
+                p.setNlpGazetteCount(data.getNlpGazetteCount());
+            }
+            if (data.getNlpGazetteScore() != null) {
+                p.setNlpGazetteScore(data.getNlpGazetteScore());
+            }
+            if (data.getNlpGazetteDetails() != null) {
+                p.setNlpGazetteDetails(data.getNlpGazetteDetails());
+            }
+            if (data.getJudicialRiskScore() != null) {
+                p.setJudicialRiskScore(data.getJudicialRiskScore());
+            }
+            if (data.getJudicialRiskDetails() != null) {
+                p.setJudicialRiskDetails(data.getJudicialRiskDetails());
+            }
+            if (data.getCabinetSize() != null) {
+                p.setCabinetSize(data.getCabinetSize());
+            }
+            if (data.getCabinetDetails() != null) {
+                p.setCabinetDetails(data.getCabinetDetails());
+            }
             Politician saved = politicianRepository.save(p);
-            upsertNeo4jPolitico(saved);
+            try {
+                upsertNeo4jPolitico(saved);
+            } catch (Exception e) {
+                // Log and continue - don't fail the Postgres ingestion due to Neo4j lock
+                org.slf4j.LoggerFactory.getLogger(DataIngestionService.class)
+                        .warn("Non-critical Neo4j update failed for {}: {}", saved.getExternalId(), e.getMessage());
+            }
             return saved;
         }
         Politician saved = politicianRepository.save(data);
-        upsertNeo4jPolitico(saved);
+        try {
+            upsertNeo4jPolitico(saved);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(DataIngestionService.class)
+                    .warn("Non-critical Neo4j update failed for {}: {}", saved.getExternalId(), e.getMessage());
+        }
         return saved;
     }
 
@@ -214,6 +246,14 @@ public class DataIngestionService {
             count++;
         if (p.getTeleportAnomalyCount() != null)
             count++;
+        if (p.getNlpGazetteCount() != null)
+            count++;
+        if (p.getJudicialRiskScore() != null)
+            count++;
+        if (p.getCabinetSize() != null)
+            count++;
+        if (p.getCabinetDetails() != null)
+            count++;
         return count;
     }
 
@@ -254,6 +294,20 @@ public class DataIngestionService {
             survivor.setTeleportAnomalyCount(source.getTeleportAnomalyCount());
         if (survivor.getTeleportAnomalyDetails() == null && source.getTeleportAnomalyDetails() != null)
             survivor.setTeleportAnomalyDetails(source.getTeleportAnomalyDetails());
+        if (survivor.getNlpGazetteCount() == null && source.getNlpGazetteCount() != null)
+            survivor.setNlpGazetteCount(source.getNlpGazetteCount());
+        if (survivor.getNlpGazetteScore() == null && source.getNlpGazetteScore() != null)
+            survivor.setNlpGazetteScore(source.getNlpGazetteScore());
+        if (survivor.getNlpGazetteDetails() == null && source.getNlpGazetteDetails() != null)
+            survivor.setNlpGazetteDetails(source.getNlpGazetteDetails());
+        if (survivor.getJudicialRiskScore() == null && source.getJudicialRiskScore() != null)
+            survivor.setJudicialRiskScore(source.getJudicialRiskScore());
+        if (survivor.getJudicialRiskDetails() == null && source.getJudicialRiskDetails() != null)
+            survivor.setJudicialRiskDetails(source.getJudicialRiskDetails());
+        if (survivor.getCabinetSize() == null && source.getCabinetSize() != null)
+            survivor.setCabinetSize(source.getCabinetSize());
+        if (survivor.getCabinetDetails() == null && source.getCabinetDetails() != null)
+            survivor.setCabinetDetails(source.getCabinetDetails());
     }
 
     @Transactional("transactionManager")
@@ -294,44 +348,46 @@ public class DataIngestionService {
     // --- Spatial Anomaly (Neo4j Graph) Ingestion ---
 
     @Transactional("transactionManager")
-    public void ingestSessaoPlenario(String externalPoliticianId,
-            com.tp360.core.entities.neo4j.SessaoPlenarioNode sessao) {
-        // Find existing PoliticoNode
-        Optional<com.tp360.core.entities.neo4j.PoliticoNode> optPolitico = politicoNodeRepository
-                .findById(externalPoliticianId);
-        if (optPolitico.isEmpty()) {
-            throw new IllegalArgumentException("PoliticoNode not found for externalId: " + externalPoliticianId);
-        }
-        com.tp360.core.entities.neo4j.PoliticoNode politico = optPolitico.get();
+    public void ingestSessaoPlenario(String externalId, com.tp360.core.entities.neo4j.SessaoPlenarioNode sessao) {
+        // Find or create politician node
+        com.tp360.core.entities.neo4j.PoliticoNode politico = politicoNodeRepository.findById(externalId)
+                .orElseGet(() -> {
+                    com.tp360.core.entities.neo4j.PoliticoNode n = new com.tp360.core.entities.neo4j.PoliticoNode();
+                    n.setId(externalId);
+                    return politicoNodeRepository.save(n);
+                });
 
-        // Save session node
+        // Save session node (upsert handled by Neo4j driver + ID)
         com.tp360.core.entities.neo4j.SessaoPlenarioNode savedSessao = sessaoPlenarioNodeRepository.save(sessao);
 
-        // Add relationship
-        // check if already exists to prevent duplicates
-        boolean exists = politico.getSessoesPlenario().stream().anyMatch(s -> s.getId().equals(sessao.getId()));
-        if (!exists) {
+        // Add relationship if not exists
+        boolean alreadyLinked = politico.getSessoesPlenario().stream()
+                .anyMatch(s -> s.getId().equals(savedSessao.getId()));
+
+        if (!alreadyLinked) {
             politico.getSessoesPlenario().add(savedSessao);
             politicoNodeRepository.save(politico);
         }
     }
 
     @Transactional("transactionManager")
-    public void ingestDespesa(String externalPoliticianId, com.tp360.core.entities.neo4j.DespesaNode despesa) {
-        // Find existing PoliticoNode
-        Optional<com.tp360.core.entities.neo4j.PoliticoNode> optPolitico = politicoNodeRepository
-                .findById(externalPoliticianId);
-        if (optPolitico.isEmpty()) {
-            throw new IllegalArgumentException("PoliticoNode not found for externalId: " + externalPoliticianId);
-        }
-        com.tp360.core.entities.neo4j.PoliticoNode politico = optPolitico.get();
+    public void ingestDespesa(String externalId, com.tp360.core.entities.neo4j.DespesaNode despesa) {
+        // Find or create politician node
+        com.tp360.core.entities.neo4j.PoliticoNode politico = politicoNodeRepository.findById(externalId)
+                .orElseGet(() -> {
+                    com.tp360.core.entities.neo4j.PoliticoNode n = new com.tp360.core.entities.neo4j.PoliticoNode();
+                    n.setId(externalId);
+                    return politicoNodeRepository.save(n);
+                });
 
         // Save despesa node
         com.tp360.core.entities.neo4j.DespesaNode savedDespesa = despesaNodeRepository.save(despesa);
 
         // Add relationship
-        boolean exists = politico.getDespesas().stream().anyMatch(d -> d.getId().equals(despesa.getId()));
-        if (!exists) {
+        boolean alreadyLinked = politico.getDespesas().stream()
+                .anyMatch(d -> d.getId().equals(savedDespesa.getId()));
+
+        if (!alreadyLinked) {
             politico.getDespesas().add(savedDespesa);
             politicoNodeRepository.save(politico);
         }

@@ -107,4 +107,41 @@ public class FrontendSearchController {
         GraphDataDTO graphData = new GraphDataDTO(nodes, links);
         return ResponseEntity.ok(graphData);
     }
+
+    @GetMapping("/{id}/sources")
+    public ResponseEntity<List<com.tp360.core.dto.SourceStatusDTO>> getPoliticianSources(@PathVariable Long id) {
+        Optional<Politician> opt = politicianRepository.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        
+        Politician p = opt.get();
+        List<com.tp360.core.dto.SourceStatusDTO> sources = new ArrayList<>();
+        
+        // Map real data flags to source list
+        sources.add(new com.tp360.core.dto.SourceStatusDTO(
+            "Câmara dos Deputados", "dadosabertos.camara.leg.br", "ok", "🏛️", 
+            p.getExpenses() != null ? 1 : 0, "Despesas CEAP, presenças e votações"
+        ));
+        
+        sources.add(new com.tp360.core.dto.SourceStatusDTO(
+            "Portal da Transparência", "portaldatransparencia.gov.br", "ok", "💰", 
+            (p.getPropositions() != null ? 1 : 0), "Contratos federais e remuneração"
+        ));
+
+        sources.add(new com.tp360.core.dto.SourceStatusDTO(
+            "Querido Diário (OKBR)", "queridodiario.ok.org.br", "ok", "📰", 
+            p.getNlpGazetteCount() != null ? p.getNlpGazetteCount() : 0, "Menções em Diários Oficiais"
+        ));
+
+        sources.add(new com.tp360.core.dto.SourceStatusDTO(
+            "TSE - Dados Eleitorais", "dadosabertos.tse.jus.br", "ok", "🗳️", 
+            p.getDeclaredAssets() != null ? 1 : 0, "Doações de campanha e patrimônio"
+        ));
+
+        sources.add(new com.tp360.core.dto.SourceStatusDTO(
+            "DataJud (CNJ)", "datajud.cnj.jus.br", "ok", "⚖️", 
+            p.getJudicialRiskScore() != null ? 1 : 0, "Processos de improbidade"
+        ));
+
+        return ResponseEntity.ok(sources);
+    }
 }

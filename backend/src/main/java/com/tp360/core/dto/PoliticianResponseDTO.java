@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PoliticianResponseDTO {
     private Long id;
+    private String externalId;
     private String name;
     private String party;
     private String state;
@@ -27,10 +28,19 @@ public class PoliticianResponseDTO {
     private String staffAnomalyDetails;
     private Integer cabinetRiskScore;
     private String cabinetRiskDetails;
-    // We will expand this with promises and votes later if detailed=true
+
+    // NLP Gazette (Querido Diário) Real Data
+    private Integer nlpGazetteCount;
+    private Integer nlpGazetteScore;
+    private String nlpGazetteDetails;
+
+    // Judicial Risk
+    private Integer judicialRiskScore;
+    private String judicialRiskDetails;
 
     public PoliticianResponseDTO(Politician politician) {
         this.id = politician.getId();
+        this.externalId = politician.getExternalId();
         this.name = politician.getName();
         this.party = politician.getParty();
         this.state = politician.getState();
@@ -48,6 +58,11 @@ public class PoliticianResponseDTO {
         this.staffAnomalyDetails = politician.getStaffAnomalyDetails();
         this.cabinetRiskScore = politician.getCabinetRiskScore();
         this.cabinetRiskDetails = politician.getCabinetRiskDetails();
+        this.nlpGazetteCount = politician.getNlpGazetteCount();
+        this.nlpGazetteScore = politician.getNlpGazetteScore();
+        this.nlpGazetteDetails = politician.getNlpGazetteDetails();
+        this.judicialRiskScore = politician.getJudicialRiskScore();
+        this.judicialRiskDetails = politician.getJudicialRiskDetails();
     }
 
     public static List<PoliticianResponseDTO> from(List<Politician> politicians) {

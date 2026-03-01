@@ -40,3 +40,4 @@ if __name__ == "__main__":
     gatherer = CamaraGatherer()
     # Fetch just the first page (50 deputies) for testing purposes
     gatherer.fetch_and_ingest_deputies(page=1, fetch_items=50)
+

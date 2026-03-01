@@ -2,7 +2,6 @@ package com.tp360.core.controller;
 
 import com.tp360.core.service.Neo4jGraphService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/graph")
-@CrossOrigin(origins = "*") // Permite acesso rápido do Vite
-@Profile("!dev")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:3000" }) // Vite + Generic
 public class GraphController {
 
     @Autowired

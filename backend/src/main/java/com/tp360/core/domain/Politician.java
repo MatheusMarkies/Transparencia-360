@@ -53,6 +53,26 @@ public class Politician {
     @Column(columnDefinition = "TEXT")
     private String cabinetRiskDetails; // JSON breakdown of points per heuristic
 
+    // Ghost Employee Detection Results
+    private Integer ghostEmployeeCount;
+    @Column(columnDefinition = "TEXT")
+    private String ghostEmployeeDetails;
+
+    // NLP Gazette (Querido Diário) Real Data
+    private Integer nlpGazetteCount; // Number of dispensas/mentions
+    private Integer nlpGazetteScore; // Aggregated score
+    @Column(columnDefinition = "TEXT")
+    private String nlpGazetteDetails; // JSON with array of findings (empresa, valor, modalidade, city)
+
+    // Judicial Risk Data (DataJud)
+    private Integer judicialRiskScore;
+    @Column(columnDefinition = "TEXT")
+    private String judicialRiskDetails;
+
+    private Integer cabinetSize;
+    @Column(columnDefinition = "TEXT")
+    private String cabinetDetails;
+
     @OneToMany(mappedBy = "politician", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Promise> promises = new ArrayList<>();
 
@@ -228,6 +248,46 @@ public class Politician {
         this.cabinetRiskDetails = cabinetRiskDetails;
     }
 
+    public Integer getGhostEmployeeCount() {
+        return ghostEmployeeCount;
+    }
+
+    public void setGhostEmployeeCount(Integer ghostEmployeeCount) {
+        this.ghostEmployeeCount = ghostEmployeeCount;
+    }
+
+    public String getGhostEmployeeDetails() {
+        return ghostEmployeeDetails;
+    }
+
+    public void setGhostEmployeeDetails(String ghostEmployeeDetails) {
+        this.ghostEmployeeDetails = ghostEmployeeDetails;
+    }
+
+    public Integer getNlpGazetteCount() {
+        return nlpGazetteCount;
+    }
+
+    public void setNlpGazetteCount(Integer nlpGazetteCount) {
+        this.nlpGazetteCount = nlpGazetteCount;
+    }
+
+    public Integer getNlpGazetteScore() {
+        return nlpGazetteScore;
+    }
+
+    public void setNlpGazetteScore(Integer nlpGazetteScore) {
+        this.nlpGazetteScore = nlpGazetteScore;
+    }
+
+    public String getNlpGazetteDetails() {
+        return nlpGazetteDetails;
+    }
+
+    public void setNlpGazetteDetails(String nlpGazetteDetails) {
+        this.nlpGazetteDetails = nlpGazetteDetails;
+    }
+
     // Teleportation Anomaly (Spatial Match)
     private Integer teleportAnomalyCount;
     @Column(columnDefinition = "TEXT")
@@ -268,5 +328,37 @@ public class Politician {
 
     public void setEmendasPixAnomalyDetails(String emendasPixAnomalyDetails) {
         this.emendasPixAnomalyDetails = emendasPixAnomalyDetails;
+    }
+
+    public Integer getJudicialRiskScore() {
+        return judicialRiskScore;
+    }
+
+    public void setJudicialRiskScore(Integer judicialRiskScore) {
+        this.judicialRiskScore = judicialRiskScore;
+    }
+
+    public String getJudicialRiskDetails() {
+        return judicialRiskDetails;
+    }
+
+    public void setJudicialRiskDetails(String judicialRiskDetails) {
+        this.judicialRiskDetails = judicialRiskDetails;
+    }
+
+    public Integer getCabinetSize() {
+        return cabinetSize;
+    }
+
+    public void setCabinetSize(Integer cabinetSize) {
+        this.cabinetSize = cabinetSize;
+    }
+
+    public String getCabinetDetails() {
+        return cabinetDetails;
+    }
+
+    public void setCabinetDetails(String cabinetDetails) {
+        this.cabinetDetails = cabinetDetails;
     }
 }
