@@ -66,8 +66,9 @@ pip install -r requirements.txt
 ```
 Execute o pipeline completo:
 ```bash
-python run_all_extractions.py --limit 513
+python run_all_extractions.py --limit 10
 ```
+Nesse comando fazemos a busca por 10 deputados, para a lista completa utilize 513.
 
 ---
 
