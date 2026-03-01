@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-03-01 11:21:55",
+  "total_minutes": 20.19,
+  "target_limit": 15,
+  "steps_executed": 21,
+  "errors_count": 1,
+  "errors_details": [
+    "STEP 21 (DocumentaryEvidenceWorker (Deterministic NLP & Audit Trail)): RuntimeError: Event loop is closed"
+  ]
+}
