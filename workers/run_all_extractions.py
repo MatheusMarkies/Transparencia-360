@@ -64,7 +64,8 @@ def main():
     total_start = time.time()
 
     # Pre-step: Selective directory structure verification
-    def setup_directories():
+# Pre-step: Selective directory structure verification and Database Reset
+    def setup_directories_and_db():
         base_path = Path(__file__).resolve().parent.parent / "data"
         dirs = [
              base_path / "downloads" / "diarios_oficiais",
@@ -81,7 +82,33 @@ def main():
                     if item.is_file(): item.unlink()
                     elif item.is_dir(): shutil.rmtree(item)
         logger.info("  ✅ Data directory structure verified and cleaned.")
-    run_step(0, "Directory Setup & selective Cleanup", setup_directories)
+        
+        # --- NOVO: HARD RESET DO BANCO DE DADOS ---
+# --- NOVO: HARD RESET DO BANCO DE DADOS ---
+        import requests
+        logger.info("  🔄 Enviando comando de HARD RESET para os Bancos de Dados (PostgreSQL + Neo4j)...")
+        try:
+            # 1. Limpa o Neo4j (Grafos)
+            uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+            user = os.getenv("NEO4J_USER", "neo4j")
+            password = os.getenv("NEO4J_PASSWORD", "admin123")
+            driver = GraphDatabase.driver(uri, auth=(user, password))
+            with driver.session() as session:
+                session.run("MATCH (n) DETACH DELETE n")
+            driver.close()
+            logger.info("  ✅ Banco de Grafos (Neo4j) zerado com sucesso.")
+            
+            # 2. Limpa o PostgreSQL (Relacional) via API
+            resp = requests.delete("http://localhost:8080/api/internal/workers/ingest/reset-database", timeout=15)
+            if resp.status_code == 200:
+                logger.info("  ✅ Banco Relacional (PostgreSQL) zerado com sucesso.")
+            else:
+                logger.warning(f"  ⚠️ Falha ao zerar PostgreSQL. API retornou HTTP {resp.status_code}")
+            
+        except Exception as e:
+            logger.warning(f"  ⚠️ Não foi possível limpar os bancos de dados automaticamente: {e}")
+
+    run_step(0, "Directory Setup & Database Reset", setup_directories_and_db)
 
     # =========================================================================
     # FASE 1: EXTRAÇÃO DE DADOS (DOWNLOADS PARA O DISCO)

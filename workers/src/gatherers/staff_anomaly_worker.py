@@ -24,6 +24,8 @@ import logging
 import requests
 import json
 import unicodedata
+import time
+import argparse
 import numpy as np
 from collections import defaultdict
 from src.core.api_client import BackendClient, GovAPIClient
@@ -32,6 +34,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 CAMARA_API = "https://dadosabertos.camara.leg.br/api/v2"
+WORKER_ROOT = Path(__file__).resolve().parent
 
 
 def normalize_name(name: str) -> str:
@@ -51,6 +54,27 @@ class StaffAnomalyWorker:
     def __init__(self):
         self.backend = BackendClient()
         self.camara = GovAPIClient(CAMARA_API, request_delay=0.15)
+
+    def salvar_relatorio_local(self, external_id, issues):
+        """Gera o arquivo JSON físico de anomalia de gabinete."""
+        pasta_reports = WORKER_ROOT / "data" / "downloads" / "notas_fiscais"
+        pasta_reports.mkdir(parents=True, exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        nome_arquivo = f"staff_anomaly_{external_id}_{timestamp}.json"
+        
+        relatorio = {
+            "alerta": "ANOMALIA_GABINETE",
+            "metadados": {
+                "external_id": external_id,
+                "total_anomalias": len(issues),
+                "detalhes": issues
+            }
+        }
+        
+        caminho_completo = pasta_reports / nome_arquivo
+        with open(caminho_completo, "w", encoding="utf-8") as f:
+            json.dump(relatorio, f, indent=4, ensure_ascii=False)
 
     def _fetch_deputy_expenses(self, dep_id: int, year: int = 2025) -> list:
         """Fetch all expense records for a deputy in a given year."""
@@ -260,6 +284,10 @@ class StaffAnomalyWorker:
             # Only store top 10 anomalies to keep JSON manageable
             details_json = json.dumps(anomalies[:10], ensure_ascii=False) if anomalies else "[]"
 
+            if anomalies:
+                self.salvar_relatorio_local(external_id, anomalies)
+                logger.info(f"     ✅ Relatório de anomalia de gabinete salvo fisicamente para {external_id}")
+
             self.backend.ingest_politician({
                 "externalId": external_id,
                 "name": dep_name,
@@ -274,5 +302,8 @@ class StaffAnomalyWorker:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Staff Anomaly Worker")
+    parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
+    args = parser.parse_args()
     worker = StaffAnomalyWorker()
-    worker.run(limit=50)
+    worker.run(limit=args.limit)

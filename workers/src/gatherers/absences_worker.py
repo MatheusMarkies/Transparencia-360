@@ -149,4 +149,6 @@ class AbsencesWorker:
 
 if __name__ == "__main__":
     worker = AbsencesWorker(year=2025)
-    worker.run(limit=50)
+    parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
+    args = parser.parse_args()
+    worker.run(limit=args.limit)

@@ -14,10 +14,9 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
 
         /**
          * Executes the heavy 3rd-degree triangulation query.
-         * Looks for: Politician -> (contracts) -> Company 1 <- (partner) <- Person 1 ->
-         * (partner) -> Company 2 <- (donor) <- Person 2 -> (donates) -> Politician
          */
-        @Query("MATCH path = (p:Politico {id: $politicoId})-[:CONTRATOU]->(e1:Empresa)<-[:SOCIO_ADMINISTRADOR_DE|SOCIO_DE]-(s:Pessoa)-[:SOCIO_ADMINISTRADOR_DE|SOCIO_DE]->(e2:Empresa)<-[:APORTOU_CAPITAL_EM]-(d:Pessoa)-[:DOOU_PARA_CAMPANHA]->(p) "
+        @Query("MATCH path = (p:Politico)-[:CONTRATOU]->(e1:Empresa)<-[:SOCIO_ADMINISTRADOR_DE|SOCIO_DE]-(s:Pessoa)-[:SOCIO_ADMINISTRADOR_DE|SOCIO_DE]->(e2:Empresa)<-[:APORTOU_CAPITAL_EM]-(d:Pessoa)-[:DOOU_PARA_CAMPANHA]->(p) "
+                        + "WHERE p.id = $politicoId "
                         + "UNWIND nodes(path) AS n "
                         + "UNWIND relationships(path) AS r "
                         + "RETURN { nodes: collect(DISTINCT { id: elementId(n), labels: labels(n), properties: properties(n) }), links: collect(DISTINCT { id: elementId(r), source: elementId(startNode(r)), target: elementId(endNode(r)), type: type(r), properties: properties(r) }) }")
@@ -25,15 +24,20 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
 
         /**
          * Simple node extraction just to build the D3/Force graph in the frontend.
-         * Returns all nodes connected up to 4 hops away from the Politician.
          */
-        @Query("MATCH path = (p:Politico {id: $politicoId})-[*1..3]-(connected) "
+        @Query("MATCH path = (p:Politico)-[*1..3]-(connected) "
+                        + "WHERE p.id = $politicoId "
                         + "UNWIND nodes(path) AS n "
                         + "UNWIND relationships(path) AS r "
                         + "RETURN { nodes: collect(DISTINCT { id: elementId(n), labels: labels(n), properties: properties(n) }), links: collect(DISTINCT { id: elementId(r), source: elementId(startNode(r)), target: elementId(endNode(r)), type: type(r), properties: properties(r) }) }")
         List<Map<String, Object>> getFullConnectionGraph(@Param("politicoId") String politicoId);
 
-        @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) RETURN d ORDER BY d.dataEmissao DESC")
+        /**
+         * CORREÇÃO: Usando LIMIT 15 para não travar o backend e WHERE p.id explícito
+         */
+        @Query("MATCH (p:Politico)-[:GEROU_DESPESA]->(d:Despesa) "
+                        + "WHERE p.id = $politicoId "
+                        + "RETURN d ORDER BY d.dataEmissao DESC LIMIT 15")
         List<com.tp360.core.entities.neo4j.DespesaNode> findDespesasByPoliticoId(
                         @Param("politicoId") String politicoId);
 

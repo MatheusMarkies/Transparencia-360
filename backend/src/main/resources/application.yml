@@ -2,7 +2,7 @@ spring:
   application:
     name: tp360-core
   datasource:
-    url: jdbc:postgresql://localhost:5432/tp360
+    url: jdbc:postgresql://localhost:5433/tp360
     username: postgres
     password: password
     driver-class-name: org.postgresql.Driver

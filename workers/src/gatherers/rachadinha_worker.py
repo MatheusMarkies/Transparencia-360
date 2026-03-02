@@ -15,8 +15,13 @@ Score total: 0-100 (soma ponderada de todas as heurísticas)
 """
 import sys
 import os
+import argparse
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
+# Configuração de caminhos absolutos para a raiz do worker
+CURRENT_DIR = Path(__file__).resolve().parent
+WORKER_ROOT = CURRENT_DIR.parent.parent
+sys.path.append(str(WORKER_ROOT))
 
 import logging
 import json
@@ -60,6 +65,31 @@ class RachadinhaScoringWorker:
             from src.nlp.gazette_text_fetcher import GazetteTextFetcher
             self._gazette_fetcher = GazetteTextFetcher(request_delay=1.0)
         return self._gazette_fetcher
+
+    def salvar_relatorio_local(self, deputado_nome, external_id, score_final, detalhes):
+        """Gera um arquivo JSON físico para compor o Dossiê do parlamentar usando caminhos absolutos."""
+        # Salva na pasta data/downloads/notas_fiscais usando o WORKER_ROOT
+        pasta_reports = WORKER_ROOT / "data" / "downloads" / "notas_fiscais"
+        pasta_reports.mkdir(parents=True, exist_ok=True)
+        
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        nome_arquivo = f"rachadinha_{external_id}_{timestamp}.json"
+        
+        relatorio = {
+            "alerta": "RISCO_RACHADINHA",
+            "metadados": {
+                "deputado": deputado_nome,
+                "external_id": external_id,
+                "score_risco": score_final,
+                "detalhes": detalhes
+            }
+        }
+        
+        caminho_completo = pasta_reports / nome_arquivo
+        with open(caminho_completo, "w", encoding="utf-8") as f:
+            json.dump(relatorio, f, indent=4, ensure_ascii=False)
+            
+        return nome_arquivo
 
     # ══════════════════════════════════════════════════════════════
     # DATA FETCHERS (Real APIs)
@@ -538,6 +568,15 @@ class RachadinhaScoringWorker:
             
             results_summary.append({"name": dep_name, "score": total_score})
             
+            # ---> NOVA INTEGRAÇÃO: GERANDO DOSSIÊ FÍSICO (JSON) <---
+            self.salvar_relatorio_local(
+                deputado_nome=dep_name,
+                external_id=external_id,
+                score_final=total_score,
+                detalhes=details
+            )
+            logger.info(f"     ✅ Relatório salvo no disco para {dep_name}")
+            
             self.backend.ingest_politician({
                 "externalId": external_id,
                 "name": dep_name,
@@ -562,5 +601,11 @@ class RachadinhaScoringWorker:
 
 
 if __name__ == "__main__":
+    # --- INTEGRAÇÃO DO PARÂMETRO --limit ---
+    parser = argparse.ArgumentParser(description="Run Rachadinha Scoring Engine")
+    parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
+    args = parser.parse_args()
+
     worker = RachadinhaScoringWorker()
-    worker.run(limit=15)
+    # Utilizando o argumento recebido do terminal na execução
+    worker.run(limit=args.limit, enable_nlp=True, enable_judicial=True)

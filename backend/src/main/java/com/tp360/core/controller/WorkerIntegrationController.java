@@ -83,4 +83,10 @@ public class WorkerIntegrationController {
         dataIngestionService.ingestPessoaSocietaria(dto.getPessoa(), dto.getAssociadaCnpjs());
         return ResponseEntity.ok(dto.getPessoa());
     }
+
+    @DeleteMapping("/reset-database")
+    public ResponseEntity<String> resetDatabase() {
+        dataIngestionService.resetPostgresDatabase();
+        return ResponseEntity.ok("PostgreSQL Database reset successfully.");
+    }
 }

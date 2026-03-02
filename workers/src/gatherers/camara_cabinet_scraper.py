@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 import logging
-import re
+import argparse
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,15 +76,24 @@ class CamaraCabinetScraper:
                         "lotacao": "Brasília - DF"
                     })
 
-        logger.info(f"  Parsed {len(staff_list)} staff members from HTML")
+        logger.info(f"   Parsed {len(staff_list)} staff members from HTML")
         return staff_list
 
-async def test():
-    scraper = CamaraCabinetScraper()
-    # Test with Abílio Santana (id 204554)
-    staff = await scraper.fetch_cabinet_staff(204554)
-    for s in staff[:5]:
-        print(f"  - {s['nome']} ({s['cargo']})")
-
 if __name__ == "__main__":
-    asyncio.run(test())
+    parser = argparse.ArgumentParser(description="Scrape cabinet staff for a specific deputy.")
+    parser.add_argument("--deputy_id", type=int, help="ID of the deputy to scrape (e.g., 204379)", required=True)
+    args = parser.parse_args()
+
+    async def run_test():
+        scraper = CamaraCabinetScraper()
+        logger.info(f"Teste de extração para o deputado ID: {args.deputy_id}")
+        staff = await scraper.fetch_cabinet_staff(args.deputy_id)
+        
+        if staff:
+            logger.info("Amostra dos 5 primeiros assessores:")
+            for s in staff[:5]:
+                print(f"  - {s['nome']} ({s['cargo']})")
+        else:
+            logger.warning("Nenhum assessor encontrado ou erro na extração.")
+
+    asyncio.run(run_test())

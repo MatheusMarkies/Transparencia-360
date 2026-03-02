@@ -42,6 +42,12 @@ interface Politician {
   staffAnomalyCount?: number;
   staffAnomalyDetails?: string;
   detailedExpenses?: any[];
+  // --- NOVOS CAMPOS ---
+  nlpGazetteCount?: number;
+  nlpGazetteScore?: number;
+  nlpGazetteDetails?: string;
+  judicialRiskScore?: number;
+  judicialRiskDetails?: string;
 }
 
 function App() {
@@ -331,21 +337,23 @@ function App() {
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    {/* STAFF ANOMALIES (Mantido) */}
                     {selectedPolitician.staffAnomalyCount != null && selectedPolitician.staffAnomalyCount > 0 && (
                       <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
                         <div className="flex items-center gap-3 mb-6">
                           <Cpu className="w-6 h-6 text-amber-500" />
-                          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Anomalias de Pessoal ({selectedPolitician.staffAnomalyCount})</h3>
+                          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Anomalias de Pessoal</h3>
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
                           {JSON.parse(selectedPolitician.staffAnomalyDetails || '[]').map((a: any, i: number) => (
                             <div key={i} className="p-4 rounded-2xl bg-amber-50 border border-amber-100">
                               <div className="flex justify-between mb-1">
-                                <span className="font-black text-slate-800 uppercase text-xs">{a.supplier || a.name || 'Desconhecido'}</span>
-                                <span className="font-black text-slate-700 text-xs">{formatCurrency(a.totalValue || a.salary)}</span>
+                                <span className="font-black text-slate-800 uppercase text-xs">{a.supplier || a.nomeFornecedor || a.name || 'Desconhecido'}</span>
+                                <span className="font-black text-slate-700 text-xs">{formatCurrency(a.totalValue || a.valor || a.salary)}</span>
                               </div>
                               <p className="text-[10px] font-bold text-amber-700">
-                                {a.flags && a.flags.length > 0 ? a.flags[0].detail : (a.detail || 'Sem detalhes')}
+                                {a.flags && a.flags.length > 0 ? a.flags[0].detail : (a.descricao || a.detail || 'Detectado por Machine Learning')}
                               </p>
                             </div>
                           ))}
@@ -353,16 +361,57 @@ function App() {
                       </div>
                     )}
 
+                    {/* NOVO: RISCO JUDICIÁRIO (DATAJUD) */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
-                      <div className="flex items-center gap-3 mb-6">
-                        <AlertCircle className="w-6 h-6 text-rose-500" />
-                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Risco Judiciário</h3>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <AlertCircle className={`w-6 h-6 ${(selectedPolitician.judicialRiskScore || 0) > 0 ? 'text-rose-500' : 'text-emerald-500'}`} />
+                          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Risco Judiciário</h3>
+                        </div>
+                        <span className="text-[10px] font-black uppercase text-slate-400">DataJud</span>
                       </div>
-                      <div className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
-                        <p className="text-xs font-bold text-slate-400 uppercase">Integrando API JusBrasil / DataJud</p>
-                        <p className="text-[10px] font-black text-slate-300 mt-2">Nenhum processo crítico encontrado</p>
-                      </div>
+
+                      {(selectedPolitician.judicialRiskScore || 0) > 0 ? (
+                        <div className="flex flex-col gap-2 p-4 bg-rose-50 rounded-2xl border border-rose-100">
+                          <p className="text-sm font-black text-rose-700 uppercase">Alerta Ativo (Score: {selectedPolitician.judicialRiskScore})</p>
+                          <p className="text-xs font-bold text-rose-600 leading-relaxed">{selectedPolitician.judicialRiskDetails || 'Processos de improbidade encontrados.'}</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-emerald-100 rounded-2xl bg-emerald-50/50">
+                          <p className="text-xs font-black text-emerald-600 uppercase tracking-widest">Ficha Limpa</p>
+                          <p className="text-[10px] font-bold text-emerald-500 mt-1">Nenhum processo crítico encontrado</p>
+                        </div>
+                      )}
                     </div>
+
+                    {/* NOVO: NLP GAZETTE (DIÁRIOS OFICIAIS) */}
+                    <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 md:col-span-2">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <Database className={`w-6 h-6 ${(selectedPolitician.nlpGazetteCount || 0) > 0 ? 'text-amber-500' : 'text-slate-400'}`} />
+                          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Menções em Diários Oficiais</h3>
+                        </div>
+                        <span className="text-[10px] font-black uppercase text-slate-400">Querido Diário API</span>
+                      </div>
+
+                      {(selectedPolitician.nlpGazetteCount || 0) > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Ocorrências</p>
+                            <p className="text-3xl font-black text-amber-700">{selectedPolitician.nlpGazetteCount}</p>
+                          </div>
+                          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Análise Textual</p>
+                            <p className="text-xs font-bold text-slate-700">{selectedPolitician.nlpGazetteDetails || 'Foram encontradas menções envolvendo empresas ligadas ao gabinete em publicações oficiais.'}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-6 bg-slate-50 border border-slate-100 rounded-2xl text-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase">Nenhuma atividade suspeita em licitações ou diários oficiais municipais encontrada pela inteligência artificial.</p>
+                        </div>
+                      )}
+                    </div>
+
                   </div>
                 </div>
               )}

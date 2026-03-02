@@ -481,4 +481,13 @@ public class DataIngestionService {
         }
         pessoaNodeRepository.save(savedPessoa);
     }
+
+    @Transactional("transactionManager")
+    public void resetPostgresDatabase() {
+        // Apaga na ordem correta para evitar erros de chave estrangeira (Foreign Key)
+        voteRepository.deleteAll();
+        promiseRepository.deleteAll();
+        politicianRepository.deleteAll();
+    }
+
 }

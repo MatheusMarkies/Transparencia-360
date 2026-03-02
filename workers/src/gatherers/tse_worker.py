@@ -213,4 +213,6 @@ class TSEWorker:
 
 if __name__ == "__main__":
     worker = TSEWorker()
-    worker.run(limit=50)
+    parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
+    args = parser.parse_args()
+    worker.run(limit=args.limit)
