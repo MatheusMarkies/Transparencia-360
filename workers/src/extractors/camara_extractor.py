@@ -1,6 +1,7 @@
 import httpx
 import os
 import asyncio
+import aiofiles  # Nova importação para I/O assíncrono
 from pathlib import Path
 
 # Dynamic Pathing relative to worker src structure
@@ -41,8 +42,9 @@ class CamaraExtractor:
         try:
             resp = await client.get(url)
             if resp.status_code == 200:
-                with open(target_path, "wb") as f:
-                    f.write(resp.content)
+                # OTIMIZAÇÃO: Escrita de arquivo não-bloqueante usando aiofiles
+                async with aiofiles.open(target_path, "wb") as f:
+                    await f.write(resp.content)
                 return str(target_path)
         except Exception as e:
             print(f"Error downloading {url}: {e}")
@@ -51,11 +53,16 @@ class CamaraExtractor:
     async def process_deputy(self, deputy_id: int):
         expenses = await self.get_expenses(deputy_id)
         results = []
+        
         # Limit to 3 in production for stability
+        # Dica de Engenharia: Se for aumentar esse limite futuramente, 
+        # considere usar um asyncio.Semaphore() aqui ou no download_pdf
+        # para não abrir centenas de conexões simultâneas com a API da Câmara.
         for exp in expenses[:3]: 
             doc_url = exp['urlDocumento']
             filename = f"dep_{deputy_id}_{exp['codDocumento']}.pdf"
             local_path = await self.download_pdf(doc_url, filename)
+            
             if local_path:
                 results.append({
                     "alerta": "DESPESA_FISCAL",

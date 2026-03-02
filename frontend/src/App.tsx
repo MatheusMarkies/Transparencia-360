@@ -1,414 +1,434 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, CheckCircle2, ShieldAlert, Users, Building2, X } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// Force Graph must be imported natively
+import {
+  Search,
+  TrendingUp,
+  ShieldAlert,
+  Database,
+  ChevronRight,
+  LayoutDashboard,
+  Cpu,
+  Network,
+  BarChart3,
+  AlertCircle,
+  Users
+} from 'lucide-react';
 import ForceGraph2D from 'react-force-graph-2d';
-import { ReactFlow, Background, Controls, type Edge } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 
-// Data shapes matching the Backend
+// New specialized components
+import RadarRisco from './components/RadarRisco';
+import RankingTable from './components/Dossie/RankingTable';
+import WealthChart from './components/Patrimonio/WealthChart';
+import PoliticianCard from './components/Dossie/PoliticianCard';
+import { SourceTag, ConfidenceBadge } from './components/Rastreabilidade/Provenance';
+
+const BACKEND_URL = 'http://localhost:8080/api/v1';
+
 interface Politician {
   id: number;
+  externalId: string;
   name: string;
   party: string;
   state: string;
   position: string;
-  absences?: number;
   expenses?: number;
-  stateAffinity?: number;
-  propositions?: number;
-  frentes?: number;
+  absences?: number;
+  wealthAnomaly?: number;
+  cabinetRiskScore?: number;
+  cabinetRiskDetails?: string;
   declaredAssets?: number;
   declaredAssets2018?: number;
   declaredAssets2014?: number;
-  wealthAnomaly?: number;
   staffAnomalyCount?: number;
   staffAnomalyDetails?: string;
-  cabinetRiskScore?: number;
-  cabinetRiskDetails?: string;
-  ghostEmployeeCount?: number;
-  ghostEmployeeDetails?: string;
-  nlpGazetteDetails?: string;
-  cabinetSize?: number;
-  cabinetDetails?: string;
+  detailedExpenses?: any[];
 }
 
-const App = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [politicians, setPoliticians] = useState<Politician[]>([]);
+function App() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<Politician[]>([]);
   const [selectedPolitician, setSelectedPolitician] = useState<Politician | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [graphData, setGraphData] = useState<any>({ nodes: [], links: [] });
   const [allPoliticians, setAllPoliticians] = useState<Politician[]>([]);
-  const [crossMatchData, setCrossMatchData] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'geral' | 'gabinete' | 'grafo' | 'inteligencia'>('geral');
+  const [activeTab, setActiveTab] = useState<'geral' | 'inteligencia' | 'grafo' | 'fontes'>('geral');
+  const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const [sources, setSources] = useState<any[]>([]);
 
-  // Rachadinha Modals
-  const [selectedProofUrl, setSelectedProofUrl] = useState<string | null>(null);
-
-  const BACKEND_URL = 'http://localhost:8080/api/v1';
-
-  // Deputy annual cost constants (2024 values)
-  const SALARY_ANNUAL = 528_000;          // R$44k/month x 12
-  const HOUSING_ANNUAL = 51_036;          // Auxílio moradia R$4.253/month
-  const OFFICE_BUDGET_ANNUAL = 1_340_100; // Verba de gabinete R$111.675/month
-  const HEALTH_PLAN_ANNUAL = 36_000;      // Plano de saúde ~R$3k/month
-  const BASE_COST = SALARY_ANNUAL + HOUSING_ANNUAL + OFFICE_BUDGET_ANNUAL + HEALTH_PLAN_ANNUAL;
-
-  const formatCurrency = (val: number, precise = false) => {
-    if (Math.abs(val) >= 1000000) {
-      return `R$ ${(val / 1000000).toLocaleString('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}M`;
-    }
-    if (Math.abs(val) >= 1000) {
-      return `R$ ${(val / 1000).toLocaleString('pt-BR', {
-        minimumFractionDigits: precise ? 1 : 0,
-        maximumFractionDigits: 1
-      })}k`;
-    }
-    return `R$ ${val.toLocaleString('pt-BR')}`;
-  };
-
-  // Fetch all politicians on mount for ranking comparison
   useEffect(() => {
     const fetchAll = async () => {
       try {
         const resp = await axios.get(`${BACKEND_URL}/politicians/search?name=`);
         setAllPoliticians(resp.data);
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error("Error fetching all politicians for ranking:", e); }
     };
     fetchAll();
   }, []);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-
-    setLoading(true);
+  const handleSearch = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!query.trim()) return;
     try {
-      const resp = await axios.get(`${BACKEND_URL}/politicians/search?name=${searchQuery}`);
-      setPoliticians(resp.data);
-      setSelectedPolitician(null);
-    } catch (error) {
-      console.error("Error fetching politicians", error);
-    } finally {
-      setLoading(false);
-    }
+      const resp = await axios.get(`${BACKEND_URL}/politicians/search?name=${query}`);
+      setResults(resp.data);
+    } catch (e) { console.error(e); }
   };
 
-  const loadPoliticianGraph = async (id: number) => {
+  const selectPolitician = async (p: Politician) => {
+    setSelectedPolitician(p);
+    setResults([]);
+    setQuery('');
+
+    // Fetch Graph
     try {
-      const resp = await axios.get(`http://localhost:8080/api/graph/triangulation/${id}`);
-      if (resp.data.length === 0) {
-        const fallback = await axios.get(`http://localhost:8080/api/graph/network/${id}`);
-        if (fallback.data.length > 0) {
-          setGraphData({ nodes: fallback.data[0].nodes, links: fallback.data[0].links });
-        } else {
-          setGraphData({ nodes: [], links: [] });
-        }
-      } else {
-        setGraphData({ nodes: resp.data[0].nodes, links: resp.data[0].links });
-      }
-    } catch (error) {
-      console.error("Error loading graph", error);
+      const gResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/graph`);
+      setGraphData(gResp.data);
+    } catch (e) {
+      console.warn("Graph data not available yet");
       setGraphData({ nodes: [], links: [] });
     }
-  };
 
-  const loadCrossMatchData = async (id: number, name: string) => {
+    // Fetch Sources
     try {
-      const resp = await axios.get(`${BACKEND_URL}/politicians/${id}/sources`);
-      setCrossMatchData({ sources: resp.data, politicianName: name });
+      const sResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/sources`);
+      setSources(sResp.data);
     } catch (e) {
-      setCrossMatchData({ sources: [], politicianName: name });
+      console.error("Error fetching sources:", e);
+      setSources([]);
+    }
+
+    // Fetch Detailed Expenses
+    try {
+      const eResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/expenses`);
+      setSelectedPolitician(prev => prev ? { ...prev, detailedExpenses: eResp.data } : null);
+    } catch (e) {
+      console.error("Error fetching detailed expenses:", e);
     }
   };
 
-  const selectPolitician = (p: Politician) => {
-    setSelectedPolitician(p);
-    loadPoliticianGraph(p.id);
-    loadCrossMatchData(p.id, p.name);
-    setActiveTab('geral');
+  const formatCurrency = (val: any) => {
+    if (val === undefined || val === null || isNaN(val) || !isFinite(val)) return 'R$ 0,00';
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F8FAFC] flex flex-col font-sans relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-indigo-900 via-indigo-800 to-transparent -z-10"></div>
-
-      <header className="sticky top-0 z-50 bg-indigo-900/90 backdrop-blur-xl border-b border-indigo-700/50 shadow-2xl">
-        <div className="w-full px-6 md:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-gradient-to-br from-indigo-500 to-blue-500 p-3 rounded-2xl shadow-lg shadow-blue-500/30 border border-white/10">
-              <Search className="text-white w-6 h-6" />
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+      {/* Search Header */}
+      <header className="bg-indigo-900 sticky top-0 z-50 border-b border-indigo-700 shadow-xl">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-8">
+          <div className="flex items-center gap-3 shrink-0" onClick={() => setSelectedPolitician(null)} style={{ cursor: 'pointer' }}>
+            <div className="w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-400/20 border border-white/10">
+              <ShieldAlert className="text-white w-6 h-6" />
             </div>
-            <div>
-              <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
-                Transparência <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-300">360</span>
-              </h1>
-              <p className="text-indigo-200/80 text-base font-semibold tracking-widest uppercase">Inteligência Política</p>
-            </div>
+            <h1 className="text-xl font-black tracking-tighter text-white uppercase">Transparência <span className="text-indigo-400">360</span></h1>
           </div>
 
-          <form onSubmit={handleSearch} className="w-full sm:w-1/2 relative group">
+          <form onSubmit={handleSearch} className="flex-1 max-w-2xl relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-indigo-300 group-focus-within:text-white transition-colors" />
+            </div>
             <input
               type="text"
-              placeholder="Busque por nome, cargo ou estado..."
-              className="w-full pl-6 pr-16 py-4 rounded-2xl border-0 bg-white/10 text-white placeholder-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner backdrop-blur-md transition-all duration-300 hover:bg-white/15"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-12 pr-4 py-3 bg-white/10 border-transparent rounded-2xl focus:bg-white focus:text-slate-900 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all font-bold text-white placeholder-indigo-300/50"
+              placeholder="Buscar parlamentar, partido ou estado..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
-            <button
-              type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 disabled:opacity-50"
-              disabled={loading}
-            >
-              <Search className="w-5 h-5" />
-            </button>
+
+            {results.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-300">
+                {results.map((p) => (
+                  <button
+                    key={p.id}
+                    className="w-full px-6 py-4 text-left hover:bg-slate-50 flex items-center justify-between group transition-colors"
+                    onClick={() => selectPolitician(p)}
+                  >
+                    <div>
+                      <p className="font-black text-slate-800 uppercase tracking-tight">{p.name}</p>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{p.party} • {p.state}</p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            )}
           </form>
+
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest">Status do Motor</span>
+              <span className="text-sm font-black text-emerald-400 flex items-center gap-1.5 uppercase">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Operacional
+              </span>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 w-full px-6 md:px-12 py-8 flex flex-col md:flex-row gap-8">
-        {/* Left Sidebar */}
-        <div className="w-full md:w-80 flex-shrink-0 flex flex-col gap-4">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-base font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-600" /> Resultados
-            </h2>
-            {politicians.length > 0 && <span className="bg-white px-2 py-0.5 rounded-full text-sm font-bold text-slate-500 shadow-sm border border-slate-200">{politicians.length}</span>}
-          </div>
-
-          <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-xl shadow-slate-200/50 border border-white/60 overflow-hidden flex flex-col h-[calc(100vh-200px)]">
-            {loading ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4 text-indigo-900/40">
-                <div className="w-8 h-8 rounded-full border-4 border-indigo-100 border-t-indigo-500 animate-spin"></div>
-                <span className="text-base font-bold animate-pulse">Consultando bases...</span>
-              </div>
-            ) : politicians.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
-                <Users className="w-10 h-10 mb-4 opacity-20" />
-                <p className="font-bold text-slate-600">Busque um parlamentar acima</p>
-              </div>
-            ) : (
-              <ul className="overflow-y-auto flex-1 p-2 space-y-2 custom-scrollbar">
-                {politicians.map(p => {
-                  const isSelected = selectedPolitician?.id === p.id;
-                  return (
-                    <li key={p.id}>
-                      <button
-                        onClick={() => selectPolitician(p)}
-                        className={`w-full text-left p-4 rounded-2xl transition-all duration-300 flex flex-col gap-2 border
-                          ${isSelected
-                            ? 'bg-gradient-to-br from-indigo-500 to-blue-600 border-transparent shadow-lg text-white'
-                            : 'bg-white border-transparent hover:border-indigo-100 hover:bg-indigo-50/50'
-                          }`}
-                      >
-                        <span className="font-black text-base leading-tight">{p.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-black uppercase tracking-wider px-2 py-1 rounded-md ${isSelected ? 'bg-white/20' : 'bg-slate-100 text-slate-500'}`}>
-                            {p.party}
-                          </span>
-                          <span className={`text-xs font-bold ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>
-                            {p.state} • {p.position}
-                          </span>
-                        </div>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </div>
-
-        {/* Right Area */}
-        <div className="flex-1 flex flex-col gap-6 min-w-0">
-          {selectedPolitician ? (
-            <>
-              <div className="bg-white rounded-3xl shadow-xl border border-white overflow-hidden">
-                <div className="p-6 lg:p-8 flex flex-col xl:flex-row gap-8 items-start xl:items-center justify-between">
-                  <div className="flex-1">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full text-indigo-600 text-[10px] font-black uppercase tracking-widest mb-4">
-                      Análise em Tempo Real
-                    </div>
-                    <h2 className="text-4xl font-black text-slate-800 tracking-tight mb-2">{selectedPolitician.name}</h2>
-                    <p className="text-sm font-bold flex items-center gap-2 text-slate-500">
-                      <span className="bg-slate-100 px-2 py-0.5 rounded-md">{selectedPolitician.party}</span>
-                      <span>•</span> {selectedPolitician.state} <span>•</span> {selectedPolitician.position}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-4 w-full xl:w-auto overflow-x-auto pb-2 custom-scrollbar">
-                    {/* Metrics here - omitted for brevity but can be expanded if needed */}
-                    <div className="shrink-0 w-40 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Gasto Cota (2025)</p>
-                      <p className="text-xl font-black text-slate-800">{formatCurrency(selectedPolitician.expenses || 0)}</p>
-                    </div>
-                    <div className="shrink-0 w-40 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Faltas</p>
-                      <p className="text-xl font-black text-slate-800">{selectedPolitician.absences || 0} dias</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50/50 border-t border-slate-100 px-6 py-3 flex flex-wrap items-center gap-2">
-                  {[
-                    { id: 'geral', label: 'Visão Geral', icon: '📊' },
-                    { id: 'gabinete', label: 'Gabinete', icon: '🏛️' },
-                    { id: 'grafo', label: 'Grafo', icon: '🕸️' },
-                    { id: 'inteligencia', label: 'Deep Match', icon: '🔍' },
-                  ].map(tab => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id as any)}
-                      className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 border
-                        ${activeTab === tab.id
-                          ? 'bg-white text-indigo-600 border-indigo-100 shadow-sm'
-                          : 'text-slate-500 border-transparent hover:bg-white/80'
-                        }`}
-                    >
-                      {tab.icon} {tab.label}
-                    </button>
-                  ))}
+      <main className="max-w-7xl mx-auto px-6 py-10">
+        {!selectedPolitician ? (
+          <div className="space-y-12">
+            <div className="bg-indigo-600 rounded-[3rem] p-12 text-white relative overflow-hidden shadow-2xl shadow-indigo-200">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl" />
+              <div className="relative z-10 max-w-2xl">
+                <h2 className="text-5xl font-black mb-6 tracking-tighter leading-none">O PODER DA INVESTIGAÇÃO NOS SEUS DEDOS.</h2>
+                <p className="text-lg font-bold text-indigo-100/80 mb-8 leading-relaxed">
+                  Cruzamos dados da Câmara, Portal da Transparência, TSE e Diários Oficiais para detectar anomalias patrimoniais e riscos de rachadinha.
+                </p>
+                <div className="flex gap-4">
+                  <div className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-black uppercase text-sm shadow-xl hover:scale-105 transition-transform cursor-pointer">Começar Investigação</div>
+                  <div className="px-6 py-3 bg-indigo-500/50 text-white rounded-2xl font-black uppercase text-sm border border-white/20 hover:bg-indigo-500/70 transition-colors cursor-pointer">Ver Metodologia</div>
                 </div>
               </div>
+            </div>
 
-              <div className="flex flex-col gap-6">
-                {activeTab === 'geral' && (
-                  <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
-                    <h3 className="text-lg font-black text-slate-800 uppercase mb-4">Evolução Patrimonial</h3>
-                    <div className="h-64">
-                      {/* Chart Placeholder or implementation */}
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={[
-                          { year: '2014', val: selectedPolitician.declaredAssets2014 || 0 },
-                          { year: '2018', val: selectedPolitician.declaredAssets2018 || 0 },
-                          { year: '2022', val: selectedPolitician.declaredAssets || 0 },
-                        ]}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                          <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} />
-                          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700 }} tickFormatter={v => `R$${v / 1000}k`} />
-                          <Tooltip />
-                          <Area type="monotone" dataKey="val" stroke="#6366f1" fill="#e0e7ff" />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'gabinete' && (
-                  <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-                    <table className="w-full text-left">
-                      <thead className="bg-slate-50 font-black text-[10px] uppercase text-slate-500 tracking-widest">
-                        <tr>
-                          <th className="p-4">Assessor</th>
-                          <th className="p-4">Cargo</th>
-                          <th className="p-4">Salário</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 text-sm">
-                        {(() => {
-                          try {
-                            const staff = JSON.parse(selectedPolitician.cabinetDetails || '[]');
-                            return staff.map((s: any, i: number) => (
-                              <tr key={i} className="hover:bg-slate-50">
-                                <td className="p-4 font-bold">{s.name}</td>
-                                <td className="p-4 text-slate-500">{s.role}</td>
-                                <td className="p-4 font-black text-slate-700">{formatCurrency(s.salary || 0)}</td>
-                              </tr>
-                            ));
-                          } catch (e) { return null; }
-                        })()}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {activeTab === 'grafo' && (
-                  <div className="bg-white rounded-3xl shadow-xl h-[500px] border border-slate-100 overflow-hidden">
-                    <ForceGraph2D
-                      graphData={graphData}
-                      nodeLabel="name"
-                      nodeAutoColorBy="group"
-                      width={800}
-                      height={500}
-                    />
-                  </div>
-                )}
-
-                {activeTab === 'inteligencia' && (
-                  <div className="flex flex-col gap-6">
-                    {/* Anomaly Panels */}
-                    {selectedPolitician.cabinetRiskScore != null && (
-                      <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="font-black text-slate-800 uppercase">Radar de Rachadinha</h3>
-                          <span className="text-2xl font-black text-rose-500">{selectedPolitician.cabinetRiskScore}%</span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <div className="flex items-center gap-2 mb-4 px-2">
+                  <Users className="w-4 h-4 text-indigo-600" />
+                  <h2 className="text-base font-black text-slate-800 uppercase tracking-widest">Ranking de Transparência</h2>
+                </div>
+                <RankingTable politicians={allPoliticians} onSelect={selectPolitician} />
+              </div>
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xl">
+                  <h3 className="font-black text-slate-800 uppercase mb-4 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-indigo-500" /> Alertas de Evolução
+                  </h3>
+                  <div className="space-y-4">
+                    {allPoliticians.filter(p => (p.wealthAnomaly || 0) > 3).slice(0, 3).length > 0 ? (
+                      allPoliticians.filter(p => (p.wealthAnomaly || 0) > 3).slice(0, 3).map(p => (
+                        <div key={p.id} className="p-4 bg-rose-50 rounded-2xl border border-rose-100 cursor-pointer" onClick={() => selectPolitician(p)}>
+                          <p className="text-xs font-black text-rose-600 uppercase mb-1">{p.name}</p>
+                          <p className="text-sm font-black text-slate-800">{p.wealthAnomaly?.toFixed(1)}x crescimento incompatível</p>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {JSON.parse(selectedPolitician.cabinetRiskDetails || '[]').map((d: any, i: number) => (
-                            <div key={i} className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs font-bold text-slate-600 flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-rose-400" /> {d.factor}
-                            </div>
-                          ))}
-                        </div>
+                      ))
+                    ) : (
+                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                        <p className="text-xs font-bold text-slate-400">Nenhuma anomalia crítica detectada no momento.</p>
                       </div>
                     )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Top Stats - Hero Card */}
+            <PoliticianCard politician={selectedPolitician} />
 
+            {/* No Data Warning */}
+            {(!selectedPolitician.expenses && !selectedPolitician.cabinetRiskScore) && (
+              <div className="bg-amber-50 border-2 border-dashed border-amber-200 rounded-[2rem] p-8 flex flex-col items-center text-center gap-4 animate-in zoom-in duration-500">
+                <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center">
+                  <Database className="w-8 h-8 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-amber-900 uppercase tracking-tight">Dados em Processamento</h3>
+                  <p className="text-xs font-bold text-amber-700 max-w-md mx-auto mt-1">
+                    Ainda não extraímos os dados detalhados para este parlamentar. Nossa equipe de robôs está trabalhando nisso!
+                  </p>
+                </div>
+                <button
+                  onClick={() => selectPolitician(selectedPolitician)}
+                  className="px-6 py-2 bg-amber-600 text-white rounded-xl font-black uppercase text-[10px] hover:bg-amber-700 transition-colors"
+                >
+                  Tentar Novamente
+                </button>
+              </div>
+            )}
+
+            {/* Navigation Tabs */}
+            <div className="flex flex-wrap gap-2 bg-slate-200/50 p-1.5 rounded-[2rem] w-fit border border-slate-200">
+              <button
+                className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'geral' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('geral')}
+              >
+                <div className="flex items-center gap-2"><LayoutDashboard className="w-4 h-4" /> Visão Geral</div>
+              </button>
+              <button
+                className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'inteligencia' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('inteligencia')}
+              >
+                <div className="flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> Deep Match</div>
+              </button>
+              <button
+                className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'grafo' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('grafo')}
+              >
+                <div className="flex items-center gap-2"><Network className="w-4 h-4" /> Grafo de Influência</div>
+              </button>
+              <button
+                className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'fontes' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('fontes')}
+              >
+                <div className="flex items-center gap-2"><Database className="w-4 h-4" /> Rastreabilidade</div>
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="grid grid-cols-1 gap-8">
+              {activeTab === 'geral' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <WealthChart data={[
+                    { year: '2014', value: selectedPolitician.declaredAssets2014 || 0 },
+                    { year: '2018', value: selectedPolitician.declaredAssets2018 || 0 },
+                    { year: '2022', value: selectedPolitician.declaredAssets || 0 }
+                  ]} />
+
+                  <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                    <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-6">Custos Operacionais</h3>
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Total CEAP (Acumulado)</p>
+                          <p className="text-3xl font-black text-slate-800 tracking-tighter">{formatCurrency(selectedPolitician.expenses || 0)}</p>
+                        </div>
+                        <BarChart3 className="w-10 h-10 text-indigo-100" />
+                      </div>
+                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div className="flex justify-between mb-2">
+                          <span className="text-xs font-bold text-slate-500">Presença em Plenário</span>
+                          <span className="text-xs font-black text-slate-800">{100 - (selectedPolitician.absences || 0)}%</span>
+                        </div>
+                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-500" style={{ width: `${100 - (selectedPolitician.absences || 0)}%` }} />
+                        </div>
+                      </div>
+
+                      {/* Detailed Expense Table */}
+                      <div className="mt-8">
+                        <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Últimos Lançamentos CEAP</h4>
+                        <div className="overflow-hidden rounded-2xl border border-slate-100 divide-y divide-slate-100">
+                          {selectedPolitician.detailedExpenses && selectedPolitician.detailedExpenses.length > 0 ? (
+                            selectedPolitician.detailedExpenses.slice(0, 5).map((exp, i) => (
+                              <div key={i} className="p-4 bg-white hover:bg-slate-50 transition-colors flex justify-between items-center group">
+                                <div className="flex flex-col">
+                                  <span className="text-xs font-black text-slate-800 line-clamp-1 uppercase tracking-tight">{exp.nomeFornecedor}</span>
+                                  <span className="text-[10px] font-bold text-slate-400">{exp.dataEmissao} • {exp.categoria}</span>
+                                </div>
+                                <span className="text-sm font-black text-slate-700 group-hover:text-indigo-600 transition-colors">{formatCurrency(exp.valorDocumento)}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="p-8 text-center bg-slate-50/50">
+                              <p className="text-xs font-bold text-slate-400 uppercase">Nenhum detalhamento disponível</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'inteligencia' && (
+                <div className="flex flex-col gap-8">
+                  {selectedPolitician.cabinetRiskScore != null && (
+                    <RadarRisco
+                      score={selectedPolitician.cabinetRiskScore}
+                      details={selectedPolitician.cabinetRiskDetails || '[]'}
+                    />
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {selectedPolitician.staffAnomalyCount != null && selectedPolitician.staffAnomalyCount > 0 && (
-                      <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
-                        <h3 className="font-black text-slate-800 uppercase mb-4">🏢 Fornecedores Suspeitos ({selectedPolitician.staffAnomalyCount})</h3>
-                        <div className="space-y-3">
+                      <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                        <div className="flex items-center gap-3 mb-6">
+                          <Cpu className="w-6 h-6 text-amber-500" />
+                          <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Anomalias de Pessoal ({selectedPolitician.staffAnomalyCount})</h3>
+                        </div>
+                        <div className="space-y-4">
                           {JSON.parse(selectedPolitician.staffAnomalyDetails || '[]').map((a: any, i: number) => (
                             <div key={i} className="p-4 rounded-2xl bg-amber-50 border border-amber-100">
-                              <div className="flex justify-between mb-2">
-                                <span className="font-black text-slate-800 uppercase text-xs">{a.supplier || a.name}</span>
-                                <span className="font-black text-slate-700 text-xs">{formatCurrency(a.totalValue || a.salary || 0)}</span>
+                              <div className="flex justify-between mb-1">
+                                <span className="font-black text-slate-800 uppercase text-xs">{a.supplier || a.name || 'Desconhecido'}</span>
+                                <span className="font-black text-slate-700 text-xs">{formatCurrency(a.totalValue || a.salary)}</span>
                               </div>
-                              <p className="text-xs font-medium text-slate-600">{a.detail}</p>
-                              {a.evidence_url && (
-                                <button onClick={() => setSelectedProofUrl(a.evidence_url)} className="mt-2 text-[10px] font-black text-indigo-600 hover:underline">📄 VER PROVA DOCUMENTAL</button>
-                              )}
+                              <p className="text-[10px] font-bold text-amber-700">
+                                {a.flags && a.flags.length > 0 ? a.flags[0].detail : (a.detail || 'Sem detalhes')}
+                              </p>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
+
+                    <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                      <div className="flex items-center gap-3 mb-6">
+                        <AlertCircle className="w-6 h-6 text-rose-500" />
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Risco Judiciário</h3>
+                      </div>
+                      <div className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                        <p className="text-xs font-bold text-slate-400 uppercase">Integrando API JusBrasil / DataJud</p>
+                        <p className="text-[10px] font-black text-slate-300 mt-2">Nenhum processo crítico encontrado</p>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 bg-white/40 backdrop-blur-xl rounded-3xl border border-white flex flex-col items-center justify-center p-12 text-center">
-              <Search className="w-16 h-16 text-indigo-300 mb-6" />
-              <h3 className="text-2xl font-black text-slate-800 mb-2">Selecione um parlamentar</h3>
-              <p className="text-slate-500 font-medium">Inicie a análise de integridade cruzada</p>
+                </div>
+              )}
+
+              {activeTab === 'grafo' && (
+                <div className="bg-white rounded-[3rem] shadow-2xl h-[600px] border border-slate-100 overflow-hidden relative">
+                  <div className="absolute top-8 left-8 z-10 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl max-w-xs">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Mapeamento de Influência</p>
+                    <p className="text-xs font-bold text-slate-600">Visualizando relações entre o parlamentar, empresas financiadoras e votações críticas.</p>
+                  </div>
+                  <ForceGraph2D
+                    graphData={graphData}
+                    nodeLabel="name"
+                    nodeAutoColorBy="group"
+                    width={1100}
+                    height={600}
+                    backgroundColor="#ffffff"
+                  />
+                </div>
+              )}
+
+              {activeTab === 'fontes' && (
+                <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                  <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-8">Auditoria de Dados</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {sources.map((s, i) => (
+                      <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col gap-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-3">
+                            <div className="text-3xl">{s.icon}</div>
+                            <div>
+                              <p className="font-black text-slate-800 uppercase tracking-tight">{s.name}</p>
+                              <p className="text-[10px] font-bold text-slate-400">{s.endpoint}</p>
+                            </div>
+                          </div>
+                          <ConfidenceBadge level={s.status === 'ok' ? 'High' : 'Medium'} />
+                        </div>
+                        <p className="text-xs font-bold text-slate-600 leading-relaxed">{s.description}</p>
+                        <SourceTag label="Ver Dados Brutos" url={`https://${s.endpoint}`} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
 
-      {selectedProofUrl && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
-            <div className="p-4 border-b flex justify-between items-center bg-slate-50">
-              <span className="font-black text-xs uppercase tracking-widest text-slate-500">Visualizador de Evidências</span>
-              <button onClick={() => setSelectedProofUrl(null)} className="p-2 hover:bg-slate-200 rounded-full"><X className="w-5 h-5" /></button>
-            </div>
-            <iframe src={selectedProofUrl} className="flex-1 w-full border-0" title="Proof" />
+      {/* Footer */}
+      <footer className="bg-slate-900 text-slate-400 py-12 px-6 border-t border-slate-800 mt-20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-3">
+            <ShieldAlert className="w-8 h-8 text-indigo-500" />
+            <span className="text-xl font-black tracking-tighter text-white uppercase">Transparência 360</span>
+          </div>
+          <p className="text-xs font-bold text-center">© 2026 Laboratório de Dados Governamentais. Dados públicos para vigilância cidadã.</p>
+          <div className="flex gap-6">
+            <span className="text-xs font-black uppercase text-indigo-400 cursor-pointer hover:text-white transition-colors">Segurança</span>
+            <span className="text-xs font-black uppercase text-indigo-400 cursor-pointer hover:text-white transition-colors">API</span>
+            <span className="text-xs font-black uppercase text-indigo-400 cursor-pointer hover:text-white transition-colors">GitHub</span>
           </div>
         </div>
-      )}
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
-      `}</style>
+      </footer>
     </div>
   );
-};
+}
 
 export default App;

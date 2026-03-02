@@ -38,11 +38,13 @@ TSE_URLS = {
 }
 
 
+import polars as pl
+
 def normalize_name(name: str) -> str:
     """Normalize name for matching: uppercase, remove accents."""
+    if not name: return ""
     name = unicodedata.normalize('NFKD', name.upper()).encode('ASCII', 'ignore').decode('ASCII')
     return name.strip()
-
 
 class TSEWorker:
     def __init__(self):
@@ -63,86 +65,76 @@ class TSEWorker:
             z.extractall(extract_dir)
         return extract_dir
 
-    def _find_csv_files(self, directory: str) -> list:
-        csv_files = []
-        for root, dirs, files in os.walk(directory):
-            for f in files:
-                if f.lower().endswith('.csv'):
-                    csv_files.append(os.path.join(root, f))
-        return csv_files
-
-    def _parse_candidates(self, csv_path: str) -> dict:
-        """Returns dict mapping NM_URNA_CANDIDATO -> {sq_candidato, ...}"""
-        candidates = {}
-        for enc in ['latin-1', 'utf-8', 'cp1252']:
-            try:
-                with open(csv_path, 'r', encoding=enc) as f:
-                    reader = csv.DictReader(f, delimiter=';', quotechar='"')
-                    for row in reader:
-                        cargo = row.get('DS_CARGO', row.get('DESCRICAO_CARGO', '')).upper()
-                        situacao = row.get('DS_SIT_TOT_TURNO', row.get('DESC_SIT_TOT_TURNO', '')).upper()
-                        if 'DEPUTADO FEDERAL' in cargo and ('ELEITO' in situacao or 'MÉDIA' in situacao or 'SUPLENTE' in situacao):
-                            nome_urna = row.get('NM_URNA_CANDIDATO', row.get('NOME_URNA_CANDIDATO', '')).strip()
-                            sq = row.get('SQ_CANDIDATO', row.get('SEQUENCIAL_CANDIDATO', '')).strip()
-                            if nome_urna and sq:
-                                candidates[nome_urna] = {'sq': sq}
-                return candidates
-            except (UnicodeDecodeError, KeyError):
-                continue
-        return candidates
-
-    def _parse_assets(self, csv_path: str, candidates: dict) -> dict:
-        """Returns dict mapping NM_URNA -> total assets value."""
-        sq_lookup = {info['sq']: name for name, info in candidates.items()}
-        assets = {}
-        for enc in ['latin-1', 'utf-8', 'cp1252']:
-            try:
-                with open(csv_path, 'r', encoding=enc) as f:
-                    reader = csv.DictReader(f, delimiter=';', quotechar='"')
-                    for row in reader:
-                        sq = row.get('SQ_CANDIDATO', row.get('SEQUENCIAL_CANDIDATO', '')).strip()
-                        if sq not in sq_lookup:
-                            continue
-                        valor_str = row.get('VR_BEM_CANDIDATO', row.get('VALOR_BEM', '0')).strip().replace(',', '.')
-                        try:
-                            valor = float(valor_str)
-                        except ValueError:
-                            valor = 0.0
-                        name = sq_lookup[sq]
-                        assets[name] = assets.get(name, 0.0) + valor
-                return assets
-            except (UnicodeDecodeError, KeyError):
-                continue
-        return assets
-
     def _process_year(self, year: int) -> dict:
-        """Download and process data for a single election year.
+        """Download and process data for a single election year using Polars.
         Returns dict mapping normalized ballot name -> total assets."""
         urls = TSE_URLS[year]
-        logger.info(f"--- Processing {year} ---")
+        logger.info(f"--- Processing {year} (Polars Engine) ---")
 
-        # Candidates
-        cand_dir = self._download_and_extract(urls["cand"], f"cand_{year}")
-        all_candidates = {}
-        for csv_path in self._find_csv_files(cand_dir):
-            parsed = self._parse_candidates(csv_path)
-            all_candidates.update(parsed)
-        logger.info(f"  {year}: {len(all_candidates)} federal deputies found")
+        # 1. Process Candidates
+        cand_dir = Path(self._download_and_extract(urls["cand"], f"cand_{year}"))
+        cand_files = list(cand_dir.glob("**/*.csv"))
+        
+        cand_dfs = []
+        for f in cand_files:
+            try:
+                # TSE files usually use latin-1 and semicolon
+                df = pl.read_csv(f, separator=";", encoding="latin-1", infer_schema_length=0)
+                # DS_CARGO is the column name in recent files, DESCRICAO_CARGO in older ones
+                cargo_col = "DS_CARGO" if "DS_CARGO" in df.columns else "DESCRICAO_CARGO"
+                sit_col = "DS_SIT_TOT_TURNO" if "DS_SIT_TOT_TURNO" in df.columns else "DESC_SIT_TOT_TURNO"
+                nome_col = "NM_URNA_CANDIDATO" if "NM_URNA_CANDIDATO" in df.columns else "NOME_URNA_CANDIDATO"
+                sq_col = "SQ_CANDIDATO" if "SQ_CANDIDATO" in df.columns else "SEQUENCIAL_CANDIDATO"
+                
+                df_fil = df.filter(
+                    pl.col(cargo_col).str.to_uppercase().str.contains("DEPUTADO FEDERAL") &
+                    (pl.col(sit_col).str.to_uppercase().str.contains("ELEITO") | 
+                     pl.col(sit_col).str.to_uppercase().str.contains("MEDIA") |
+                     pl.col(sit_col).str.to_uppercase().str.contains("SUPLENTE"))
+                ).select([
+                    pl.col(nome_col).alias("nome_urna"),
+                    pl.col(sq_col).alias("sq")
+                ])
+                cand_dfs.append(df_fil)
+            except Exception as e:
+                logger.warning(f"Error parsing {f.name}: {e}")
 
-        # Assets
-        bens_dir = self._download_and_extract(urls["bens"], f"bens_{year}")
-        all_assets = {}
-        for csv_path in self._find_csv_files(bens_dir):
-            parsed = self._parse_assets(csv_path, all_candidates)
-            for name, total in parsed.items():
-                all_assets[name] = max(all_assets.get(name, 0.0), total)
-        logger.info(f"  {year}: {len(all_assets)} candidates with asset data")
+        if not cand_dfs: return {}
+        candidates_df = pl.concat(cand_dfs).unique(subset=["sq"])
+        
+        # 2. Process Assets
+        bens_dir = Path(self._download_and_extract(urls["bens"], f"bens_{year}"))
+        bens_files = list(bens_dir.glob("**/*.csv"))
+        
+        bens_dfs = []
+        for f in bens_files:
+            try:
+                df_bens = pl.read_csv(f, separator=";", encoding="latin-1", infer_schema_length=0)
+                sq_col_bens = "SQ_CANDIDATO" if "SQ_CANDIDATO" in df_bens.columns else "SEQUENCIAL_CANDIDATO"
+                val_col = "VR_BEM_CANDIDATO" if "VR_BEM_CANDIDATO" in df_bens.columns else "VALOR_BEM"
+                
+                df_bens = df_bens.select([
+                    pl.col(sq_col_bens).alias("sq"),
+                    pl.col(val_col).str.replace(",", ".").cast(pl.Float64, strict=False).fill_null(0.0).alias("valor")
+                ])
+                bens_dfs.append(df_bens)
+            except Exception as e:
+                logger.warning(f"Error parsing assets {f.name}: {e}")
 
-        # Normalize names for matching
+        if not bens_dfs: return {}
+        assets_df = pl.concat(bens_dfs)
+        
+        # 3. Join and Aggregate
+        final_df = candidates_df.join(assets_df, on="sq")
+        agg_df = final_df.group_by("nome_urna").agg(pl.col("valor").sum().alias("total_bens"))
+        
+        # Convert to dict with normalized names
         result = {}
-        for nome_urna, total in all_assets.items():
-            norm = normalize_name(nome_urna)
-            result[norm] = total
+        for row in agg_df.to_dicts():
+            norm = normalize_name(row["nome_urna"])
+            result[norm] = row["total_bens"]
+            
+        logger.info(f"  {year}: {len(result)} candidates with Polars-aggregated assets")
         return result
 
     def run(self, limit: int = 50):

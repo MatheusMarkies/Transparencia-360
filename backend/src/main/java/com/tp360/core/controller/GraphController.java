@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/graph")
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:3000" }) // Vite + Generic
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174", "http://localhost:3000" }) // Vite + Generic
 public class GraphController {
 
     @Autowired

@@ -3,3 +3,5 @@ httpx
 PyMuPDF
 spacy
 pandas
+polars
+duckdb

@@ -1,5 +1,6 @@
 import logging
 import traceback
+import os  # Adicionado para ler as variáveis de ambiente
 from typing import Dict, Any, List
 from neo4j import GraphDatabase
 from src.core.api_client import BackendClient
@@ -14,8 +15,13 @@ class SpatialAnomalyWorker:
     AND generating an expense that requires physical presence (meal, hotel, car rental)
     in another state on the exact same day.
     """
-    def __init__(self, neo4j_uri: str = "bolt://localhost:7687", neo4j_user: str = "neo4j", neo4j_pwd: str = "password"):
-        self.driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pwd))
+    def __init__(self, neo4j_uri: str = "bolt://localhost:7687", neo4j_user: str = "neo4j", neo4j_pwd: str = None):
+        # Lê a senha do ambiente; se não existir, usa o padrão "admin123"
+        pwd = neo4j_pwd or os.getenv("NEO4J_PASSWORD", "admin123")
+        uri = os.getenv("NEO4J_URI", neo4j_uri)
+        user = os.getenv("NEO4J_USER", neo4j_user)
+        
+        self.driver = GraphDatabase.driver(uri, auth=(user, pwd))
         self.backend = BackendClient()
 
     def close(self):
