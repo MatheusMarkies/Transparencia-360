@@ -123,14 +123,14 @@ public class FrontendSearchController {
     }
 
     @GetMapping("/{id}/expenses")
-    public ResponseEntity<List<com.tp360.core.entities.neo4j.DespesaNode>> getPoliticianExpenses(
-            @PathVariable Long id) {
+    public ResponseEntity<List<Map<String, Object>>> getPoliticianExpenses(@PathVariable Long id) {
         Optional<Politician> opt = politicianRepository.findById(id);
         if (opt.isEmpty())
             return ResponseEntity.notFound().build();
 
-        List<com.tp360.core.entities.neo4j.DespesaNode> expenses = politicoNodeRepository
-                .findDespesasByPoliticoId(opt.get().getExternalId());
+        // Agora pede a lista no formato de Map seguro!
+        List<Map<String, Object>> expenses = politicoNodeRepository
+                .findDespesasMapByPoliticoId(opt.get().getExternalId());
         return ResponseEntity.ok(expenses);
     }
 

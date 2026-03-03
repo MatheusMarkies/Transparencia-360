@@ -9,7 +9,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 # Injetando a chave da API fornecida
-os.environ["PORTAL_API_KEY"] = ""
+os.environ["PORTAL_API_KEY"] = "7c582554ddd97a21198f7bd9c1d4d4e9"
 os.environ["NEO4J_PASSWORD"] = "admin123"
 
 # Ensure imports work

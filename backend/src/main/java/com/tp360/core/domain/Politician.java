@@ -3,6 +3,8 @@ package com.tp360.core.domain;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "politicians")
@@ -24,6 +26,7 @@ public class Politician {
 
     // New Performance Metrics
     private Integer absences;
+    private Integer presences;
     private Double expenses;
 
     // A value between 0.0 and 1.0 representing how much the politician's actions
@@ -78,6 +81,27 @@ public class Politician {
 
     @OneToMany(mappedBy = "politician", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
+
+    @Transient
+    @JsonProperty("overallRiskScore")
+    public Double getOverallRiskScore() {
+        Double rachadinha = this.cabinetRiskScore != null ? this.cabinetRiskScore : 0.0;
+        int abs = this.absences != null ? this.absences : 0;
+        int pres = this.presences != null ? this.presences : 0;
+        int totalSessions = abs + pres;
+
+        Double absenceRisk = 0.0;
+        if (totalSessions > 0) {
+            // Calcula a porcentagem de faltas (0 a 100)
+            absenceRisk = ((double) abs / totalSessions) * 100.0;
+        }
+
+        // Pesos: 75% Risco de Gabinete (Corrupção), 25% Faltas (Desleixo)
+        Double finalScore = (rachadinha * 0.75) + (absenceRisk * 0.25);
+
+        // Arredonda para 1 casa decimal (ex: 85.4)
+        return Math.round(finalScore * 10.0) / 10.0;
+    }
 
     // Accessors
     public Long getId() {
@@ -360,5 +384,13 @@ public class Politician {
 
     public void setCabinetDetails(String cabinetDetails) {
         this.cabinetDetails = cabinetDetails;
+    }
+
+    public Integer getPresences() {
+        return presences;
+    }
+
+    public void setPresences(Integer presences) {
+        this.presences = presences;
     }
 }

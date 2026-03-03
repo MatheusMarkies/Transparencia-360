@@ -83,6 +83,9 @@ public class DataIngestionService {
             if (data.getAbsences() != null) {
                 p.setAbsences(data.getAbsences());
             }
+            if (data.getPresences() != null) {
+                p.setPresences(data.getPresences());
+            }
             if (data.getExpenses() != null) {
                 p.setExpenses(data.getExpenses());
             }
@@ -231,6 +234,8 @@ public class DataIngestionService {
         if (p.getPosition() != null)
             count++;
         if (p.getAbsences() != null)
+            count++;
+        if (p.getPresences() != null)
             count++;
         if (p.getExpenses() != null)
             count++;
@@ -398,33 +403,20 @@ public class DataIngestionService {
     @Transactional("transactionManager")
     public void ingestEmendaPix(String externalPoliticianId, String municipioIbge,
             com.tp360.core.entities.neo4j.EmendaNode emenda) {
-        // We need the Politician
+
         Optional<com.tp360.core.entities.neo4j.PoliticoNode> optPolitico = politicoNodeRepository
                 .findById(externalPoliticianId);
         if (optPolitico.isEmpty())
             return;
-        com.tp360.core.entities.neo4j.PoliticoNode politico = optPolitico.get();
 
-        // Ensure Emenda is saved
-        com.tp360.core.entities.neo4j.EmendaNode savedEmenda = emendaNodeRepository.save(emenda);
-
-        // Ensure Municipio is created
-        com.tp360.core.entities.neo4j.MunicipioNode municipio = municipioNodeRepository.findById(municipioIbge)
-                .orElseGet(() -> {
-                    com.tp360.core.entities.neo4j.MunicipioNode m = new com.tp360.core.entities.neo4j.MunicipioNode();
-                    m.setCodigoIbge(municipioIbge);
-                    return m;
-                });
-
-        municipioNodeRepository.save(municipio);
-
-        // Link Politico -> Municipio (ENVIOU_EMENDA)
-        boolean exists = politico.getMunicipiosBeneficiados().stream()
-                .anyMatch(m -> m.getCodigoIbge().equals(municipio.getCodigoIbge()));
-        if (!exists) {
-            politico.getMunicipiosBeneficiados().add(municipio);
-            politicoNodeRepository.save(politico);
-        }
+        // Envia direto para o Cypher amarrar: (Político) -> (Emenda) -> (Município)
+        politicoNodeRepository.createEmendaRelationship(
+                externalPoliticianId,
+                municipioIbge,
+                emenda.getId(),
+                emenda.getAno(),
+                emenda.getValor(),
+                emenda.getTipo());
     }
 
     @Transactional("transactionManager")

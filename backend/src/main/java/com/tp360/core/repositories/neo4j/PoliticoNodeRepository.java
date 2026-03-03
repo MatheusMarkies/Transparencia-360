@@ -58,15 +58,34 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
         List<Map<String, Object>> getFullConnectionGraph(@Param("politicoId") String politicoId);
 
         /**
-         * CORREÇÃO: Usando LIMIT 15 para não travar o backend e WHERE p.id explícito
+         * CORREÇÃO: Retorna explicitamente um Map JSON para evitar que o Spring Data
+         * apague os campos
          */
-        @Query("MATCH (p:Politico)-[:GEROU_DESPESA]->(d:Despesa) "
-                        + "WHERE p.id = $politicoId "
-                        + "RETURN d ORDER BY d.dataEmissao DESC LIMIT 15")
-        List<com.tp360.core.entities.neo4j.DespesaNode> findDespesasByPoliticoId(
-                        @Param("politicoId") String politicoId);
+        @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
+                        + "RETURN { id: d.id, dataEmissao: d.dataEmissao, nomeFornecedor: d.nomeFornecedor, "
+                        + "categoria: d.categoria, valorDocumento: d.valorDocumento } "
+                        + "ORDER BY d.dataEmissao DESC LIMIT 500")
+        List<Map<String, Object>> findDespesasMapByPoliticoId(@Param("politicoId") String politicoId);
 
-        @Query("MATCH (p:Politico {externalId: $externalId})-[r:ENVIOU_EMENDA]->(m:Municipio) " +
-                        "RETURN { id: r.id, ano: r.ano, valor: r.valor, tipo: r.tipo, municipioIbge: m.codigoIbge } ORDER BY r.ano DESC, r.valor DESC")
+        /**
+         * CORREÇÃO: Busca seguindo o caminho correto do Grafo (Político -> Emenda ->
+         * Municipio)
+         */
+        @Query("MATCH (p:Politico {id: $externalId})-[:ENVIOU_EMENDA]->(e:Emenda)-[:DESTINADA_A]->(m:Municipio) " +
+                        "RETURN { id: e.id, ano: e.ano, valor: e.valor, tipo: e.tipo, municipioIbge: m.codigoIbge } " +
+                        "ORDER BY e.ano DESC, e.valor DESC")
         List<Map<String, Object>> findEmendasByPoliticoId(@Param("externalId") String externalId);
+
+        /**
+         * NOVO: Força a criação das ligações perfeitas para o Follow the Money
+         */
+        @Query("MATCH (p:Politico {id: $politicoId}) " +
+                        "MERGE (m:Municipio {codigoIbge: $ibge}) " +
+                        "MERGE (e:Emenda {id: $emendaId}) " +
+                        "SET e.ano = $ano, e.valor = $valor, e.tipo = $tipo " +
+                        "MERGE (p)-[:ENVIOU_EMENDA]->(e) " +
+                        "MERGE (e)-[:DESTINADA_A]->(m)")
+        void createEmendaRelationship(@Param("politicoId") String politicoId, @Param("ibge") String ibge,
+                        @Param("emendaId") String emendaId, @Param("ano") Integer ano,
+                        @Param("valor") Double valor, @Param("tipo") String tipo);
 }

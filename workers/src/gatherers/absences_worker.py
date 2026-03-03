@@ -141,7 +141,8 @@ class AbsencesWorker:
                 "party": dep.get("siglaPartido"),
                 "state": dep.get("siglaUf"),
                 "position": "Deputado Federal",
-                "absences": absences
+                "absences": absences,
+                "presences": attended  # <--- ADICIONE ESTA LINHA AQUI
             })
 
         logger.info("=== Absences Worker Complete ===")

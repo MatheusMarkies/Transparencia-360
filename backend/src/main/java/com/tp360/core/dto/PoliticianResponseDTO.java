@@ -16,6 +16,7 @@ public class PoliticianResponseDTO {
     private String state;
     private String position;
     private Integer absences;
+    private Integer presences; // NOVO CAMPO
     private Double expenses;
     private Double stateAffinity;
     private Integer propositions;
@@ -38,6 +39,9 @@ public class PoliticianResponseDTO {
     private Integer judicialRiskScore;
     private String judicialRiskDetails;
 
+    // Score Dinâmico de Risco Global
+    private Double overallRiskScore; // NOVO CAMPO
+
     public PoliticianResponseDTO(Politician politician) {
         this.id = politician.getId();
         this.externalId = politician.getExternalId();
@@ -46,6 +50,7 @@ public class PoliticianResponseDTO {
         this.state = politician.getState();
         this.position = politician.getPosition();
         this.absences = politician.getAbsences();
+        this.presences = politician.getPresences(); // EXTRAÇÃO DO BANCO
         this.expenses = politician.getExpenses();
         this.stateAffinity = politician.getStateAffinity();
         this.propositions = politician.getPropositions();
@@ -63,6 +68,7 @@ public class PoliticianResponseDTO {
         this.nlpGazetteDetails = politician.getNlpGazetteDetails();
         this.judicialRiskScore = politician.getJudicialRiskScore();
         this.judicialRiskDetails = politician.getJudicialRiskDetails();
+        this.overallRiskScore = politician.getOverallRiskScore(); // CÁLCULO IA (Matemática)
     }
 
     public static List<PoliticianResponseDTO> from(List<Politician> politicians) {

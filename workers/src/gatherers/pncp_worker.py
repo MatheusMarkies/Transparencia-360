@@ -40,12 +40,9 @@ class PNCPWorker:
             logger.error(f"Erro ao ler Grafo: {e}")
         return targets
 
-    def fetch_contracts_for_municipality(ibge: str):
+def fetch_contracts_for_municipality(self, ibge: str):
         """Busca contratos da cidade usando a API do Governo."""
-        # ⚠️ CORREÇÃO: A API do Governo não aceita intervalos maiores que 30 dias!
-        # Mudamos para buscar apenas um mês específico (ex: Janeiro de 2024).
-        # Para produção real, o ideal é fazer um loop percorrendo mês a mês.
-        url = f"https://api.portaldatransparencia.gov.br/api-de-dados/contratos?dataInicial=01/01/2024&dataFinal=31/01/2024&codigoMunicipioIbge={ibge}&pagina=1"
+        url = f"https://api.portaldatransparencia.gov.br/api-de-dados/contratos?dataInicial=01/01/2025&dataFinal=31/01/2025&codigoMunicipioIbge={ibge}&pagina=1"
         try:
             # verify=False contorna os problemas crônicos de certificado SSL do governo BR
             response = requests.get(url, headers=self.headers, verify=False, timeout=20)
