@@ -1,6 +1,6 @@
 # 🏗️ Arquitetura Completa do Pipeline de Dados — Transparência 360
 
-> **Para quem está chegando agora:** Este documento explica como o sistema funciona por dentro — desde a coleta de dados até a exibição no dashboard. Se você nunca viu código antes, leia as caixas "🧑‍🔧 Explicação Simples" que aparecem ao longo do texto. Se você é desenvolvedor, mergulhe nos detalhes técnicos.
+> **Para quem está chegando agora:** Este documento explica como o sistema funciona por dentro, desde a coleta de dados até a exibição no dashboard. Se você nunca viu código antes, leia as caixas "🧑‍🔧 Explicação Simples" que aparecem ao longo do texto. Se você é desenvolvedor, veja os detalhes técnicos.
 
 ---
 
