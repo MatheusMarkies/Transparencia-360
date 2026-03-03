@@ -257,6 +257,22 @@ Funcionalidades que agregariam muito valor ao sistema.
 | 40 | Worker: JudicialAggregator | 🔩 Worker | 🟡 | `[ ]` | — |
 | 41 | Worker: DocumentaryEvidenceWorker | 🔩 Worker | 🟡 | `[ ]` | — |
 | 42 | Worker: SuperReportWorker | 🔩 Worker | 🟡 | `[ ]` | — |
+| 43 | Renomear o projeto (branding) | 🎨 Branding | 🟡 | `[ ]` | — |
+
+---
+
+## 🎨 Branding / Renomeação do Projeto
+
+### 43. 🎨 Renomear o Projeto
+| | |
+|---|---|
+| **Descrição** | Escolher um novo nome para o projeto e aplicar em todos os lugares. O nome "Transparência 360" é provisório e precisa ser atualizado para o nome definitivo. |
+| **Onde alterar (Frontend):** | Título da página (`<title>` em `index.html`), header/logo no `App.tsx`, textos de boas-vindas, `package.json` (campo `name`) |
+| **Onde alterar (Backend):** | `application.yml` (nome da app), `pom.xml` (artifactId/groupId), logs e banners de inicialização |
+| **Onde alterar (Docs):** | `README.md`, `ROADMAP.md`, `ARQUITETURA_PIPELINE.md`, `DATA_SOURCES.md` |
+| **Onde alterar (Infra):** | `docker-compose.yml` (nomes dos containers), nome do repositório GitHub |
+| **Dificuldade** | 🟡 Médio (muitos arquivos para buscar e substituir) |
+| **Responsável** | — |
 
 ---
 
