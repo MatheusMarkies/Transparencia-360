@@ -1,10 +1,10 @@
 {
     "01_metadados": {
-        "internal_id": 406,
-        "camara_id": "camara_74646",
-        "nome": "Aécio Neves",
-        "partido_estado": "PSDB - MG",
-        "data_extracao": "2026-03-03 14:07:34"
+        "internal_id": 412,
+        "camara_id": "camara_73579",
+        "nome": "Alberto Fraga",
+        "partido_estado": "PL - DF",
+        "data_extracao": "2026-03-03 14:07:33"
     },
     "02_documentos_lidos_e_grafos": {
         "notas_fiscais_agrupadas": 0,
@@ -14,8 +14,8 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 471843.33,
-        "taxa_ausencia_plenario": 17,
+        "total_gasto_cota_parlamentar": 430570.17,
+        "taxa_ausencia_plenario": 0,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
@@ -35,12 +35,12 @@
                 "heuristic": "Porta Giratória (Turnover Fornecedores)",
                 "points": 10,
                 "max": 20,
-                "detail": "Turnover moderado: 54/90 fornecedores (60%) aparecem em apenas 1 ano.",
+                "detail": "Turnover moderado: 17/28 fornecedores (61%) aparecem em apenas 1 ano.",
                 "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
                 "proof": "Rotatividade acima da média — acompanhamento recomendado.",
                 "proofData": {
                     "entity": "Análise temporal 2023-2025",
-                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74646/despesas"
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/73579/despesas"
                 }
             },
             {
@@ -76,26 +76,26 @@
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7861776.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7861776.pdf"
+                "detail": "Documento extraído: BROAD BRASIL LTDA",
+                "totalValue": 1050.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_73579_7887739.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/1472/2025/7887739.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7877319.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7877319.pdf"
+                "detail": "Documento extraído: BROAD BRASIL LTDA",
+                "totalValue": 1050.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_73579_7904673.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/1472/2025/7904673.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7890910.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7890910.pdf"
+                "detail": "Documento extraído: BROAD BRASIL LTDA",
+                "totalValue": 1050.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_73579_7929911.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/1472/2025/7929911.pdf"
             }
         ],
         "anomalia_espacial_teletransporte_qtd": null,

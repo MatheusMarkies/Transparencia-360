@@ -376,7 +376,30 @@ Carrega dados no PostgreSQL/Neo4j, deduplicando registros.
 | 25 | `Pruning` | Remove registros fantasma do banco |
 | 26 | `SuperReportWorker` | Gera laudo JSON unificado de auditoria |
 
----
+### Relatórios Gerados (Super Reports)
+
+A última etapa do pipeline (`SuperReportWorker`) gera um **dossiê JSON completo** para cada político processado. Esses arquivos ficam salvos em:
+
+```
+workers/data/processed/super_reports/
+├── super_report_alberto_fraga_camara_73579.json
+├── super_report_alice_portugal_camara_74057.json
+├── super_report_...
+```
+
+Cada JSON contém **4 seções**:
+
+| Seção | O que contém |
+|:---|:---|
+| `01_metadados` | Nome, partido, estado, ID da Câmara, data de extração |
+| `02_documentos_lidos_e_grafos` | Quantos nós foram processados no Neo4j (despesas, empresas, emendas, promessas, votos) |
+| `03_estatisticas_patrimoniais` | Total gasto na CEAP, taxa de ausência, patrimônio declarado ao TSE, fator de anomalia |
+| `04_alertas_de_inteligencia` | Score de rachadinha (0-100) com evidências detalhadas por heurística, anomalias de gabinete, teletransporte espacial, menções em diários oficiais, processos judiciais |
+
+> [!TIP]
+> Os Super Reports são a forma mais fácil de **auditar os resultados** do pipeline. Abra qualquer JSON na pasta e confira se os dados batem com as fontes oficiais.
+
+
 
 ## 🗃️ Fontes de Dados
 

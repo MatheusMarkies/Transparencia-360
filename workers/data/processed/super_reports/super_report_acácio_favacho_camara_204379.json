@@ -1,10 +1,10 @@
 {
     "01_metadados": {
-        "internal_id": 259,
+        "internal_id": 400,
         "camara_id": "camara_204379",
         "nome": "Acácio Favacho",
         "partido_estado": "MDB - AP",
-        "data_extracao": "2026-03-03 11:33:00"
+        "data_extracao": "2026-03-03 14:07:33"
     },
     "02_documentos_lidos_e_grafos": {
         "notas_fiscais_agrupadas": 0,
@@ -101,6 +101,6 @@
         "anomalia_espacial_teletransporte_qtd": null,
         "anomalia_espacial_evidencias": [],
         "mencoes_suspeitas_diarios_oficiais": null,
-        "processos_judiciais_improbidade": 0
+        "processos_judiciais_improbidade": null
     }
 }

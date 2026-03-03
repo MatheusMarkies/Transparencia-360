@@ -1,10 +1,10 @@
 {
     "01_metadados": {
-        "internal_id": 406,
-        "camara_id": "camara_74646",
-        "nome": "Aécio Neves",
-        "partido_estado": "PSDB - MG",
-        "data_extracao": "2026-03-03 14:07:34"
+        "internal_id": 405,
+        "camara_id": "camara_121948",
+        "nome": "Adriano do Baldy",
+        "partido_estado": "PP - GO",
+        "data_extracao": "2026-03-03 14:07:33"
     },
     "02_documentos_lidos_e_grafos": {
         "notas_fiscais_agrupadas": 0,
@@ -14,13 +14,13 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 471843.33,
-        "taxa_ausencia_plenario": 17,
+        "total_gasto_cota_parlamentar": 495541.07,
+        "taxa_ausencia_plenario": 0,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
     "04_alertas_de_inteligencia": {
-        "motor_rachadinha_score": 10,
+        "motor_rachadinha_score": 20,
         "motor_rachadinha_evidencias": [
             {
                 "heuristic": "Doador Compulsório (CEAP Pessoal)",
@@ -33,14 +33,14 @@
             },
             {
                 "heuristic": "Porta Giratória (Turnover Fornecedores)",
-                "points": 10,
+                "points": 20,
                 "max": 20,
-                "detail": "Turnover moderado: 54/90 fornecedores (60%) aparecem em apenas 1 ano.",
+                "detail": "ALERTA: 324 de 427 fornecedores (76%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.",
                 "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
-                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proof": "Taxa de churn de 76% indica troca contínua de fornecedores, compatível com esquema de desvio.",
                 "proofData": {
                     "entity": "Análise temporal 2023-2025",
-                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74646/despesas"
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/121948/despesas"
                 }
             },
             {
@@ -76,31 +76,31 @@
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7861776.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7861776.pdf"
+                "detail": "Documento extraído: ATITUDE BAZAR E PAPELARIA LTDA",
+                "totalValue": 592.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_121948_7867593.pdf",
+                "evidence_url": "http://www.camara.leg.br/cota-parlamentar/nota-fiscal-eletronica?ideDocumentoFiscal=7867593"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7877319.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7877319.pdf"
+                "detail": "Documento extraído: EMBALE LIMPE EMBALAGENS, LIMPEZA E MERCEARIA LTDA",
+                "totalValue": 156.5,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_121948_7906828.pdf",
+                "evidence_url": "http://www.camara.leg.br/cota-parlamentar/nota-fiscal-eletronica?ideDocumentoFiscal=7906828"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7890910.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7890910.pdf"
+                "detail": "Documento extraído: EMBALE LIMPE EMBALAGENS, LIMPEZA E MERCEARIA LTDA",
+                "totalValue": 53.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_121948_7862079.pdf",
+                "evidence_url": "http://www.camara.leg.br/cota-parlamentar/nota-fiscal-eletronica?ideDocumentoFiscal=7862079"
             }
         ],
         "anomalia_espacial_teletransporte_qtd": null,
         "anomalia_espacial_evidencias": [],
         "mencoes_suspeitas_diarios_oficiais": null,
-        "processos_judiciais_improbidade": null
+        "processos_judiciais_improbidade": 0
     }
 }

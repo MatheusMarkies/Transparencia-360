@@ -1,10 +1,10 @@
 {
     "01_metadados": {
-        "internal_id": 268,
+        "internal_id": 409,
         "camara_id": "camara_160527",
         "nome": "Aguinaldo Ribeiro",
         "partido_estado": "PP - PB",
-        "data_extracao": "2026-03-03 10:05:32"
+        "data_extracao": "2026-03-03 14:07:33"
     },
     "02_documentos_lidos_e_grafos": {
         "notas_fiscais_agrupadas": 0,
@@ -14,19 +14,93 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": null,
-        "taxa_ausencia_plenario": null,
+        "total_gasto_cota_parlamentar": 508535.86,
+        "taxa_ausencia_plenario": 6,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
     "04_alertas_de_inteligencia": {
-        "motor_rachadinha_score": null,
-        "motor_rachadinha_evidencias": [],
-        "anomalias_contratacao_gabinete_qtd": null,
-        "anomalias_contratacao_gabinete_evidencias": [],
+        "motor_rachadinha_score": 15,
+        "motor_rachadinha_evidencias": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 0,
+                "max": 40,
+                "detail": "Distribuição de gastos com pessoal dentro da normalidade.",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Sem evidências de concentração atípica em pagamentos a assessores.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 10,
+                "max": 20,
+                "detail": "Turnover moderado: 58/111 fornecedores (52%) aparecem em apenas 1 ano.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/160527/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 0,
+                "max": 30,
+                "detail": "Sem indícios de triangulação via cruzamento com Receita Federal.",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "Dados batem com o padrão de consultorias e locações legislativas comuns.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 5,
+                "max": 15,
+                "detail": "1 menções em Diários Oficiais (sem dispensas).",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Menções encontradas mas sem padrão de dispensa repetida.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ],
+        "anomalias_contratacao_gabinete_qtd": 3,
+        "anomalias_contratacao_gabinete_evidencias": [
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: AMORETTO CAFES EXPRESSO LTDA",
+                "totalValue": 700.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_160527_7858605.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/2408/2025/7858605.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: AMORETTO CAFES EXPRESSO LTDA",
+                "totalValue": 750.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_160527_7886200.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/2408/2025/7886200.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: AMORETTO CAFES EXPRESSO LTDA",
+                "totalValue": 750.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_160527_7899316.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/2408/2025/7899316.pdf"
+            }
+        ],
         "anomalia_espacial_teletransporte_qtd": null,
         "anomalia_espacial_evidencias": [],
         "mencoes_suspeitas_diarios_oficiais": null,
-        "processos_judiciais_improbidade": null
+        "processos_judiciais_improbidade": 0
     }
 }

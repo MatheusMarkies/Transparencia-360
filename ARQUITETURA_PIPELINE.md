@@ -377,9 +377,73 @@ Se encontra, levanta alerta de fluxo circular.
 
 #### Step 26: `SuperReportWorker` (Laudo Unificado)
 **Script:** `workers/src/gatherers/super_report_worker.py`
-**O que faz:** Para cada político, gera um **Super Relatório JSON** unificado que consolida TODOS os dados em um único arquivo de auditoria. Salva em `data/processed/super_reports/`.
+**O que faz:** Para cada político que sobreviveu a todo o pipeline, gera um **Super Relatório JSON** unificado que consolida TODOS os dados em um único arquivo de auditoria. Salva em `workers/data/processed/super_reports/`.
 
-> 🧑‍🔧 **Explicação Simples:** No final de tudo, esse robô gera um "dossiê completo" de cada político em formato JSON — um arquivo que contém absolutamente tudo que o sistema descobriu sobre ele.
+**Nome do arquivo gerado:** `super_report_{nome}_{externalId}.json`
+**Exemplo real:** `super_report_alberto_fraga_camara_73579.json`
+
+**Estrutura do JSON (4 seções):**
+
+```json
+{
+    "01_metadados": {
+        "internal_id": 412,
+        "camara_id": "camara_73579",
+        "nome": "Alberto Fraga",
+        "partido_estado": "PL - DF",
+        "data_extracao": "2026-03-03 14:07:33"
+    },
+    "02_documentos_lidos_e_grafos": {
+        "notas_fiscais_agrupadas": 15,
+        "empresas_qsa_e_contratos_mapeados": 3,
+        "municipios_recebedores_de_emendas": 2,
+        "promessas_campanha_identificadas": 5,
+        "votacoes_analisadas_nlp": 12
+    },
+    "03_estatisticas_patrimoniais_e_uso_maquina": {
+        "total_gasto_cota_parlamentar": 430570.17,
+        "taxa_ausencia_plenario": 0,
+        "patrimonio_declarado_2022": null,
+        "fator_anomalia_patrimonial": null
+    },
+    "04_alertas_de_inteligencia": {
+        "motor_rachadinha_score": 10,
+        "motor_rachadinha_evidencias": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 0,
+                "max": 40,
+                "detail": "Distribuição de gastos com pessoal dentro da normalidade.",
+                "source": "Dados abertos da Câmara (CEAP)",
+                "proof": "Sem evidências de concentração atípica.",
+                "proofData": null
+            }
+        ],
+        "anomalias_contratacao_gabinete_qtd": 3,
+        "anomalias_contratacao_gabinete_evidencias": [
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: BROAD BRASIL LTDA",
+                "totalValue": 1050.0,
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/..."
+            }
+        ],
+        "anomalia_espacial_teletransporte_qtd": null,
+        "mencoes_suspeitas_diarios_oficiais": null,
+        "processos_judiciais_improbidade": null
+    }
+}
+```
+
+| Seção | O que contém |
+|:---|:---|
+| `01_metadados` | ID interno, ID da Câmara, nome, partido-estado, data de geração |
+| `02_documentos_lidos_e_grafos` | Quantidades de nós processados no Neo4j (despesas, empresas, emendas, promessas, votos) |
+| `03_estatisticas_patrimoniais` | Total gasto na CEAP, taxa de ausência, patrimônio declarado, fator de anomalia |
+| `04_alertas_de_inteligencia` | Score de rachadinha (0-100) com evidências detalhadas, anomalias de gabinete, teletransporte, diários oficiais, processos judiciais |
+
+> 🧑‍🔧 **Explicação Simples:** No final de tudo, esse robô gera um "dossiê completo" de cada político em formato JSON — um arquivo que contém absolutamente tudo que o sistema descobriu sobre ele. É como o "boletim escolar" do parlamentar: tem as notas em cada matéria (riscos), as provas que fundamentam cada nota, e links para as fontes originais. Qualquer pessoa pode abrir esses arquivos na pasta `workers/data/processed/super_reports/` e auditar os resultados.
 
 ---
 

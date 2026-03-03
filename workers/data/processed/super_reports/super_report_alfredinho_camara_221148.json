@@ -1,0 +1,112 @@
+{
+    "01_metadados": {
+        "internal_id": 420,
+        "camara_id": "camara_221148",
+        "nome": "Alfredinho",
+        "partido_estado": "PT - SP",
+        "data_extracao": "2026-03-03 14:07:34"
+    },
+    "02_documentos_lidos_e_grafos": {
+        "notas_fiscais_agrupadas": 0,
+        "empresas_qsa_e_contratos_mapeados": 0,
+        "municipios_recebedores_de_emendas": 0,
+        "promessas_campanha_identificadas": 0,
+        "votacoes_analisadas_nlp": 0
+    },
+    "03_estatisticas_patrimoniais_e_uso_maquina": {
+        "total_gasto_cota_parlamentar": 464478.45,
+        "taxa_ausencia_plenario": 0,
+        "patrimonio_declarado_2022": null,
+        "fator_anomalia_patrimonial": null
+    },
+    "04_alertas_de_inteligencia": {
+        "motor_rachadinha_score": 75,
+        "motor_rachadinha_evidencias": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'CAE COMUNICACAO E PUBLICIDADE LTDA' concentra 47.2% dos gastos totais (R$219,149.10).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: CAE COMUNICACAO E PUBLICIDADE LTDA",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/221148/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 20,
+                "max": 20,
+                "detail": "ALERTA: 91 de 122 fornecedores (75%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Taxa de churn de 75% indica troca contínua de fornecedores, compatível com esquema de desvio.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/221148/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 30,
+                "max": 30,
+                "detail": "ALERTA: 'CAE COMUNICACAO E PUBLICIDADE LTDA' (CNPJ: 46655435000175) concentra R$219,149.10 (71%) em tipos suspeitos. Sócios: , .",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "QSA consultado via Receita Federal — Sócios identificados: , . Verificar se algum possui vínculo com o gabinete.",
+                "proofData": {
+                    "entity": "Sócios: , ",
+                    "link": "https://brasilapi.com.br/api/cnpj/v1/46655435000175"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ],
+        "anomalias_contratacao_gabinete_qtd": 3,
+        "anomalias_contratacao_gabinete_evidencias": [
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ATTBRASIL TECNOLOGIA LOCAÇÃO E SOLUÇÕES EM INFORMÁTICA LTDA-EPP",
+                "totalValue": 1583.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_221148_7934307.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3505/2025/7934307.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ATTBRASIL TECNOLOGIA LOCAÇÃO E SOLUÇÕES EM INFORMÁTICA LTDA-EPP",
+                "totalValue": 1583.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_221148_7938978.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3505/2025/7938978.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ATTBRASIL TECNOLOGIA LOCAÇÃO E SOLUÇÕES EM INFORMÁTICA LTDA-EPP",
+                "totalValue": 1583.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_221148_7950739.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3505/2025/7950739.pdf"
+            }
+        ],
+        "anomalia_espacial_teletransporte_qtd": null,
+        "anomalia_espacial_evidencias": [],
+        "mencoes_suspeitas_diarios_oficiais": null,
+        "processos_judiciais_improbidade": 0
+    }
+}

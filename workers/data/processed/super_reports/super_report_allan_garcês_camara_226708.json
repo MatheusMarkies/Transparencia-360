@@ -1,9 +1,9 @@
 {
     "01_metadados": {
-        "internal_id": 406,
-        "camara_id": "camara_74646",
-        "nome": "Aécio Neves",
-        "partido_estado": "PSDB - MG",
+        "internal_id": 424,
+        "camara_id": "camara_226708",
+        "nome": "Allan Garcês",
+        "partido_estado": "PP - MA",
         "data_extracao": "2026-03-03 14:07:34"
     },
     "02_documentos_lidos_e_grafos": {
@@ -14,13 +14,13 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 471843.33,
-        "taxa_ausencia_plenario": 17,
+        "total_gasto_cota_parlamentar": 501714.34,
+        "taxa_ausencia_plenario": 0,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
     "04_alertas_de_inteligencia": {
-        "motor_rachadinha_score": 10,
+        "motor_rachadinha_score": 20,
         "motor_rachadinha_evidencias": [
             {
                 "heuristic": "Doador Compulsório (CEAP Pessoal)",
@@ -33,14 +33,14 @@
             },
             {
                 "heuristic": "Porta Giratória (Turnover Fornecedores)",
-                "points": 10,
+                "points": 20,
                 "max": 20,
-                "detail": "Turnover moderado: 54/90 fornecedores (60%) aparecem em apenas 1 ano.",
+                "detail": "ALERTA: 160 de 208 fornecedores (77%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.",
                 "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
-                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proof": "Taxa de churn de 77% indica troca contínua de fornecedores, compatível com esquema de desvio.",
                 "proofData": {
                     "entity": "Análise temporal 2023-2025",
-                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74646/despesas"
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/226708/despesas"
                 }
             },
             {
@@ -76,26 +76,26 @@
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7861776.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7861776.pdf"
+                "detail": "Documento extraído: Carvalho Neto Imóveis Ltda",
+                "totalValue": 1500.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_226708_7901004.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3747/2025/7901004.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7877319.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7877319.pdf"
+                "detail": "Documento extraído: Carvalho Neto Imóveis Ltda",
+                "totalValue": 3000.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_226708_7913968.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3747/2025/7913968.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7890910.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7890910.pdf"
+                "detail": "Documento extraído: Carvalho Neto Imóveis Ltda",
+                "totalValue": 3000.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_226708_7929898.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3747/2025/7929898.pdf"
             }
         ],
         "anomalia_espacial_teletransporte_qtd": null,

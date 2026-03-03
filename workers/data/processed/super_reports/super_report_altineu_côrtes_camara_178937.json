@@ -1,9 +1,9 @@
 {
     "01_metadados": {
-        "internal_id": 406,
-        "camara_id": "camara_74646",
-        "nome": "Aécio Neves",
-        "partido_estado": "PSDB - MG",
+        "internal_id": 425,
+        "camara_id": "camara_178937",
+        "nome": "Altineu Côrtes",
+        "partido_estado": "PL - RJ",
         "data_extracao": "2026-03-03 14:07:34"
     },
     "02_documentos_lidos_e_grafos": {
@@ -14,13 +14,13 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 471843.33,
-        "taxa_ausencia_plenario": 17,
+        "total_gasto_cota_parlamentar": 423966.99,
+        "taxa_ausencia_plenario": 26,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
     "04_alertas_de_inteligencia": {
-        "motor_rachadinha_score": 10,
+        "motor_rachadinha_score": 0,
         "motor_rachadinha_evidencias": [
             {
                 "heuristic": "Doador Compulsório (CEAP Pessoal)",
@@ -33,15 +33,12 @@
             },
             {
                 "heuristic": "Porta Giratória (Turnover Fornecedores)",
-                "points": 10,
+                "points": 0,
                 "max": 20,
-                "detail": "Turnover moderado: 54/90 fornecedores (60%) aparecem em apenas 1 ano.",
+                "detail": "Rotatividade de fornecedores dentro do esperado.",
                 "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
-                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
-                "proofData": {
-                    "entity": "Análise temporal 2023-2025",
-                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74646/despesas"
-                }
+                "proof": "Fornecedores mantêm presença estável ao longo dos anos.",
+                "proofData": null
             },
             {
                 "heuristic": "Triangulação de Verbas (Cota + QSA)",
@@ -76,26 +73,26 @@
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7861776.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7861776.pdf"
+                "detail": "Documento extraído: CLIO CRIATIVA AGENCIA DE PUBLICIDADE E MARKETING LTDA",
+                "totalValue": 15500.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_178937_7862493.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3005/2025/7862493.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7877319.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7877319.pdf"
+                "detail": "Documento extraído: CLIO CRIATIVA AGENCIA DE PUBLICIDADE E MARKETING LTDA",
+                "totalValue": 15500.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_178937_7878245.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3005/2025/7878245.pdf"
             },
             {
                 "type": "DESPESA_FISCAL",
                 "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7890910.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7890910.pdf"
+                "detail": "Documento extraído: CLIO CRIATIVA AGENCIA DE PUBLICIDADE E MARKETING LTDA",
+                "totalValue": 15500.0,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_178937_7892580.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3005/2025/7892580.pdf"
             }
         ],
         "anomalia_espacial_teletransporte_qtd": null,

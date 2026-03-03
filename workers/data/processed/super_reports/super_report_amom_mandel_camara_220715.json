@@ -1,9 +1,9 @@
 {
     "01_metadados": {
-        "internal_id": 406,
-        "camara_id": "camara_74646",
-        "nome": "Aécio Neves",
-        "partido_estado": "PSDB - MG",
+        "internal_id": 429,
+        "camara_id": "camara_220715",
+        "nome": "Amom Mandel",
+        "partido_estado": "CIDADANIA - AM",
         "data_extracao": "2026-03-03 14:07:34"
     },
     "02_documentos_lidos_e_grafos": {
@@ -14,8 +14,8 @@
         "votacoes_analisadas_nlp": 0
     },
     "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 471843.33,
-        "taxa_ausencia_plenario": 17,
+        "total_gasto_cota_parlamentar": 66591.52,
+        "taxa_ausencia_plenario": 0,
         "patrimonio_declarado_2022": null,
         "fator_anomalia_patrimonial": null
     },
@@ -35,12 +35,12 @@
                 "heuristic": "Porta Giratória (Turnover Fornecedores)",
                 "points": 10,
                 "max": 20,
-                "detail": "Turnover moderado: 54/90 fornecedores (60%) aparecem em apenas 1 ano.",
+                "detail": "Turnover moderado: 3/5 fornecedores (60%) aparecem em apenas 1 ano.",
                 "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
                 "proof": "Rotatividade acima da média — acompanhamento recomendado.",
                 "proofData": {
                     "entity": "Análise temporal 2023-2025",
-                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74646/despesas"
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220715/despesas"
                 }
             },
             {
@@ -71,31 +71,67 @@
                 "proofData": null
             }
         ],
-        "anomalias_contratacao_gabinete_qtd": 3,
+        "anomalias_contratacao_gabinete_qtd": 5,
         "anomalias_contratacao_gabinete_evidencias": [
             {
-                "type": "DESPESA_FISCAL",
-                "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7861776.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7861776.pdf"
+                "supplier": "TAM",
+                "totalValue": 17799.45,
+                "paymentCount": 33,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
             },
             {
-                "type": "DESPESA_FISCAL",
-                "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7877319.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7877319.pdf"
+                "supplier": "GOL",
+                "totalValue": 9747.38,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3026)"
+                    }
+                ]
             },
             {
-                "type": "DESPESA_FISCAL",
-                "severity": "MEDIUM",
-                "detail": "Documento extraído: ANUAR DONATO CONSULT. IMOBILIARIA",
-                "totalValue": 8000.0,
-                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_74646_7890910.pdf",
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/233/2025/7890910.pdf"
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 25960.35,
+                "paymentCount": 40,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 8795.68,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2727)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 4288.66,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2301)"
+                    }
+                ]
             }
         ],
         "anomalia_espacial_teletransporte_qtd": null,

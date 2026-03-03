@@ -282,9 +282,15 @@ Funcionalidades que agregariam muito valor ao sistema.
 | **Alvos sugeridos** | |
 | • **Influenciadores** | Perfis de fiscalização política no Twitter/X, YouTube e Instagram (ex: canais de análise política, jornalismo investigativo independente) |
 | • **Políticos** | Parlamentares que já defendem publicamente pautas de transparência e combate à corrupção, de qualquer partido |
+<<<<<<< HEAD
 | • **Organizações** | Transparência Brasil, Open Knowledge Brasil (OKBR), Transparência Internacional, Instituto Ethos, Contas Abertas |
 | • **Mídia** | Jornalistas investigativos como, Folha, Estadão Dados, Agência Pública |
 | **Ações concretas** | (1) Preparar um vídeo demo curto mostrando o dashboard em ação, (2) Criar um one-pager explicando o projeto, (3) Postar no Reddit r/brasil e Hacker News, (4) Submeter para editais de inovação cívica (ex: Google.org, Mozilla Foundation) |
+=======
+| • **Organizações** | Transparência Brasil, Open Knowledge Brasil (OKBR), Transparência Internacional, Contas Abertas |
+| • **Mídia** | Jornalistas investigativos como, Folha, Estadão Dados, Agência Pública |
+| **Ações concretas** | (1) Preparar um vídeo demo curto mostrando o dashboard em ação, (2) Criar um one-pager explicando o projeto |
+>>>>>>> f63b31a97dc04d7d2f44841e95aebe17ae5ee0dd
 | **Dificuldade** | 🟡 Médio (requer networking e comunicação) |
 | **Responsável** | — |
 
