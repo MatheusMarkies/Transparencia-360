@@ -66,4 +66,7 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
         List<com.tp360.core.entities.neo4j.DespesaNode> findDespesasByPoliticoId(
                         @Param("politicoId") String politicoId);
 
+        @Query("MATCH (p:Politico {externalId: $externalId})-[r:ENVIOU_EMENDA]->(m:Municipio) " +
+                        "RETURN { id: r.id, ano: r.ano, valor: r.valor, tipo: r.tipo, municipioIbge: m.codigoIbge } ORDER BY r.ano DESC, r.valor DESC")
+        List<Map<String, Object>> findEmendasByPoliticoId(@Param("externalId") String externalId);
 }

@@ -55,9 +55,11 @@ function App() {
   const [results, setResults] = useState<Politician[]>([]);
   const [selectedPolitician, setSelectedPolitician] = useState<Politician | null>(null);
   const [allPoliticians, setAllPoliticians] = useState<Politician[]>([]);
-  const [activeTab, setActiveTab] = useState<'geral' | 'inteligencia' | 'grafo' | 'fontes'>('geral');
+  const [activeTab, setActiveTab] = useState<'geral' | 'inteligencia' | 'grafo' | 'fontes' | 'despesas' | 'emendas'>('geral');
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [sources, setSources] = useState<any[]>([]);
+  const [expensesList, setExpensesList] = useState<any[]>([]);
+  const [emendasList, setEmendasList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -147,6 +149,16 @@ function App() {
       console.error("Erro ao buscar o Grafo de Dinheiro:", e);
       setGraphData({ nodes: [], links: [] });
     }
+
+    try {
+      const expResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/expenses`);
+      setExpensesList(expResp.data);
+    } catch (e) { console.error(e); }
+
+    try {
+      const emResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/emendas`);
+      setEmendasList(emResp.data);
+    } catch (e) { console.error(e); }
 
     // Fetch Sources
     try {
@@ -319,6 +331,11 @@ function App() {
               >
                 <div className="flex items-center gap-2"><Network className="w-4 h-4" /> Grafo de Influência</div>
               </button>
+
+              {/* NOVAS ABAS AQUI */}
+              <button onClick={() => setActiveTab('despesas')} className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeTab === 'despesas' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Extrato CEAP</button>
+              <button onClick={() => setActiveTab('emendas')} className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeTab === 'emendas' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Emendas (Orçamento)</button>
+
               <button
                 className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'fontes' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
                 onClick={() => setActiveTab('fontes')}
@@ -494,6 +511,78 @@ function App() {
                 </div>
               )}
 
+              {/* NOVA ABA: DESPESAS BRUTAS */}
+              {activeTab === 'despesas' && (
+                <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[600px] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-black text-slate-800">Extrato de Despesas (Gabinete)</h3>
+                    <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">{expensesList.length} registros</span>
+                  </div>
+                  <table className="w-full text-left border-collapse">
+                    <thead className="sticky top-0 bg-white shadow-sm">
+                      <tr className="text-slate-400 text-xs uppercase tracking-wider">
+                        <th className="pb-3 font-bold">Data</th>
+                        <th className="pb-3 font-bold">Fornecedor</th>
+                        <th className="pb-3 font-bold">Categoria</th>
+                        <th className="pb-3 font-bold text-right">Valor Bruto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expensesList.slice(0, 500).map((d, i) => (
+                        <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                          <td className="py-3 text-sm text-slate-500 font-mono">{d.dataEmissao}</td>
+                          <td className="py-3 text-sm font-bold text-slate-700">{d.nomeFornecedor}</td>
+                          <td className="py-3 text-sm text-slate-500">{d.categoria}</td>
+                          <td className="py-3 text-sm font-black text-rose-500 text-right">
+                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorDocumento || 0)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {expensesList.length > 500 && (
+                    <p className="text-center text-slate-400 mt-6 text-xs font-bold">Exibindo as 500 notas mais recentes de um total de {expensesList.length}.</p>
+                  )}
+                </div>
+              )}
+
+              {/* NOVA ABA: EMENDAS BRUTAS */}
+              {activeTab === 'emendas' && (
+                <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[600px] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-black text-slate-800">Repasses de Emendas Parlamentares</h3>
+                    <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">{emendasList.length} registros</span>
+                  </div>
+                  <table className="w-full text-left border-collapse">
+                    <thead className="sticky top-0 bg-white shadow-sm">
+                      <tr className="text-slate-400 text-xs uppercase tracking-wider">
+                        <th className="pb-3 font-bold">Ano</th>
+                        <th className="pb-3 font-bold">Código da Emenda</th>
+                        <th className="pb-3 font-bold">Tipo de Emenda</th>
+                        <th className="pb-3 font-bold text-right">Valor Pago/Empenhado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {emendasList.map((em, i) => (
+                        <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                          <td className="py-4 text-sm font-bold text-slate-700">{em.ano}</td>
+                          <td className="py-4 text-sm font-mono text-slate-500">{em.id}</td>
+                          <td className="py-4 text-sm text-slate-600">{em.tipo}</td>
+                          <td className="py-4 text-sm font-black text-emerald-600 text-right">
+                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(em.valor || 0)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {emendasList.length === 0 && (
+                    <div className="text-center py-20">
+                      <p className="text-slate-400 font-bold">Nenhuma emenda capturada para este político no período.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {activeTab === 'fontes' && (
                 <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
                   <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-8">Auditoria de Dados</h3>
@@ -529,7 +618,7 @@ function App() {
             <ShieldAlert className="w-8 h-8 text-indigo-500" />
             <span className="text-xl font-black tracking-tighter text-white uppercase">Transparência 360</span>
           </div>
-          <p className="text-xs font-bold text-center">© 2026 Laboratório de Dados Governamentais. Dados públicos para vigilância cidadã.</p>
+          <p className="text-xs font-bold text-center">© 2026 Dados públicos para vigilância cidadã.</p>
           <div className="flex gap-6">
             <span className="text-xs font-black uppercase text-indigo-400 cursor-pointer hover:text-white transition-colors">Segurança</span>
             <span className="text-xs font-black uppercase text-indigo-400 cursor-pointer hover:text-white transition-colors">API</span>

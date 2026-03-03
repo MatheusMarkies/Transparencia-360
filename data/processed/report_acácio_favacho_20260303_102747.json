@@ -1,0 +1,47 @@
+[
+  {
+    "alerta": "DESPESA_FISCAL",
+    "prova_documental": {
+      "texto_extraido": "MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR",
+      "arquivo_local": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_204379_7857154.pdf",
+      "onde_esta_essa_info_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3308/2025/7857154.pdf"
+    },
+    "prova_societaria": {
+      "empresa": "AMORETTO CAFES EXPRESSO LTDA",
+      "cnpjs": [
+        "08532429000131"
+      ],
+      "onde_esta_essa_info_url": "https://brasilapi.com.br/api/cnpj/v1/08532429000131"
+    }
+  },
+  {
+    "alerta": "DESPESA_FISCAL",
+    "prova_documental": {
+      "texto_extraido": "MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR",
+      "arquivo_local": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_204379_7864352.pdf",
+      "onde_esta_essa_info_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3308/2025/7864352.pdf"
+    },
+    "prova_societaria": {
+      "empresa": "AMORETTO CAFES EXPRESSO LTDA",
+      "cnpjs": [
+        "08532429000131"
+      ],
+      "onde_esta_essa_info_url": "https://brasilapi.com.br/api/cnpj/v1/08532429000131"
+    }
+  },
+  {
+    "alerta": "DESPESA_FISCAL",
+    "prova_documental": {
+      "texto_extraido": "MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR",
+      "arquivo_local": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_204379_7879289.pdf",
+      "onde_esta_essa_info_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3308/2025/7879289.pdf"
+    },
+    "prova_societaria": {
+      "empresa": "AMORETTO CAFES EXPRESSO LTDA",
+      "cnpjs": [
+        "08532429000131"
+      ],
+      "onde_esta_essa_info_url": "https://brasilapi.com.br/api/cnpj/v1/08532429000131"
+    }
+  }
+]

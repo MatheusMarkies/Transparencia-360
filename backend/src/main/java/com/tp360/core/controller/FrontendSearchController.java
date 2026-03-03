@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.tp360.core.domain.Promise;
@@ -131,5 +132,15 @@ public class FrontendSearchController {
         List<com.tp360.core.entities.neo4j.DespesaNode> expenses = politicoNodeRepository
                 .findDespesasByPoliticoId(opt.get().getExternalId());
         return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("/{id}/emendas")
+    public ResponseEntity<List<Map<String, Object>>> getPoliticianEmendas(@PathVariable Long id) {
+        Optional<Politician> opt = politicianRepository.findById(id);
+        if (opt.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        List<Map<String, Object>> emendas = politicoNodeRepository.findEmendasByPoliticoId(opt.get().getExternalId());
+        return ResponseEntity.ok(emendas);
     }
 }
