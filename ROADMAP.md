@@ -258,6 +258,7 @@ Funcionalidades que agregariam muito valor ao sistema.
 | 41 | Worker: DocumentaryEvidenceWorker | 🔩 Worker | 🟡 | `[ ]` | — |
 | 42 | Worker: SuperReportWorker | 🔩 Worker | 🟡 | `[ ]` | — |
 | 43 | Renomear o projeto (branding) | 🎨 Branding | 🟡 | `[ ]` | — |
+| 44 | Divulgação e parcerias | 📢 Divulgação | 🟡 | `[ ]` | — |
 
 ---
 
@@ -272,6 +273,19 @@ Funcionalidades que agregariam muito valor ao sistema.
 | **Onde alterar (Docs):** | `README.md`, `ROADMAP.md`, `ARQUITETURA_PIPELINE.md`, `DATA_SOURCES.md` |
 | **Onde alterar (Infra):** | `docker-compose.yml` (nomes dos containers), nome do repositório GitHub |
 | **Dificuldade** | 🟡 Médio (muitos arquivos para buscar e substituir) |
+| **Responsável** | — |
+
+### 44. 📢 Divulgação e Parcerias Estratégicas
+| | |
+|---|---|
+| **Descrição** | Identificar e contatar influenciadores, políticos pró-transparência e organizações da sociedade civil que possam apoiar e divulgar a plataforma. O objetivo é ganhar visibilidade e credibilidade para atrair mais contribuidores e usuários. |
+| **Alvos sugeridos** | |
+| • **Influenciadores** | Perfis de fiscalização política no Twitter/X, YouTube e Instagram (ex: canais de análise política, jornalismo investigativo independente) |
+| • **Políticos** | Parlamentares que já defendem publicamente pautas de transparência e combate à corrupção, de qualquer partido |
+| • **Organizações** | Transparência Brasil, Open Knowledge Brasil (OKBR), Transparência Internacional, Instituto Ethos, Contas Abertas |
+| • **Mídia** | Jornalistas investigativos como, Folha, Estadão Dados, Agência Pública |
+| **Ações concretas** | (1) Preparar um vídeo demo curto mostrando o dashboard em ação, (2) Criar um one-pager explicando o projeto, (3) Postar no Reddit r/brasil e Hacker News, (4) Submeter para editais de inovação cívica (ex: Google.org, Mozilla Foundation) |
+| **Dificuldade** | 🟡 Médio (requer networking e comunicação) |
 | **Responsável** | — |
 
 ---
