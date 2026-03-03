@@ -49,10 +49,17 @@ class BackendClient:
         return self._post(f"politician/{external_id}/emenda_pix/{municipio_ibge}", emenda)
 
     def ingest_contrato_municipal(self, municipio_ibge: str, empresa_cnpj: str, empresa_name: str) -> Optional[Dict[str, Any]]:
-        url = f"{self.base_url}/municipio/{municipio_ibge}/contrato?empresaCnpj={empresa_cnpj}&empresaName={empresa_name}"
+        # Envia os dados via query params (como o Spring Boot @RequestParam espera),
+        # mas usa o parâmetro 'params' do requests para fazer o URL encoding seguro automaticamente.
+        url = f"{self.base_url}/municipio/{municipio_ibge}/contrato"
+        payload = {
+            "empresaCnpj": str(empresa_cnpj).strip(),
+            "empresaName": str(empresa_name).strip()
+        }
         for attempt in range(3):
             try:
-                response = requests.post(url, timeout=10)
+                # Usa params=payload para colocar as variáveis na URL de forma segura
+                response = requests.post(url, params=payload, timeout=10)
                 response.raise_for_status()
                 return {"status": "success"}
             except requests.RequestException as e:

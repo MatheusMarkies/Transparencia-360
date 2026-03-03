@@ -31,67 +31,15 @@ public class FrontendSearchController {
     @GetMapping("/search")
     public ResponseEntity<List<PoliticianResponseDTO>> searchPoliticians(
             @RequestParam(name = "name") String nameQuery) {
-
+        // Busca puramente do banco de dados relacional
         List<Politician> results = politicianRepository.findByNameContainingIgnoreCase(nameQuery);
         List<PoliticianResponseDTO> dtoResults = PoliticianResponseDTO.from(results);
-
-        // Inject Neo4j Target Drivers
-        if (nameQuery != null && nameQuery.toLowerCase().contains("jandira")) {
-            Politician jObj = new Politician();
-            jObj.setId(74848L);
-            jObj.setName("Jandira Feghali");
-            jObj.setParty("PCdoB");
-            jObj.setState("RJ");
-            jObj.setPosition("Deputada Federal");
-            dtoResults.add(new PoliticianResponseDTO(jObj));
-        }
-        if (nameQuery != null && nameQuery.toLowerCase().contains("arthur")) {
-            Politician aObj = new Politician();
-            aObj.setId(160541L);
-            aObj.setName("Arthur Lira");
-            aObj.setParty("PP");
-            aObj.setState("AL");
-            aObj.setPosition("Deputado Federal");
-
-            // Mock Data for Radar de Rachadinha
-            aObj.setCabinetRiskScore(85);
-            aObj.setCabinetRiskDetails(
-                    "[{\"factor\": \"Assessores Fantasmas\", \"points\": 30}, {\"factor\": \"Movimentação Atípica\", \"points\": 25}, {\"factor\": \"Parentesco em Gabinete\", \"points\": 30}]");
-            aObj.setStaffAnomalyCount(3);
-            aObj.setStaffAnomalyDetails(
-                    "[{\"name\": \"Empresa de Fachada X\", \"salary\": 45000, \"detail\": \"Sócio é motorista do deputado\"}]");
-            aObj.setDeclaredAssets(5000000.0);
-            aObj.setDeclaredAssets2018(1200000.0);
-            aObj.setDeclaredAssets2014(450000.0);
-
-            dtoResults.add(new PoliticianResponseDTO(aObj));
-        }
-
         return ResponseEntity.ok(dtoResults);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Politician> getPoliticianDetails(@PathVariable Long id) {
-        if (id == 160541L) {
-            Politician aObj = new Politician();
-            aObj.setId(160541L);
-            aObj.setName("Arthur Lira");
-            aObj.setParty("PP");
-            aObj.setState("AL");
-            aObj.setPosition("Deputado Federal");
-            aObj.setCabinetRiskScore(85);
-            aObj.setCabinetRiskDetails(
-                    "[{\"factor\": \"Assessores Fantasmas\", \"points\": 30}, {\"factor\": \"Movimentação Atípica\", \"points\": 25}, {\"factor\": \"Parentesco em Gabinete\", \"points\": 30}]");
-            aObj.setStaffAnomalyCount(3);
-            aObj.setStaffAnomalyDetails(
-                    "[{\"name\": \"Empresa de Fachada X\", \"salary\": 45000, \"detail\": \"Sócio é motorista do deputado\"}]");
-            aObj.setDeclaredAssets(5000000.0);
-            aObj.setDeclaredAssets2018(1200000.0);
-            aObj.setDeclaredAssets2014(450000.0);
-            aObj.setExpenses(850000.0);
-            aObj.setAbsences(5);
-            return ResponseEntity.ok(aObj);
-        }
+        // Retorna apenas se existir no Postgres
         Optional<Politician> politician = politicianRepository.findById(id);
         return politician.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -99,15 +47,6 @@ public class FrontendSearchController {
 
     @GetMapping("/{id}/graph")
     public ResponseEntity<GraphDataDTO> getPoliticianGraph(@PathVariable Long id) {
-        if (id == 160541L) {
-            List<GraphDataDTO.Node> nodes = new ArrayList<>();
-            List<GraphDataDTO.Link> links = new ArrayList<>();
-            nodes.add(new GraphDataDTO.Node("politician_160541", "Arthur Lira", 1, 20));
-            nodes.add(new GraphDataDTO.Node("promise_1", "Reforma Administrativa", 2, 10));
-            links.add(new GraphDataDTO.Link("politician_160541", "promise_1"));
-            return ResponseEntity.ok(new GraphDataDTO(nodes, links));
-        }
-
         Optional<Politician> opt = politicianRepository.findById(id);
         if (opt.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -121,7 +60,7 @@ public class FrontendSearchController {
         String polNodeId = "politician_" + p.getId();
         nodes.add(new GraphDataDTO.Node(polNodeId, p.getName(), 1, 20));
 
-        // Group 2: Promises
+        // Group 2: Promises (Reais extraídas do banco)
         for (Promise promise : p.getPromises()) {
             String promiseNodeId = "promise_" + promise.getId();
             String promiseText = promise.getText() != null ? promise.getText() : "Promessa Desconhecida";
@@ -129,12 +68,9 @@ public class FrontendSearchController {
             links.add(new GraphDataDTO.Link(polNodeId, promiseNodeId));
         }
 
-        // Groups 3 and 4: Votes
+        // Groups 3 and 4: Votes (Reais extraídos do banco)
         for (Vote vote : p.getVotes()) {
             String voteNodeId = "vote_" + vote.getId();
-
-            // Determine if it was coherent (Group 3) or incoherent/neutral (Group 4) based
-            // on Coherence Score
             boolean isCoherent = vote.getCoherenceScore() != null && vote.getCoherenceScore() > 0;
             int group = isCoherent ? 3 : 4;
 
@@ -155,21 +91,13 @@ public class FrontendSearchController {
     public ResponseEntity<List<com.tp360.core.dto.SourceStatusDTO>> getPoliticianSources(@PathVariable Long id) {
         List<com.tp360.core.dto.SourceStatusDTO> sources = new ArrayList<>();
 
-        if (id == 160541L) {
-            sources.add(new com.tp360.core.dto.SourceStatusDTO("Câmara dos Deputados", "dadosabertos.camara.leg.br",
-                    "ok", "🏛️", 1, "Despesas CEAP"));
-            sources.add(new com.tp360.core.dto.SourceStatusDTO("Portal da Transparência",
-                    "portaldatransparencia.gov.br", "ok", "💰", 1, "Contratos federais"));
-            return ResponseEntity.ok(sources);
-        }
-
         Optional<Politician> opt = politicianRepository.findById(id);
         if (opt.isEmpty())
             return ResponseEntity.notFound().build();
 
         Politician p = opt.get();
 
-        // Map real data flags to source list
+        // Mapeamento real de fontes baseado nos dados existentes do político
         sources.add(new com.tp360.core.dto.SourceStatusDTO(
                 "Câmara dos Deputados", "dadosabertos.camara.leg.br", "ok", "🏛️",
                 p.getExpenses() != null ? 1 : 0, "Despesas CEAP, presenças e votações"));

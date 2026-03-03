@@ -1,0 +1,134 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_73579",
+        "total_anomalias": 10,
+        "detalhes": [
+            {
+                "supplier": "QUALIGRAFF IMPRESSOS E SERVIÇOS GRÁFICOS LTDA",
+                "totalValue": 146200.0,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$146,200.00 (limiar: R$100,044.93)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 5 pagamentos totalizando R$146,200.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "ALVARO CARNEIRO LIMA JUNIOR 07048552590",
+                "totalValue": 60000.0,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 8 pagamentos totalizando R$60,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "SENNA LOCADORA DE AUTOMOVEIS LTDA",
+                "totalValue": 67041.0,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 9 pagamentos totalizando R$67,041.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 10827.18,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3050)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 2033.65,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2728)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MARIA FRANCILENE DA SILVA LACERDA EMPRESARIO (INDIVIDUAL)",
+                "totalValue": 62900.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0551)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 635.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1577)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 13496.99,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3259)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 2786.35,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2879)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BROAD BRASIL LTDA",
+                "totalValue": 11550.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1449)"
+                    }
+                ]
+            }
+        ]
+    }
+}

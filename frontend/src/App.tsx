@@ -84,11 +84,57 @@ function App() {
     setQuery('');
 
     // Fetch Graph
+    // Fetch Graph (Follow the Money - Neo4j Real)
     try {
-      const gResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/graph`);
-      setGraphData(gResp.data);
+      // Chama o GraphController.java que acessa o Neo4j diretamente
+      const gResp = await axios.get(`http://localhost:8080/api/graph/network/${p.externalId}`);
+
+      if (gResp.data && gResp.data.length > 0) {
+        const rawGraph = gResp.data[0];
+
+        // Formata os nós do Neo4j para o React Force Graph
+        const formattedNodes = rawGraph.nodes.map((n: any) => {
+          let nodeName = n.labels[0];
+          let nodeSize = 5; // Tamanho base
+
+          if (n.labels.includes("Politico")) {
+            nodeName = n.properties.name;
+            nodeSize = 25; // Político é o centro (gigante)
+          } else if (n.labels.includes("Despesa")) {
+            // Formata o valor do dinheiro
+            const valor = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n.properties.valorDocumento || 0);
+            nodeName = `R$ ${valor} (${n.properties.categoria})`;
+            // O tamanho da bolha depende do valor da despesa!
+            nodeSize = Math.max(3, Math.min(20, (n.properties.valorDocumento || 0) / 1000));
+          } else if (n.labels.includes("Empresa")) {
+            nodeName = n.properties.name || `Fornecedor CNPJ: ${n.properties.cnpj}`;
+            nodeSize = 10;
+          } else if (n.labels.includes("Municipio")) {
+            nodeName = `Município Recebedor (IBGE: ${n.properties.codigoIbge})`;
+            nodeSize = 15;
+          }
+
+          return {
+            id: n.id,
+            name: nodeName,
+            group: n.labels[0],
+            val: nodeSize
+          };
+        });
+
+        // Formata as arestas (relacionamentos)
+        const formattedLinks = rawGraph.links.map((l: any) => ({
+          source: l.source,
+          target: l.target,
+          label: l.type
+        }));
+
+        setGraphData({ nodes: formattedNodes, links: formattedLinks });
+      } else {
+        setGraphData({ nodes: [], links: [] });
+      }
     } catch (e) {
-      console.warn("Graph data not available yet");
+      console.error("Erro ao buscar o Grafo de Dinheiro:", e);
       setGraphData({ nodes: [], links: [] });
     }
 
@@ -419,13 +465,18 @@ function App() {
               {activeTab === 'grafo' && (
                 <div className="bg-white rounded-[3rem] shadow-2xl h-[600px] border border-slate-100 overflow-hidden relative">
                   <div className="absolute top-8 left-8 z-10 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl max-w-xs">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Mapeamento de Influência</p>
-                    <p className="text-xs font-bold text-slate-600">Visualizando relações entre o parlamentar, empresas financiadoras e votações críticas.</p>
+                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Follow The Money</p>
+                    <p className="text-xs font-bold text-slate-600">O tamanho das esferas representa o volume financeiro. As luzes mostram o fluxo do cofre público para o fornecedor.</p>
                   </div>
                   <ForceGraph2D
                     graphData={graphData}
                     nodeLabel="name"
                     nodeAutoColorBy="group"
+                    nodeVal="val"
+                    linkDirectionalParticles={3} // Cria as partículas de "dinheiro"
+                    linkDirectionalParticleSpeed={0.005} // Velocidade do fluxo
+                    linkDirectionalArrowLength={3.5}
+                    linkDirectionalArrowRelPos={1}
                     width={1100}
                     height={600}
                     backgroundColor="#ffffff"

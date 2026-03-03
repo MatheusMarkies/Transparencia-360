@@ -292,6 +292,12 @@ def main():
         finally: w.close()
     run_step(14, "EmendasPixWorker (Circular Flow Anomaly Detection)", step_14)
 
+    def step_14_5():
+        from src.gatherers.pncp_worker import PNCPWorker
+        w = PNCPWorker()
+        w.run(limit=LIMIT)
+    run_step(14.5, "PNCP Worker (Contratos de Municípios Alvo)", step_14_5)
+
     def step_16():
         from src.nlp.coherence_worker import CoherenceWorker
         CoherenceWorker().run()

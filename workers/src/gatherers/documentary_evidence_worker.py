@@ -2,6 +2,7 @@ import asyncio
 import logging
 import json
 import os
+import argparse
 from pathlib import Path
 from src.core.api_client import GovAPIClient, BackendClient
 from src.extractors.camara_extractor import CamaraExtractor
@@ -66,6 +67,14 @@ class DocumentaryEvidenceWorker:
         
         return exhibits
 
+    async def _process_all_politicians(self, deputies):
+        """Orquestrador assíncrono para manter o Event Loop vivo durante todas as chamadas."""
+        for dep in deputies:
+            try:
+                await self._process_politician(dep['id'], dep['nome'])
+            except Exception as e:
+                logger.error(f"    Erro ao processar {dep['nome']}: {e}")
+
     def run(self, limit: int = 50):
         """Sequential processing due to I/O and PDF reading overhead."""
         logger.info("=== Documentary Evidence Worker - Deterministic NLP & Audit Trail ===")
@@ -76,13 +85,16 @@ class DocumentaryEvidenceWorker:
         resp = camara_api.get("deputados", params={"ordem": "ASC", "ordenarPor": "nome"})
         deputies = resp.get("dados", [])[:limit]
         
-        for dep in deputies:
-            asyncio.run(self._process_politician(dep['id'], dep['nome']))
+        # Cria um Event Loop único para todos os deputados (resolve o RuntimeError: Event loop is closed)
+        asyncio.run(self._process_all_politicians(deputies))
             
         logger.info("=== Documentary Evidence Worker Complete ===")
 
 if __name__ == "__main__":
-    worker = DocumentaryEvidenceWorker()
+    # Ajustado o ArgumentParser para instanciar corretamente
+    parser = argparse.ArgumentParser(description="Run Documentary Evidence Worker")
     parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
     args = parser.parse_args()
+    
+    worker = DocumentaryEvidenceWorker()
     worker.run(limit=args.limit)

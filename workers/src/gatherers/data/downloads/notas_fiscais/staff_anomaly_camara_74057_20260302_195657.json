@@ -1,0 +1,182 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_74057",
+        "total_anomalias": 14,
+        "detalhes": [
+            {
+                "supplier": "ON - Z IMPRESSAO, DIVULGACAO & MARKETING DIGITAL LTDA",
+                "totalValue": 186672.0,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$186,672.00 (limiar: R$100,044.93)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 7 pagamentos totalizando R$186,672.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 10236.08,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3131)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 32164.37,
+                "paymentCount": 36,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3259)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LIBRE COMUNICAÇÃO E MARKETING EIRELI",
+                "totalValue": 30000.0,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1861)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 29083.43,
+                "paymentCount": 23,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3050)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO 212 SUL LTDA",
+                "totalValue": 60.36,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0173)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO KALILANDIA LTDA",
+                "totalValue": 2243.68,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0654)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 24077.0,
+                "paymentCount": 14,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2879)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MAXIMA IMPRESSAO RAPIDO, MARKETING DIGITAL & DIVULGACAO LT",
+                "totalValue": 94024.0,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1010)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS 309 SUL LTDA",
+                "totalValue": 306.69,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0960)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO SAO JOAO LTDA",
+                "totalValue": 642.76,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0447)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS 306 SUL LTDA",
+                "totalValue": 242.69,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0153)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 8249.67,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2355)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 3157.74,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2728)"
+                    }
+                ]
+            }
+        ]
+    }
+}

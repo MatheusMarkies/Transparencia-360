@@ -1,13 +1,9 @@
-"""
-PNCP Worker - Extracts municipal bidding data from the Portal Nacional de Contratações Públicas.
-"""
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
-
+import os
 import logging
-import httpx
-import asyncio
+import time
+import requests
+import argparse
+from neo4j import GraphDatabase
 from src.core.api_client import BackendClient
 
 logging.basicConfig(level=logging.INFO)
@@ -15,58 +11,86 @@ logger = logging.getLogger(__name__)
 
 class PNCPWorker:
     def __init__(self):
+        self.neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+        self.neo4j_user = os.getenv("NEO4J_USER", "neo4j")
+        self.neo4j_password = os.getenv("NEO4J_PASSWORD", "admin123")
+        self.driver = GraphDatabase.driver(self.neo4j_uri, auth=(self.neo4j_user, self.neo4j_password))
         self.backend = BackendClient()
-        self.base_url = "https://pncp.gov.br/api/consulta/v1"
-
-    async def extract_contracts(self, cnpj: str = "00000000000191", page: int = 1):
-        """Extracts contracts for a specific CNPJ (defaulting to a generic one or a known municipality)."""
-        logger.info(f"Extracting PNCP contracts for CNPJ {cnpj}, page {page}...")
         
-        async with httpx.AsyncClient(timeout=30) as client:
-            try:
-                # The endpoint for contracts by organization
-                url = f"{self.base_url}/contratacoes"
-                params = {
-                    "pagina": page,
-                    "tamanhoPagina": 10,
-                    "cnpjOrgao": cnpj
-                }
-                
-                resp = await client.get(url, params=params)
-                if resp.status_code == 404:
-                    logger.warning(f"PNCP: No data found for CNPJ {cnpj} at {url}")
-                    return []
-                
-                resp.raise_for_status()
-                data = resp.json()
-                items = data.get("data", [])
-                
-                logger.info(f"  Found {len(items)} items in PNCP")
-                
-                for item in items:
-                    # Map PNCP fields to Backend Ingest format
-                    # PNCP has a rich schema; we'll pick the essentials for 'ScannerDiarios'
-                    payload = {
-                        "externalId": f"pncp_{item.get('id')}",
-                        "source": "PNCP",
-                        "title": item.get("objetoContratacao", "Compra sem título"),
-                        "description": f"Tipo: {item.get('modalidadeNome')} | Valor: {item.get('valorTotalEstimado')}",
-                        "municipalityId": item.get("orgaoEntidade", {}).get("cnpj"),
-                        "date": item.get("dataPublicacaoPncp"),
-                        "riskScore": 0, # To be calculated by analyzer
-                    }
-                    # self.backend.ingest_document(payload) # Assuming ingest_document exists or similar
-                    logger.info(f"  Ingested PNCP item: {payload['externalId']}")
-                
-                return items
-            except Exception as e:
-                logger.error(f"Error in PNCPWorker: {e}")
-                return []
+        self.headers = {"accept": "application/json"}
+        # Pega a chave da API do Portal da Transparência do seu ambiente
+        self.portal_key = os.getenv("PORTAL_API_KEY", "")
+        if self.portal_key:
+            self.headers["chave-api-dados"] = self.portal_key
 
-    def run(self):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.extract_contracts())
+    def get_target_municipalities(self, limit=10):
+        """Consulta o Neo4j para descobrir quais cidades receberam emendas recentemente."""
+        query = f"""
+        MATCH (p:Politico)-[:ENVIOU_EMENDA]->(m:Municipio)
+        RETURN DISTINCT m.codigoIbge AS ibge
+        LIMIT {limit}
+        """
+        targets = []
+        try:
+            with self.driver.session() as session:
+                result = session.run(query)
+                for record in result:
+                    targets.append(record["ibge"])
+        except Exception as e:
+            logger.error(f"Erro ao ler Grafo: {e}")
+        return targets
+
+    def fetch_contracts_for_municipality(self, ibge: str):
+        """Busca contratos da cidade usando a API do Governo."""
+        url = f"https://api.portaldatransparencia.gov.br/api-de-dados/contratos?dataInicial=01/01/2024&dataFinal=31/12/2025&codigoMunicipioIbge={ibge}&pagina=1"
+        try:
+            # verify=False contorna os problemas crônicos de certificado SSL do governo BR
+            response = requests.get(url, headers=self.headers, verify=False, timeout=20)
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 403:
+                logger.error("Acesso Negado (403) - Verifique sua PORTAL_API_KEY")
+            else:
+                logger.warning(f"HTTP {response.status_code} para IBGE {ibge}")
+        except Exception as e:
+            logger.error(f"Falha de conexão com Portal da Transparência: {e}")
+        return []
+
+    def run(self, limit=10):
+        logger.info("=== PNCP/Contratos Worker - Follow The Money ===")
+        
+        ibges = self.get_target_municipalities(limit)
+        logger.info(f"  🔍 Encontrados {len(ibges)} municípios alvo de emendas no Grafo.")
+
+        total_contratos = 0
+        for ibge in ibges:
+            if not ibge or len(str(ibge)) < 5: 
+                continue
+
+            logger.info(f"    -> Rastreando contratos públicos para Município (IBGE: {ibge})...")
+            contracts = self.fetch_contracts_for_municipality(ibge)
+            
+            for c in contracts:
+                fornecedor = c.get("fornecedor", {})
+                cnpj = fornecedor.get("cpfCnpj")
+                nome_empresa = fornecedor.get("nome")
+                
+                # Se for empresa e não pessoa física/órgão
+                if cnpj and len(cnpj) > 11 and nome_empresa:
+                    cnpj_clean = cnpj.replace(".", "").replace("/", "").replace("-", "")
+                    
+                    # 🚀 MAGIA ACONTECENDO AQUI: Envia para o Java, que liga o Municipio à Empresa no Neo4j!
+                    self.backend.ingest_contrato_municipal(ibge, cnpj_clean, nome_empresa)
+                    total_contratos += 1
+            
+            time.sleep(1) # Respeitar rate limit da API do governo
+
+        logger.info(f"  ✅ {total_contratos} novos contratos ligados a municípios com emendas!")
+        logger.info("=== PNCP Worker Concluído ===")
+        self.driver.close()
 
 if __name__ == "__main__":
-    worker = PNCPWorker()
-    worker.run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", type=int, default=10)
+    args = parser.parse_args()
+    PNCPWorker().run(limit=args.limit)
