@@ -409,14 +409,15 @@ public class DataIngestionService {
         if (optPolitico.isEmpty())
             return;
 
-        // Envia direto para o Cypher amarrar: (Político) -> (Emenda) -> (Município)
         politicoNodeRepository.createEmendaRelationship(
                 externalPoliticianId,
                 municipioIbge,
                 emenda.getId(),
                 emenda.getAno(),
                 emenda.getValor(),
-                emenda.getTipo());
+                emenda.getTipo(),
+                emenda.getFuncao() != null ? emenda.getFuncao() : "N/A",
+                emenda.getLocalidade() != null ? emenda.getLocalidade() : "N/A");
     }
 
     @Transactional("transactionManager")

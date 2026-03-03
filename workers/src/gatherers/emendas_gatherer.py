@@ -59,7 +59,6 @@ class EmendasGatherer:
                 for em in emendas:
                     codigo = em.get("codigoEmenda", f"EM_{random.randint(1000, 9999)}")
                     
-                    # Extrai e limpa o Valor (Moeda Brasileira para Float Universal)
                     raw_valor = em.get("valorPago", em.get("valorEmpenhado", 0))
                     if isinstance(raw_valor, str):
                         raw_valor = raw_valor.replace(".", "").replace(",", ".")
@@ -71,23 +70,66 @@ class EmendasGatherer:
                     
                     tipo_emenda = em.get("tipoEmenda", "Transferência Especial")
                     
+                    # -------------------------------------------------------------
+                    # NOVO: ASPIRADOR DE DADOS PROFUNDOS
+                    # -------------------------------------------------------------
+                    # 1. Tenta extrair a Função (e Subfunção para mais precisão)
+                    funcao = em.get("funcao", em.get("nomeFuncao", ""))
+                    if not funcao or str(funcao).strip() == "":
+                        funcao = "Não Especificada"
+                        
+                    subfuncao = em.get("subfuncao", "")
+                    if subfuncao and funcao != "Não Especificada":
+                        funcao = f"{funcao} ({subfuncao})"
+                        
+                    # 2. Tenta extrair a Localidade global
+                    localidade = em.get("localidadeDoGasto", "")
+                    
+                    # --- INTELIGÊNCIA GEOGRÁFICA ---
+                    municipios_array = em.get("municipios", [])
+                    municipio_ibge = None
+                    
+                    # 3. Se houver municípios na lista, extraímos o IBGE e o NOME EXATO da cidade
+                    if municipios_array and isinstance(municipios_array, list) and len(municipios_array) > 0:
+                        mun = municipios_array[0]
+                        codigo_ibge_raw = mun.get("codigoIBGE", "")
+                        if codigo_ibge_raw:
+                            municipio_ibge = str(codigo_ibge_raw)
+                            
+                        # Se a localidade do governo veio vazia, pegamos o nome exato da cidade do array!
+                        if not localidade or str(localidade).strip() == "":
+                            nome_cidade = mun.get("nomeIBGE", mun.get("nomeMunicipio", ""))
+                            if nome_cidade:
+                                localidade = f"{nome_cidade}"
+                    
+                    # 4. Se não veio município, a emenda foi para o Estado ou União
+                    if not municipio_ibge:
+                        uf = em.get("ufBeneficiario", "")
+                        if uf:
+                            municipio_ibge = f"ESTADO_{uf}"
+                            # Preenche a localidade com o Estado se estiver vazia
+                            if not localidade or str(localidade).strip() == "":
+                                localidade = f"Governo Estadual ({uf})"
+                        else:
+                            # Dinheiro de nível Nacional
+                            if not localidade or str(localidade).strip() == "":
+                                localidade = "Nacional / Múltiplo"
+                                
                     emenda_node = {
                         "id": codigo,
                         "ano": ano,
                         "valor": valor,
-                        "tipo": tipo_emenda
+                        "tipo": tipo_emenda,
+                        "funcao": funcao,           # Ex: Saúde (Atenção Básica)
+                        "localidade": localidade    # Ex: Macapá ou Governo Estadual (AP)
                     }
-                    
-                    # TODO: Extrair IBGE exato da 'localidade do gasto'. 
-                    # Fallback temporário para Lins/SP (3527108) apenas para o teste do Follow the Money
-                    municipio_ibge = "3527108" 
-                    
-                    logger.info(f"  -> Emenda Inserida [{ano}]: {codigo} (R$ {valor:,.2f}) - {tipo_emenda[:40]}...")
+                            
+                    logger.info(f"  -> Emenda [{ano}]: {codigo} (R$ {valor:,.2f}) -> {localidade} | {funcao}")
                     self.backend.ingest_emenda_pix(politician.get("externalId"), municipio_ibge, emenda_node)
                     total_emendas_salvas += 1
                 
                 page += 1
-                if page > 50: # Trava de segurança para não rodar infinito caso a API trave
+                if page > 50:
                     break
 
         logger.info(f"  ✅ TOTAL: {total_emendas_salvas} emendas rastreadas e salvas para {name}.")

@@ -61,6 +61,9 @@ function App() {
   const [expensesList, setExpensesList] = useState<any[]>([]);
   const [emendasList, setEmendasList] = useState<any[]>([]);
 
+  const [topSuppliers, setTopSuppliers] = useState<any[]>([]);
+  const [categoryExpenses, setCategoryExpenses] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -168,6 +171,14 @@ function App() {
       console.error("Error fetching sources:", e);
       setSources([]);
     }
+
+    // Fetch Dashboard Data
+    try {
+      const topResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/top-fornecedores`);
+      setTopSuppliers(topResp.data);
+      const catResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/gastos-categoria`);
+      setCategoryExpenses(catResp.data);
+    } catch (e) { console.error("Erro ao buscar dashboard:", e); }
 
     // Fetch Detailed Expenses
     try {
@@ -513,36 +524,85 @@ function App() {
 
               {/* NOVA ABA: DESPESAS BRUTAS */}
               {activeTab === 'despesas' && (
-                <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[600px] overflow-y-auto">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-black text-slate-800">Extrato de Despesas (Gabinete)</h3>
-                    <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">{expensesList.length} registros</span>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                  {/* Coluna da Esquerda: Gráficos de Agregação */}
+                  <div className="space-y-6 flex flex-col h-[600px]">
+                    {/* Top 5 Fornecedores */}
+                    <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100 flex-shrink-0">
+                      <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        🏆 Maiores Recebedores
+                      </h3>
+                      <div className="space-y-3">
+                        {topSuppliers.map((sup, i) => (
+                          <div key={i} className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center group hover:bg-rose-50 transition-colors">
+                            <span className="text-[11px] font-bold text-slate-600 line-clamp-1 w-3/5" title={sup.fornecedor}>{sup.fornecedor}</span>
+                            <span className="text-xs font-black text-rose-500 group-hover:scale-105 transition-transform">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sup.total || 0)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Gastos por Categoria (Barras de Progresso) */}
+                    <div className="bg-white rounded-3xl shadow-xl p-6 border border-slate-100 flex-1 overflow-hidden flex flex-col">
+                      <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        📊 Distribuição de Gastos
+                      </h3>
+                      <div className="space-y-4 overflow-y-auto pr-2 flex-1 custom-scrollbar">
+                        {categoryExpenses.map((cat, i) => {
+                          const maxVal = categoryExpenses[0]?.total || 1;
+                          const pct = ((cat.total / maxVal) * 100).toFixed(0);
+                          return (
+                            <div key={i} className="group">
+                              <div className="flex justify-between mb-1.5 items-end">
+                                <span className="text-[10px] font-bold text-slate-500 line-clamp-1 w-2/3 uppercase tracking-tight">{cat.categoria}</span>
+                                <span className="text-[10px] font-black text-slate-700">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cat.total || 0)}</span>
+                              </div>
+                              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-indigo-400 rounded-full group-hover:bg-indigo-500 transition-colors" style={{ width: `${pct}%` }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                  <table className="w-full text-left border-collapse">
-                    <thead className="sticky top-0 bg-white shadow-sm">
-                      <tr className="text-slate-400 text-xs uppercase tracking-wider">
-                        <th className="pb-3 font-bold">Data</th>
-                        <th className="pb-3 font-bold">Fornecedor</th>
-                        <th className="pb-3 font-bold">Categoria</th>
-                        <th className="pb-3 font-bold text-right">Valor Bruto</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {expensesList.slice(0, 500).map((d, i) => (
-                        <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                          <td className="py-3 text-sm text-slate-500 font-mono">{d.dataEmissao}</td>
-                          <td className="py-3 text-sm font-bold text-slate-700">{d.nomeFornecedor}</td>
-                          <td className="py-3 text-sm text-slate-500">{d.categoria}</td>
-                          <td className="py-3 text-sm font-black text-rose-500 text-right">
-                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorDocumento || 0)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {expensesList.length > 500 && (
-                    <p className="text-center text-slate-400 mt-6 text-xs font-bold">Exibindo as 500 notas mais recentes de um total de {expensesList.length}.</p>
-                  )}
+
+                  {/* Coluna da Direita: Extrato Físico (Linha a Linha) */}
+                  <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[600px] flex flex-col">
+                    <div className="flex justify-between items-center mb-6">
+                      <div>
+                        <h3 className="text-xl font-black text-slate-800 tracking-tight">Extrato Físico Detalhado</h3>
+                        <p className="text-xs font-bold text-slate-400 mt-1">Inspeção linha a linha das notas emitidas</p>
+                      </div>
+                      <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">{expensesList.length} notas recentes</span>
+                    </div>
+                    <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                      <table className="w-full text-left border-collapse">
+                        <thead className="sticky top-0 bg-white/95 backdrop-blur-sm shadow-sm z-10">
+                          <tr className="text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-100">
+                            <th className="pb-3 font-black">Data</th>
+                            <th className="pb-3 font-black">Fornecedor</th>
+                            <th className="pb-3 font-black">Categoria</th>
+                            <th className="pb-3 font-black text-right">Valor</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                          {expensesList.slice(0, 500).map((d, i) => (
+                            <tr key={i} className="hover:bg-slate-50/80 transition-colors group">
+                              <td className="py-3 text-[11px] text-slate-400 font-mono whitespace-nowrap">{d.dataEmissao || 'S/ Data'}</td>
+                              <td className="py-3 text-xs font-bold text-slate-700">{d.nomeFornecedor}</td>
+                              <td className="py-3 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{d.categoria}</td>
+                              <td className="py-3 text-sm font-black text-rose-500 text-right whitespace-nowrap">
+                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorDocumento || 0)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
                 </div>
               )}
 
@@ -555,21 +615,34 @@ function App() {
                   </div>
                   <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 bg-white shadow-sm">
-                      <tr className="text-slate-400 text-xs uppercase tracking-wider">
-                        <th className="pb-3 font-bold">Ano</th>
-                        <th className="pb-3 font-bold">Código da Emenda</th>
-                        <th className="pb-3 font-bold">Tipo de Emenda</th>
-                        <th className="pb-3 font-bold text-right">Valor Pago/Empenhado</th>
+                      <tr className="text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-100">
+                        <th className="pb-4 font-black">Ano</th>
+                        <th className="pb-4 font-black">Área / Função</th>
+                        <th className="pb-4 font-black">Destino (Cidade)</th>
+                        <th className="pb-4 font-black text-right">Valor Repassado</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-slate-50">
                       {emendasList.map((em, i) => (
-                        <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                          <td className="py-4 text-sm font-bold text-slate-700">{em.ano}</td>
-                          <td className="py-4 text-sm font-mono text-slate-500">{em.id}</td>
-                          <td className="py-4 text-sm text-slate-600">{em.tipo}</td>
-                          <td className="py-4 text-sm font-black text-emerald-600 text-right">
-                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(em.valor || 0)}
+                        <tr key={i} className="hover:bg-slate-50/80 transition-colors group">
+                          <td className="py-4 text-sm font-bold text-slate-400">{em.ano}</td>
+                          <td className="py-4">
+                            <div className="flex flex-col">
+                              <span className="text-sm font-black text-slate-800">{em.funcao || 'Encargo Especial'}</span>
+                              <span className="text-[10px] text-slate-400 font-bold uppercase">{em.tipo?.split('-')[0]}</span>
+                            </div>
+                          </td>
+                          <td className="py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-lg">
+                                📍 {em.localidade || 'Brasília/DF'}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 text-right">
+                            <span className="text-sm font-black text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
+                              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(em.valor || 0)}
+                            </span>
                           </td>
                         </tr>
                       ))}

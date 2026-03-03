@@ -87,6 +87,10 @@ async def safe_post(client, url, payload):
 # PROCESS ROW
 # ==============================
 
+# ==============================
+# PROCESS ROW
+# ==============================
+
 async def process_row(
     client,
     row,
@@ -118,28 +122,29 @@ async def process_row(
             politician_data,
         )
 
-    provider = str(
-        row.get("txtFornecedor",
-        row.get("nomeFornecedor", "UNKNOWN"))
-    ).replace(" ", "_").replace("/", "_").replace(".", "")
+    # CORREÇÃO: Lê as chaves corretas da API v2 ('nomeFornecedor', 'dataDocumento', 'valorLiquido')
+    raw_provider = row.get("nomeFornecedor", row.get("txtFornecedor", "Fornecedor Desconhecido"))
+    provider_safe = str(raw_provider).replace(" ", "_").replace("/", "_").replace(".", "")
 
-    date = str(
-        row.get("dataEmissao", "UNKNOWN_DATE")
-    ).replace(" ", "_").replace("/", "_").replace(".", "")
+    raw_date = row.get("dataDocumento", row.get("dataEmissao", "SEM_DATA"))
+    # Algumas datas vêm com timestamp (ex: 2025-02-10T00:00:00), vamos cortar apenas o YYYY-MM-DD
+    if isinstance(raw_date, str) and "T" in raw_date:
+        raw_date = raw_date.split("T")[0]
+        
+    date_safe = str(raw_date).replace(" ", "_").replace("/", "_").replace(".", "")
 
-    value = str(
-        row.get("valorDocumento", 0)
-    ).replace(".", "_")
+    raw_value = row.get("valorLiquido", row.get("valorDocumento", 0))
+    value_safe = str(raw_value).replace(".", "_")
 
-    expense_id = f"{provider}_{date}_{value}"
+    expense_id = f"{provider_safe}_{date_safe}_{value_safe}"
 
     despesa = {
         "id": expense_id,
-        "dataEmissao": row.get("dataEmissao", ""),
-        "ufFornecedor": row.get("deputado_siglaUf", ""),
+        "dataEmissao": raw_date if raw_date != "SEM_DATA" else "",
+        "ufFornecedor": row.get("siglaUF", row.get("deputado_siglaUf", "NA")),
         "categoria": row.get("tipoDespesa", "Outros"),
-        "valorDocumento": float(row.get("valorDocumento", 0)),
-        "nomeFornecedor": row.get("txtFornecedor", "N/A"),
+        "valorDocumento": float(raw_value),
+        "nomeFornecedor": raw_provider,
     }
 
     await safe_post(

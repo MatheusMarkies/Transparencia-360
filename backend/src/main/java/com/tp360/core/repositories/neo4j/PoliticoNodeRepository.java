@@ -72,7 +72,8 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
          * Municipio)
          */
         @Query("MATCH (p:Politico {id: $externalId})-[:ENVIOU_EMENDA]->(e:Emenda)-[:DESTINADA_A]->(m:Municipio) " +
-                        "RETURN { id: e.id, ano: e.ano, valor: e.valor, tipo: e.tipo, municipioIbge: m.codigoIbge } " +
+                        "RETURN { id: e.id, ano: e.ano, valor: e.valor, tipo: e.tipo, " +
+                        "         funcao: e.funcao, localidade: e.localidade, municipioIbge: m.codigoIbge } " +
                         "ORDER BY e.ano DESC, e.valor DESC")
         List<Map<String, Object>> findEmendasByPoliticoId(@Param("externalId") String externalId);
 
@@ -82,10 +83,22 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
         @Query("MATCH (p:Politico {id: $politicoId}) " +
                         "MERGE (m:Municipio {codigoIbge: $ibge}) " +
                         "MERGE (e:Emenda {id: $emendaId}) " +
-                        "SET e.ano = $ano, e.valor = $valor, e.tipo = $tipo " +
+                        "SET e.ano = $ano, e.valor = $valor, e.tipo = $tipo, " +
+                        "    e.funcao = $funcao, e.localidade = $localidade " + // <-- NOVOS CAMPOS
                         "MERGE (p)-[:ENVIOU_EMENDA]->(e) " +
                         "MERGE (e)-[:DESTINADA_A]->(m)")
         void createEmendaRelationship(@Param("politicoId") String politicoId, @Param("ibge") String ibge,
                         @Param("emendaId") String emendaId, @Param("ano") Integer ano,
-                        @Param("valor") Double valor, @Param("tipo") String tipo);
+                        @Param("valor") Double valor, @Param("tipo") String tipo,
+                        @Param("funcao") String funcao, @Param("localidade") String localidade);
+
+        @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
+                        + "RETURN d.nomeFornecedor AS fornecedor, SUM(d.valorDocumento) AS total "
+                        + "ORDER BY total DESC LIMIT 5")
+        List<Map<String, Object>> findTopFornecedoresByPoliticoId(@Param("politicoId") String politicoId);
+
+        @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
+                        + "RETURN d.categoria AS categoria, SUM(d.valorDocumento) AS total "
+                        + "ORDER BY total DESC")
+        List<Map<String, Object>> findGastosPorCategoriaByPoliticoId(@Param("politicoId") String politicoId);
 }

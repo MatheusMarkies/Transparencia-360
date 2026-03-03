@@ -143,4 +143,20 @@ public class FrontendSearchController {
         List<Map<String, Object>> emendas = politicoNodeRepository.findEmendasByPoliticoId(opt.get().getExternalId());
         return ResponseEntity.ok(emendas);
     }
+
+    @GetMapping("/{id}/top-fornecedores")
+    public ResponseEntity<List<Map<String, Object>>> getTopFornecedores(@PathVariable Long id) {
+        Optional<Politician> opt = politicianRepository.findById(id);
+        if (opt.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(politicoNodeRepository.findTopFornecedoresByPoliticoId(opt.get().getExternalId()));
+    }
+
+    @GetMapping("/{id}/gastos-categoria")
+    public ResponseEntity<List<Map<String, Object>>> getGastosCategoria(@PathVariable Long id) {
+        Optional<Politician> opt = politicianRepository.findById(id);
+        if (opt.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(politicoNodeRepository.findGastosPorCategoriaByPoliticoId(opt.get().getExternalId()));
+    }
 }
