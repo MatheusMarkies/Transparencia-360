@@ -284,7 +284,7 @@ Funcionalidades que agregariam muito valor ao sistema.
 | • **Políticos** | Parlamentares que já defendem publicamente pautas de transparência e combate à corrupção, de qualquer partido |
 | • **Organizações** | Transparência Brasil, Open Knowledge Brasil (OKBR), Transparência Internacional, Contas Abertas |
 | • **Mídia** | Jornalistas investigativos como, Folha, Estadão Dados, Agência Pública |
-| **Ações concretas** | (1) Preparar um vídeo demo curto mostrando o dashboard em ação, (2) Criar um one-pager explicando o projeto, (3) |
+| **Ações concretas** | (1) Preparar um vídeo demo curto mostrando o dashboard em ação, (2) Criar um one-pager explicando o projeto |
 | **Dificuldade** | 🟡 Médio (requer networking e comunicação) |
 | **Responsável** | — |
 
