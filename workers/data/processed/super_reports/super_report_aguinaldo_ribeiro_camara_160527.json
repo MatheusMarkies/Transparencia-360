@@ -1,0 +1,32 @@
+{
+    "01_metadados": {
+        "internal_id": 268,
+        "camara_id": "camara_160527",
+        "nome": "Aguinaldo Ribeiro",
+        "partido_estado": "PP - PB",
+        "data_extracao": "2026-03-03 10:05:32"
+    },
+    "02_documentos_lidos_e_grafos": {
+        "notas_fiscais_agrupadas": 0,
+        "empresas_qsa_e_contratos_mapeados": 0,
+        "municipios_recebedores_de_emendas": 0,
+        "promessas_campanha_identificadas": 0,
+        "votacoes_analisadas_nlp": 0
+    },
+    "03_estatisticas_patrimoniais_e_uso_maquina": {
+        "total_gasto_cota_parlamentar": null,
+        "taxa_ausencia_plenario": null,
+        "patrimonio_declarado_2022": null,
+        "fator_anomalia_patrimonial": null
+    },
+    "04_alertas_de_inteligencia": {
+        "motor_rachadinha_score": null,
+        "motor_rachadinha_evidencias": [],
+        "anomalias_contratacao_gabinete_qtd": null,
+        "anomalias_contratacao_gabinete_evidencias": [],
+        "anomalia_espacial_teletransporte_qtd": null,
+        "anomalia_espacial_evidencias": [],
+        "mencoes_suspeitas_diarios_oficiais": null,
+        "processos_judiciais_improbidade": null
+    }
+}

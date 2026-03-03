@@ -53,27 +53,37 @@ class EmendasGatherer:
             emendas = self.portal.get("emendas", params=params) or []
 
         for em in emendas:
-            # Ingest Emenda node
-            # Format depends on Portal API response: {codigoEmenda, ano, valorEmenda, ...}
-            ano = em.get("ano", 2024)
+            # Puxa o ano e código
+            ano = em.get("ano", 2025)
             codigo = em.get("codigoEmenda", f"EM_{random.randint(1000, 9999)}")
-            valor = float(em.get("valorEmenda", 0))
+            
+            # 1. Pega o Valor Pago (ou Empenhado se ainda não pagou)
+            raw_valor = em.get("valorPago", em.get("valorEmpenhado", 0))
+            
+            # 2. Formata de "1.500.000,00" para "1500000.00" antes do float()
+            if isinstance(raw_valor, str):
+                raw_valor = raw_valor.replace(".", "").replace(",", ".")
+            
+            try:
+                valor = float(raw_valor)
+            except (ValueError, TypeError):
+                valor = 0.0
             
             # Beneficiaries: Usually emendas have a list of local transfers
-            # Reusing the emenda_node structure
+            tipo_emenda = em.get("tipoEmenda", "Transferência Especial")
+            
             emenda_node = {
                 "id": codigo,
                 "ano": ano,
                 "valor": valor,
-                "tipo": em.get("tipoEmenda", "Transferência Especial")
+                "tipo": tipo_emenda
             }
             
-            # In a real deep dive, we'd find the municipality IBGE associated
-            # For now, we search for the 'localidade' or 'beneficiario' in the emenda detail
-            # Mocking the IBGE link for now until we have a municipality mapper
-            municipio_ibge = "3304557" # Default to Rio for demo if IBGE not found
+            # Busca município no detalhe (o campo geralmente é 'localidade do gasto')
+            municipio_nome = em.get("localidade do gasto", "")
+            municipio_ibge = "3304557" # Fallback temporário
             
-            logger.info(f"  -> Ingesting real Emenda: {codigo} (R$ {valor:,.2f})")
+            logger.info(f"  -> Ingesting real Emenda: {codigo} (R$ {valor:,.2f}) - {tipo_emenda}")
             self.backend.ingest_emenda_pix(politician.get("externalId"), municipio_ibge, emenda_node)
 
     def run(self):

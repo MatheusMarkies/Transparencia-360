@@ -484,10 +484,25 @@ public class DataIngestionService {
 
     @Transactional("transactionManager")
     public void resetPostgresDatabase() {
-        // Apaga na ordem correta para evitar erros de chave estrangeira (Foreign Key)
+        // Apaga na ordem correta para evitar erros de chave estrangeira
         voteRepository.deleteAll();
         promiseRepository.deleteAll();
         politicianRepository.deleteAll();
+    }
+
+    @Transactional("transactionManager")
+    public int pruneEmptyPoliticians() {
+        List<Politician> all = politicianRepository.findAll();
+        int removed = 0;
+        for (Politician p : all) {
+            // Se o político não tem despesas nem scores, é um fantasma gerado além do
+            // limite.
+            if (p.getExpenses() == null && p.getCabinetRiskScore() == null && p.getAbsences() == null) {
+                politicianRepository.delete(p);
+                removed++;
+            }
+        }
+        return removed;
     }
 
 }

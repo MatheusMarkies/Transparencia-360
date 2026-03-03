@@ -26,7 +26,7 @@ logger = logging.getLogger("MASTER_EXTRACTION")
 
 ERRORS = []
 
-def run_step(step_num: int, name: str, callable_fn):
+def run_step(step_num: float, name: str, callable_fn):
     """Run a single extraction step with error handling and timing."""
     logger.info(f"\n{'='*70}")
     logger.info(f"  STEP {step_num}: {name}")
@@ -46,9 +46,11 @@ def run_step(step_num: int, name: str, callable_fn):
 def main():
     parser = argparse.ArgumentParser(description="Run the full Extractions pipeline.")
     parser.add_argument("--limit", type=int, default=100, help="Number of parliamentarians to process")
+    parser.add_argument("--keep-db", action="store_true", help="Pula o reset do DB, os downloads brutos e a fase de INSERT pesada")
     args = parser.parse_args()
 
     LIMIT = args.limit
+    KEEP_DB = args.keep_db
     
     # Check for API Keys
     portal_key = os.getenv("PORTAL_API_KEY")
@@ -63,8 +65,7 @@ def main():
     logger.info("╚══════════════════════════════════════════════════════════╝")
     total_start = time.time()
 
-    # Pre-step: Selective directory structure verification
-# Pre-step: Selective directory structure verification and Database Reset
+    # Pre-step: Selective directory structure verification and Database Reset
     def setup_directories_and_db():
         base_path = Path(__file__).resolve().parent.parent / "data"
         dirs = [
@@ -72,132 +73,144 @@ def main():
              base_path / "downloads" / "notas_fiscais",
              base_path / "processed"
         ]
-        for d in dirs:
-            if not d.exists():
-                logger.info(f"Creating missing directory: {d}")
-                d.mkdir(parents=True, exist_ok=True)
-            else:
-                logger.info(f"Cleaning existing directory: {d}")
-                for item in d.iterdir():
-                    if item.is_file(): item.unlink()
-                    elif item.is_dir(): shutil.rmtree(item)
-        logger.info("  ✅ Data directory structure verified and cleaned.")
         
-        # --- NOVO: HARD RESET DO BANCO DE DADOS ---
-# --- NOVO: HARD RESET DO BANCO DE DADOS ---
-        import requests
-        logger.info("  🔄 Enviando comando de HARD RESET para os Bancos de Dados (PostgreSQL + Neo4j)...")
-        try:
-            # 1. Limpa o Neo4j (Grafos)
-            uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-            user = os.getenv("NEO4J_USER", "neo4j")
-            password = os.getenv("NEO4J_PASSWORD", "admin123")
-            driver = GraphDatabase.driver(uri, auth=(user, password))
-            with driver.session() as session:
-                session.run("MATCH (n) DETACH DELETE n")
-            driver.close()
-            logger.info("  ✅ Banco de Grafos (Neo4j) zerado com sucesso.")
+        if not KEEP_DB:
+            for d in dirs:
+                if not d.exists():
+                    logger.info(f"Creating missing directory: {d}")
+                    d.mkdir(parents=True, exist_ok=True)
+                else:
+                    logger.info(f"Cleaning existing directory: {d}")
+                    for item in d.iterdir():
+                        if item.is_file(): item.unlink()
+                        elif item.is_dir(): shutil.rmtree(item)
+            logger.info("  ✅ Data directory structure verified and cleaned.")
             
-            # 2. Limpa o PostgreSQL (Relacional) via API
-            resp = requests.delete("http://localhost:8080/api/internal/workers/ingest/reset-database", timeout=15)
-            if resp.status_code == 200:
-                logger.info("  ✅ Banco Relacional (PostgreSQL) zerado com sucesso.")
-            else:
-                logger.warning(f"  ⚠️ Falha ao zerar PostgreSQL. API retornou HTTP {resp.status_code}")
-            
-        except Exception as e:
-            logger.warning(f"  ⚠️ Não foi possível limpar os bancos de dados automaticamente: {e}")
+            # --- HARD RESET DO BANCO DE DADOS ---
+            import requests
+            logger.info("  🔄 Enviando comando de HARD RESET para os Bancos de Dados (PostgreSQL + Neo4j)...")
+            try:
+                # 1. Limpa o Neo4j (Grafos)
+                uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+                user = os.getenv("NEO4J_USER", "neo4j")
+                password = os.getenv("NEO4J_PASSWORD", "admin123")
+                driver = GraphDatabase.driver(uri, auth=(user, password))
+                with driver.session() as session:
+                    session.run("MATCH (n) DETACH DELETE n")
+                driver.close()
+                logger.info("  ✅ Banco de Grafos (Neo4j) zerado com sucesso.")
+                
+                # 2. Limpa o PostgreSQL (Relacional) via API
+                resp = requests.delete("http://localhost:8080/api/internal/workers/ingest/reset-database", timeout=15)
+                if resp.status_code == 200:
+                    logger.info("  ✅ Banco Relacional (PostgreSQL) zerado com sucesso.")
+                else:
+                    logger.warning(f"  ⚠️ Falha ao zerar PostgreSQL. API retornou HTTP {resp.status_code}")
+                
+            except Exception as e:
+                logger.warning(f"  ⚠️ Não foi possível limpar os bancos de dados automaticamente: {e}")
+        else:
+            # Apenas garante que as pastas existem sem apagar os dados originais
+            for d in dirs:
+                if not d.exists():
+                    d.mkdir(parents=True, exist_ok=True)
+            logger.info("  ⏭️ Modo --keep-db ativado: Mantendo os arquivos em disco e pulando o Reset do Banco.")
 
     run_step(0, "Directory Setup & Database Reset", setup_directories_and_db)
 
-    # =========================================================================
-    # FASE 1: EXTRAÇÃO DE DADOS (DOWNLOADS PARA O DISCO)
-    # =========================================================================
-    logger.info("\n🚀 FASE 1: Extração de Dados (Paralela)...")
+    # Verifica se deve pular a fase inteira de Ingestão/Download
+    if not KEEP_DB:
+        # =========================================================================
+        # FASE 1: EXTRAÇÃO DE DADOS (DOWNLOADS PARA O DISCO)
+        # =========================================================================
+        logger.info("\n🚀 FASE 1: Extração de Dados (Paralela)...")
 
-    def step_1():
-        from src.gatherers.camara_gatherer import CamaraGatherer
-        g = CamaraGatherer()
-        g.fetch_and_ingest_deputies(page=1, fetch_items=LIMIT)
-    run_step(1, "CamaraGatherer (Base Data)", step_1)
+        def step_1():
+            from src.gatherers.camara_gatherer import CamaraGatherer
+            g = CamaraGatherer()
+            g.fetch_and_ingest_deputies(page=1, fetch_items=LIMIT)
+        run_step(1, "CamaraGatherer (Base Data)", step_1)
 
-    def run_step_1_new():
-        from extractors.camara_deputados import extrair_despesas_ceap, extrair_presencas
-        import asyncio
-        asyncio.run(extrair_despesas_ceap(limit=LIMIT))
-        asyncio.run(extrair_presencas("2025-01-01", "2025-03-01"))
-    
-    def run_step_3_new():
-        from extractors.portal_transparencia import extrair_emendas, extrair_servidores
-        import asyncio
-        asyncio.run(extrair_emendas(2025))
-        asyncio.run(extrair_servidores())
-
-    def run_step_7_new():
-        from etl.tse import processar_doacoes, processar_bens
-        for yr in [2014, 2018, 2022]:
-            processar_doacoes(yr)
-            processar_bens(yr)
-
-    def run_step_22_new():
-        from etl.receita_federal import processar_socios, processar_empresas
-        processar_socios()
-        processar_empresas()
-
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = [
-            executor.submit(run_step, 2, "Camara Extractors (CEAP/Presenças)", run_step_1_new),
-            executor.submit(run_step, 3, "Portal Transparência Extractors", run_step_3_new),
-            executor.submit(run_step, 7, "TSE ETL (Massive Dumps)", run_step_7_new),
-            executor.submit(run_step, 22, "Receita Federal ETL (QSA/Empresas)", run_step_22_new)
-        ]
-        [f.result() for f in futures]
-
-    # =========================================================================
-    # FASE 2: INGESTÃO E LIMPEZA DE DADOS
-    # =========================================================================
-    logger.info("\n🚀 FASE 2: Ingestão de Dados (Carga na API/DB)...")
-
-    def run_step_4_legacy():
-        from src.gatherers.expenses_worker import ExpensesWorker
-        for yr in [2024, 2025]:
-            ExpensesWorker(year=yr).run(limit=LIMIT)
-    run_step(4, "ExpensesWorker (Legacy Sync)", run_step_4_legacy)
-
-    def run_step_5_legacy():
-        from src.gatherers.absences_worker import AbsencesWorker
-        AbsencesWorker(year=2024).run(limit=LIMIT)
-    run_step(5, "AbsencesWorker", run_step_5_legacy)
-
-    # NOVO PASSO 6: Chamando a ingestão real dos dados em Parquet
-    def ingestao_dados():
-        # Importando as funções corretas do seu arquivo ingest_parquet.py
-        from ingest_parquet import ingest_camara_despesas, ingest_emendas
-        import asyncio
+        def run_step_1_new():
+            from extractors.camara_deputados import extrair_despesas_ceap, extrair_presencas
+            import asyncio
+            asyncio.run(extrair_despesas_ceap(limit=LIMIT))
+            asyncio.run(extrair_presencas("2025-01-01", "2025-03-01"))
         
-        async def run_ingestion():
-            await ingest_camara_despesas()
-            await ingest_emendas()
+        def run_step_3_new():
+            from extractors.portal_transparencia import extrair_emendas, extrair_servidores
+            import asyncio
+            asyncio.run(extrair_emendas(2025))
+            asyncio.run(extrair_servidores())
+
+        def run_step_7_new():
+            from etl.tse import processar_doacoes, processar_bens
+            for yr in [2014, 2018, 2022]:
+                processar_doacoes(yr)
+                processar_bens(yr)
+
+        def run_step_22_new():
+            from etl.receita_federal import processar_socios, processar_empresas
+            processar_socios()
+            processar_empresas()
+
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [
+                executor.submit(run_step, 2, "Camara Extractors (CEAP/Presenças)", run_step_1_new),
+                executor.submit(run_step, 3, "Portal Transparência Extractors", run_step_3_new),
+                executor.submit(run_step, 7, "TSE ETL (Massive Dumps)", run_step_7_new),
+                executor.submit(run_step, 22, "Receita Federal ETL (QSA/Empresas)", run_step_22_new)
+            ]
+            [f.result() for f in futures]
+
+        # =========================================================================
+        # FASE 2: INGESTÃO E LIMPEZA DE DADOS
+        # =========================================================================
+        logger.info("\n🚀 FASE 2: Ingestão de Dados (Carga na API/DB)...")
+
+        def run_step_4_legacy():
+            from src.gatherers.expenses_worker import ExpensesWorker
+            for yr in [2024, 2025]:
+                ExpensesWorker(year=yr).run(limit=LIMIT)
+        run_step(4, "ExpensesWorker (Legacy Sync)", run_step_4_legacy)
+
+        def run_step_5_legacy():
+            from src.gatherers.absences_worker import AbsencesWorker
+            AbsencesWorker(year=2024).run(limit=LIMIT)
+        run_step(5, "AbsencesWorker", run_step_5_legacy)
+
+        # Passo 6: Ingestão real dos dados em Parquet (A que demorava mais)
+        def ingestao_dados():
+            from ingest_parquet import ingest_camara_despesas, ingest_emendas
+            import asyncio
             
-        # Executa o envio dos dados do disco para a API de forma assíncrona
-        asyncio.run(run_ingestion())
-        
-    run_step(6, "Ingestão de Arquivos Parquet (Fase 2)", ingestao_dados)
+            async def run_ingestion():
+                await ingest_camara_despesas()
+                await ingest_emendas()
+                
+            asyncio.run(run_ingestion())
+            
+        run_step(6, "Ingestão de Arquivos Parquet (Fase 2)", ingestao_dados)
 
-    def step_19():
-        import requests
-        try:
-            resp = requests.post("http://localhost:8080/api/internal/workers/ingest/deduplicate", timeout=60)
-            if resp.status_code == 200:
-                logger.info(f"  Deduplication successful: {resp.text}")
-            else:
-                logger.error(f"  Deduplication failed: HTTP {resp.status_code}")
-        except Exception as e:
-            logger.error(f"  Deduplication error: {e}")
-    run_step(19, "Backend Deduplication (Data Integrity)", step_19)
+        def step_19():
+            import requests
+            try:
+                resp = requests.post("http://localhost:8080/api/internal/workers/ingest/deduplicate", timeout=60)
+                if resp.status_code == 200:
+                    logger.info(f"  Deduplication successful: {resp.text}")
+                else:
+                    logger.error(f"  Deduplication failed: HTTP {resp.status_code}")
+            except Exception as e:
+                logger.error(f"  Deduplication error: {e}")
+        run_step(19, "Backend Deduplication (Data Integrity)", step_19)
+
+    else:
+        logger.info("\n⏭️ FASE 1 e FASE 2 PULADAS (--keep-db ativado).")
+        logger.info("   Os dados brutos e os INSERTs milionários no banco já estão garantidos.")
+
 
     # =========================================================================
-    # FASE 3: ANÁLISE, ENRIQUECIMENTO E GRAFOS
+    # FASE 3: ANÁLISE, ENRIQUECIMENTO E GRAFOS (EXECUTA SEMPRE)
     # =========================================================================
     logger.info("\n🚀 FASE 3: Análises Analíticas e Grafos...")
 
@@ -261,13 +274,13 @@ def main():
             if resp.status_code == 200:
                 pols = resp.json()
                 if pols:
+                    # ---> ADICIONE ESTA LINHA AQUI <---
+                    pols = sorted(pols, key=lambda k: str(k.get('name', '')))
                     gatherer = EmendasGatherer(pols, limit=LIMIT)
                     
-                    # Verifica se o método run é nativamente assíncrono (async def run)
                     if asyncio.iscoroutinefunction(gatherer.run):
                         asyncio.run(gatherer.run())
                     else:
-                        # Se for síncrono mas precisar de um Event Loop interno
                         try:
                             loop = asyncio.get_event_loop()
                         except RuntimeError:
@@ -356,6 +369,25 @@ def main():
         TCUWorker().run()
     run_step(24, "TCUWorker (Irregular Accounts Monitoring)", step_24)
 
+    def step_25():
+        import requests
+        try:
+            resp = requests.delete("http://localhost:8080/api/internal/workers/ingest/prune-empty", timeout=60)
+            if resp.status_code == 200:
+                logger.info(f"  Pruning successful: {resp.text}")
+            else:
+                logger.error(f"  Pruning failed: HTTP {resp.status_code}")
+        except Exception as e:
+            logger.error(f"  Pruning error: {e}")
+    run_step(25, "Database Pruning (Cleaning Ghost Records)", step_25)
+
+    # NOVO: Super Relatório para Auditoria (Validação da Verdade)
+    def step_26():
+        from src.gatherers.super_report_worker import SuperReportWorker
+        w = SuperReportWorker()
+        w.run(limit=LIMIT)
+    run_step(26, "SuperReportWorker (Gerador de Laudo JSON Unificado)", step_26)
+
     # =========================================================================
     # FECHAMENTO E RELATÓRIO
     # =========================================================================
@@ -364,7 +396,8 @@ def main():
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "total_minutes": round(total_elapsed / 60, 2),
         "target_limit": LIMIT,
-        "steps_executed": 24,
+        "keep_db_mode": KEEP_DB,
+        "steps_executed": 26 if not KEEP_DB else 18,
         "errors_count": len(ERRORS),
         "errors_details": ERRORS
     }
@@ -391,6 +424,7 @@ def main():
 
     logger.info(f"\n  Final Statistics:")
     logger.info(f"    Politicians Target: {LIMIT}")
+    logger.info(f"    Keep DB Mode: {KEEP_DB}")
     logger.info(f"    Errors: {len(ERRORS)}")
     logger.info(f"    Total Processing Time: {total_elapsed/60:.1f} minutes")
 

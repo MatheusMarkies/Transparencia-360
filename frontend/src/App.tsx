@@ -100,18 +100,28 @@ function App() {
           if (n.labels.includes("Politico")) {
             nodeName = n.properties.name;
             nodeSize = 25; // Político é o centro (gigante)
-          } else if (n.labels.includes("Despesa")) {
-            // Formata o valor do dinheiro
+          }
+          // ---> NOVO BLOCO QUE PROCESSA AS SUPER BOLHAS <---
+          else if (n.labels.includes("DespesaAgrupada") || n.labels.includes("Despesa")) {
             const valor = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n.properties.valorDocumento || 0);
-            nodeName = `R$ ${valor} (${n.properties.categoria})`;
-            // O tamanho da bolha depende do valor da despesa!
-            nodeSize = Math.max(3, Math.min(20, (n.properties.valorDocumento || 0) / 1000));
-          } else if (n.labels.includes("Empresa")) {
+            const qtd = n.properties.qtd; // Puxa a contagem de NFs
+
+            if (qtd > 1) {
+              nodeName = `${n.properties.nomeFornecedor} (${qtd} notas juntas) = ${valor}`;
+            } else {
+              nodeName = `${n.properties.nomeFornecedor} = ${valor}`;
+            }
+
+            // O tamanho da bolha agora cresce exponencialmente de acordo com o GASTO TOTAL na empresa!
+            nodeSize = Math.max(4, Math.min(35, (n.properties.valorDocumento || 0) / 2000));
+          }
+          // --------------------------------------------------
+          else if (n.labels.includes("Empresa")) {
             nodeName = n.properties.name || `Fornecedor CNPJ: ${n.properties.cnpj}`;
-            nodeSize = 10;
-          } else if (n.labels.includes("Municipio")) {
-            nodeName = `Município Recebedor (IBGE: ${n.properties.codigoIbge})`;
             nodeSize = 15;
+          } else if (n.labels.includes("Municipio")) {
+            nodeName = `Município: ${n.properties.codigoIbge}`;
+            nodeSize = 12;
           }
 
           return {

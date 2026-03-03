@@ -89,4 +89,10 @@ public class WorkerIntegrationController {
         dataIngestionService.resetPostgresDatabase();
         return ResponseEntity.ok("PostgreSQL Database reset successfully.");
     }
+
+    @DeleteMapping("/prune-empty")
+    public ResponseEntity<String> pruneEmptyPoliticians() {
+        int removed = dataIngestionService.pruneEmptyPoliticians();
+        return ResponseEntity.ok("Pruned " + removed + " empty ghost politicians.");
+    }
 }
