@@ -1,0 +1,285 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_226708",
+        "total_anomalias": 23,
+        "detalhes": [
+            {
+                "supplier": "60.551.898 TECIO VINICIUS CALDAS FRANCA",
+                "totalValue": 85500.0,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 5 pagamentos totalizando R$85,500.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 54345.79,
+                "paymentCount": 79,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 12758.84,
+                "paymentCount": 21,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "HEROS RENTE A CAR LTDA",
+                "totalValue": 47428.58,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0140)"
+                    }
+                ]
+            },
+            {
+                "supplier": "076 - MELHOR 10 - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 4871.17,
+                "paymentCount": 22,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1281)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 343.83,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3026)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Facebook Serviços Online do Brasil Ltda.",
+                "totalValue": 9103.6,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2161)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Latam Linhas Aéreas S.A",
+                "totalValue": 8303.49,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1085)"
+                    }
+                ]
+            },
+            {
+                "supplier": "L S COMERCIO E SERVICOS LTDA - POSTO NATUREZA LAGOA",
+                "totalValue": 393.98,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0465)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOES COMBUSTIVEIS, LUBRIFICANTES E GLP LTDA",
+                "totalValue": 334.54,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0505)"
+                    }
+                ]
+            },
+            {
+                "supplier": "050 - QI 28 - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 396.44,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0491)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO LS COMERCIO DERIVADOS DE PETROLEO LTDA",
+                "totalValue": 848.35,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0223)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 557.37,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2059)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SAN REMO POSTO SERVICOS LTDA",
+                "totalValue": 1527.63,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0546)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Posto de Combustiveis Garantia Ltda (AGUAS CLARAS)",
+                "totalValue": 1136.26,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1086)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 2544.37,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2301)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Posto de Combustiveis Garantia Ltda",
+                "totalValue": 253.01,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0202)"
+                    }
+                ]
+            },
+            {
+                "supplier": "072 - 403 SUL - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 226.38,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1102)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO ITAMARATY LTDA",
+                "totalValue": 208.89,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2233)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ROTA COMBUSTIVEIS LTDA (POSTO 113)",
+                "totalValue": 195.97,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0603)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO AEROPORTO LTDA",
+                "totalValue": 510.94,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1290)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BLOOM MARKETING E PUBLICIDADE LTDA",
+                "totalValue": 66000.0,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0568)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS SAO RAFAEL LTDA",
+                "totalValue": 158.2,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1553)"
+                    }
+                ]
+            }
+        ]
+    }
+}

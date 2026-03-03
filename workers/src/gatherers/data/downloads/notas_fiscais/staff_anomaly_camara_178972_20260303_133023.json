@@ -1,0 +1,213 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_178972",
+        "total_anomalias": 17,
+        "detalhes": [
+            {
+                "supplier": "GWDIAS AGENCIA DE MARKETING DIGITAL LTDA",
+                "totalValue": 102000.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$102,000.00 (limiar: R$100,014.77)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ENEL - Eletropaulo Metropolitana Eletricidade de São Paulo S. A.",
+                "totalValue": 5110.35,
+                "paymentCount": 27,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1104)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 15176.54,
+                "paymentCount": 45,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 20703.83,
+                "paymentCount": 71,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Facebook Serviços Online do Brasil Ltda.",
+                "totalValue": 63625.19,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2161)"
+                    }
+                ]
+            },
+            {
+                "supplier": "FACEBOOK SERVIÇOS ONLINE DO BRASIL LTDA",
+                "totalValue": 4233.89,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0863)"
+                    }
+                ]
+            },
+            {
+                "supplier": "VIVO TELEFONICA BRASIL S.A.",
+                "totalValue": 808.38,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0523)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONIA BRASIL S/A",
+                "totalValue": 456.39,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0775)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Telefônica Brasil S.A. VIVO",
+                "totalValue": 351.99,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1243)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFÔNICA BRASIL S/A - VIVO",
+                "totalValue": 1370.3,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2144)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 2482.85,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2727)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MUNICIPIO DE SAO BERNARDO DO CAMPO",
+                "totalValue": 6673.14,
+                "paymentCount": 31,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0789)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFÔNICA BRASIL S.A. VIVO",
+                "totalValue": 617.41,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0484)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 1946.12,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2301)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 4111.5,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3026)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CENTRO EMPRESARIAL MEDITERRANEO",
+                "totalValue": 36589.07,
+                "paymentCount": 33,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1152)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFÔNICA BRASIL S/A",
+                "totalValue": 104.4,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0725)"
+                    }
+                ]
+            }
+        ]
+    }
+}

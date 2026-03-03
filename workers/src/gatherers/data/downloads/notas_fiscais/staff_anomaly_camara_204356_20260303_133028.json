@@ -1,0 +1,271 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_204356",
+        "total_anomalias": 21,
+        "detalhes": [
+            {
+                "supplier": "KRTV COMUNICACOES",
+                "totalValue": 152797.03,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$152,797.03 (limiar: R$100,014.77)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 10 pagamentos totalizando R$152,797.03"
+                    }
+                ]
+            },
+            {
+                "supplier": "PONTA LOCAÇÃO DE VEÍCULOS LTDA",
+                "totalValue": 72500.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$72,500.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "T3 CONTEUDO DESIGN E ESTRATEGIA LTDA",
+                "totalValue": 128900.0,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$128,900.00 (limiar: R$100,014.77)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 8 pagamentos totalizando R$128,900.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 23491.25,
+                "paymentCount": 38,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 2654.5,
+                "paymentCount": 18,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2059)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 3721.04,
+                "paymentCount": 14,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AQUI CENTRO AUTOMOTIVO LTDA EPP4347",
+                "totalValue": 49140.0,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0069)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 502.76,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2301)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Condominio do Edificio Itaparica Top Business",
+                "totalValue": 7341.2,
+                "paymentCount": 20,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO CIBIEN DE COMBUSTIVEIS LTDA",
+                "totalValue": 6126.13,
+                "paymentCount": 21,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0268)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 340.8,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1513)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS SAO RAFAEL LTDA",
+                "totalValue": 2925.48,
+                "paymentCount": 18,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1553)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CONCORDE LTDA",
+                "totalValue": 1854.57,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1104)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEL CEASA LTDA",
+                "totalValue": 250.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0117)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO SHOPPING DERIVADOS DE PETROLEO LTDA",
+                "totalValue": 978.02,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0922)"
+                    }
+                ]
+            },
+            {
+                "supplier": "067 - PARANOA II - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 2767.37,
+                "paymentCount": 16,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0834)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 4209.2,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2850)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BRASAL COMBUSTIVEIS LTDA",
+                "totalValue": 280.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1095)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO GOLDEN GAS 202 LTDA",
+                "totalValue": 150.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0090)"
+                    }
+                ]
+            },
+            {
+                "supplier": "050 - QI 28 - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 100.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0491)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO AEROPORTO LTDA",
+                "totalValue": 100.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1290)"
+                    }
+                ]
+            }
+        ]
+    }
+}

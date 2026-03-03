@@ -1,0 +1,216 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_220538",
+        "total_anomalias": 16,
+        "detalhes": [
+            {
+                "supplier": "E DE MAGALHAES SILVA LTDA",
+                "totalValue": 102000.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$102,000.00 (limiar: R$100,014.77)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$102,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "A L DE PAULA LTDA",
+                "totalValue": 105000.0,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$105,000.00 (limiar: R$100,014.77)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 7 pagamentos totalizando R$105,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "D&A Empreendimentos LTDA",
+                "totalValue": 75000.0,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 5 pagamentos totalizando R$75,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "Instituto Mais Cidades Assessoria e Consultoria ltda",
+                "totalValue": 188000.0,
+                "paymentCount": 14,
+                "flags": [
+                    {
+                        "type": "SUPER_PAGAMENTO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebeu R$188,000.00 (limiar: R$100,014.77)"
+                    },
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 14 pagamentos totalizando R$188,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO SHOPPING QL 06 COMERCIO DE DERIV DE PETROLEO LTDA",
+                "totalValue": 70.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0503)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO FENIX E COMERCIO LTDA",
+                "totalValue": 20182.12,
+                "paymentCount": 54,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1477)"
+                    }
+                ]
+            },
+            {
+                "supplier": "063 - 311 SUL - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 5151.33,
+                "paymentCount": 15,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1393)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS 310 SUL LTDA",
+                "totalValue": 356.96,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1505)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAIOBA SELF-SERVICE LTDA EPP",
+                "totalValue": 57.41,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0964)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 10711.14,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOMO COMUNICAÇÂO LTDA",
+                "totalValue": 3000.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0194)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 11302.25,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ROTA COMBUSTIVEIS LTDA (POSTO 113)",
+                "totalValue": 272.79,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0603)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO 212 SUL LTDA",
+                "totalValue": 271.36,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0093)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 2193.35,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3026)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 1081.5,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1513)"
+                    }
+                ]
+            }
+        ]
+    }
+}

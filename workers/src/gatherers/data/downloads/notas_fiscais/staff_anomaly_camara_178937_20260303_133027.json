@@ -1,0 +1,129 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_178937",
+        "total_anomalias": 10,
+        "detalhes": [
+            {
+                "supplier": "QUASAR LOCADORA DE VEICULOS EIRELI",
+                "totalValue": 60500.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$60,500.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "R A NASCIMENTO CONSULTORIA POLITICA",
+                "totalValue": 63600.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$63,600.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "CLIO CRIATIVA AGENCIA DE PUBLICIDADE E MARKETING LTDA",
+                "totalValue": 93000.0,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 6 pagamentos totalizando R$93,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "oraculo comunicacao estrategica  ltda",
+                "totalValue": 93000.0,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 6 pagamentos totalizando R$93,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 65062.35,
+                "paymentCount": 91,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3026)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 38403.22,
+                "paymentCount": 78,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2727)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 993.93,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2850)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 2407.61,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3235)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 5216.75,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3130)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 1783.13,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2301)"
+                    }
+                ]
+            }
+        ]
+    }
+}
