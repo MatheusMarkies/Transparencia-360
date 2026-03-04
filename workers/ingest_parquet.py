@@ -207,7 +207,7 @@ async def ingest_camara_despesas():
     all_rows = []
 
     for ano in [2024, 2025]:
-        file = Path(f"data/raw/camara/ceap_{ano}_raw.parquet")
+        file = Path(__file__).resolve().parent.parent / "data" / "processed" / f"ceap_{ano}_raw.parquet"
 
         if file.exists():
             df = pl.read_parquet(file)

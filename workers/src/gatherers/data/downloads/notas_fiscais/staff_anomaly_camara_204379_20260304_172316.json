@@ -1,0 +1,117 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_204379",
+        "total_anomalias": 9,
+        "detalhes": [
+            {
+                "supplier": "ELIEZER CONCEIÇÃO LIMA",
+                "totalValue": 79571.6,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 5 pagamentos totalizando R$79,571.60"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 83143.78,
+                "paymentCount": 65,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2379)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 7778.38,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0775)"
+                    }
+                ]
+            },
+            {
+                "supplier": "031 - 302 NORTE - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 19552.44,
+                "paymentCount": 58,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1078)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO 303 NORTE LTDA",
+                "totalValue": 16004.85,
+                "paymentCount": 51,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0612)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO FENIX ODJ LTDA",
+                "totalValue": 384.59,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0176)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 350.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0107)"
+                    }
+                ]
+            },
+            {
+                "supplier": "REDE QUALITY COMERCIO DE COMBUSTIVEIS LTDA",
+                "totalValue": 646.72,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0189)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 7546.98,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0680)"
+                    }
+                ]
+            }
+        ]
+    }
+}

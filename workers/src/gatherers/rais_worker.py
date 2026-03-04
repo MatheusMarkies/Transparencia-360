@@ -16,8 +16,7 @@ logger = logging.getLogger(__name__)
 
 class RAISWorker:
     def __init__(self):
-        self.backend = BackendClient()
-        self.data_dir = Path("data/raw/rais")
+        self.data_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "raw" / "rais"
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
     def process_dump(self, csv_path: str):

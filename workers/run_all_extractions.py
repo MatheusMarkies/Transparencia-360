@@ -336,7 +336,7 @@ def main():
         - Backend API push (rosie risk scores per politician)
         """
         from src.gatherers.rosie_worker import RosieWorker
-        worker = RosieWorker(years=[2022, 2023, 2024, 2025, 2026])
+        worker = RosieWorker(years=[2023, 2024, 2025, 2026])
         worker.run(limit=LIMIT)
         
         # Inlined push_rosie_to_backend to fix python scope issues
@@ -349,7 +349,8 @@ def main():
         logger.info("📡 Iniciando injeção dos dados da Rosie no Banco de Dados...")
         
         try:
-            df = pd.read_csv("data/processed/rosie_anomalies.csv")
+            rosie_csv_path = Path(__file__).resolve().parent.parent / "data" / "processed" / "rosie_anomalies.csv"
+            df = pd.read_csv(rosie_csv_path)
             deputados = df['deputy_id'].unique()
             base_url = "http://localhost:8080/api/v1/politicians"
             

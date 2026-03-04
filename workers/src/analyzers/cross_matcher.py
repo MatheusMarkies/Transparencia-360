@@ -4,7 +4,7 @@ from datetime import datetime
 
 class CrossMatcher:
     def __init__(self):
-        self.output_dir = Path("d:/Matheus Markies/Downloads/Test/data/processed")
+        self.output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def generate_proof_json(self, politician_name: str, extraction_results: list, nlp_results: list):

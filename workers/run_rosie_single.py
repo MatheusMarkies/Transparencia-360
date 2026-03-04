@@ -18,7 +18,8 @@ worker.run(limit=1)
 
 # Push the real anomalies generated from the CSV
 try:
-    df = pd.read_csv("data/processed/rosie_anomalies.csv")
+    csv_path = Path(__file__).resolve().parent.parent / "data" / "processed" / "rosie_anomalies.csv"
+    df = pd.read_csv(csv_path)
 except Exception:
     df = pd.DataFrame(columns=['deputy_id', 'classifier'])
 

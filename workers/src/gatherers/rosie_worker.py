@@ -118,7 +118,7 @@ class BlacklistLoader:
         return self.blacklisted_cnpjs
 
     def _cache_path(self) -> Path:
-        return Path(__file__).resolve().parent.parent.parent / "data" / "processed" / "blacklist_cache.json"
+        return Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed" / "blacklist_cache.json"
 
     def _save_cache(self):
         try:
@@ -165,97 +165,74 @@ class RosieWorker:
 
     def _download_and_parse_full(self, year: int, target_ids: Optional[set] = None) -> List[Dict]:
         """
-        Download the full CEAP CSV for a year and parse ALL receipts.
-        Unlike expenses_worker, this keeps ALL categories and ALL fields
-        needed by Rosie's classifiers.
+        Lê o CEAP do disco local (Parquet) gerado pelo ExpensesWorker,
+        e converte para a lista exata de dicionários que o RosieEngine precisa.
         """
-        url = f"https://www.camara.leg.br/cotas/Ano-{year}.csv.zip"
-        logger.info(f"📥 Downloading CEAP {year} for Rosie analysis...")
-
-        try:
-            response = requests.get(url, stream=True, timeout=120)
-            if response.status_code != 200:
-                logger.error(f"  HTTP {response.status_code} downloading {url}")
-                return []
-        except requests.RequestException as e:
-            logger.error(f"  Download failed: {e}")
+        import pandas as pd
+        
+        parquet_path = Path(f"data/raw/camara/ceap_{year}_raw.parquet")
+        
+        logger.info(f"📥 Loading CEAP {year} from Parquet file (skipping download)..")
+        
+        if not parquet_path.exists():
+            logger.error(f"  ❌ File not found: {parquet_path}")
             return []
 
-        zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-        filename = zip_file.filelist[0].filename
+        # Lê o ficheiro local ultrarrápido
+        df = pd.read_parquet(parquet_path)
+        logger.info(f"  🧹 Parsing {len(df)} rows from Parquet for year {year}...")
 
-        # Turicas CSV fix rules
-        replace_rules = ()
-        if year == 2011:
-            replace_rules = ((';"SN;', ";SN;"),)
-        elif year == 2018:
-            replace_rules = ((';"LUPA', ";LUPA"), (';"EMBAIXADA', ";EMBAIXADA"))
-
-        logger.info(f"  🧹 Parsing {filename}...")
-        fobj = FixCSVWrapper(
-            zip_file.open(filename), encoding="utf-8-sig", replace=replace_rules
-        )
-
-        csv.field_size_limit(1024 ** 2)
-        reader = csv.DictReader(fobj, delimiter=";")
+        # Se houver target_ids (ex: limit 2), filtra os dados logo no pandas para ser mais rápido
+        if target_ids:
+            # O parquet pode ter os IDs como float/int/string. Forçamos para inteiro para garantir.
+            df = df[df['deputado_id'].astype(str).str.replace(r'\.0$', '', regex=True).isin([str(tid) for tid in target_ids])]
 
         receipts = []
         skipped = 0
 
-        for row in reader:
-            row = {k.lower(): v for k, v in row.items() if k}
-
-            dep_id_str = row.get("idecadastro", "") or row.get("idcadastro", "")
-            if not dep_id_str.strip().isdigit():
+        # Iterar sobre o dataframe para gerar o formato que a Rosie conhece perfeitamente
+        for _, row in df.iterrows():
+            dep_id_str = str(row.get('deputado_id', '')).replace('.0', '')
+            if not dep_id_str or dep_id_str.lower() in ('nan', 'none'):
+                skipped += 1
+                continue
+                
+            dep_id = int(dep_id_str)
+            
+            valor = row.get('valorLiquido', 0.0)
+            if pd.isna(valor) or valor <= 0:
                 skipped += 1
                 continue
 
-            dep_id = int(dep_id_str.strip())
+            data_doc = str(row.get('dataDocumento', ''))
+            if data_doc and 'T' in data_doc:
+                data_doc = data_doc.split('T')[0]
+            elif data_doc and ' ' in data_doc:
+                data_doc = data_doc.split(' ')[0]
 
-            # If target_ids provided, filter
-            if target_ids and dep_id not in target_ids:
-                continue
-
-            # Parse value
-            try:
-                valor = float(row.get("vlrliquido", "0").replace(",", "."))
-            except ValueError:
-                valor = 0.0
-
-            if valor <= 0:
-                continue
-
-            # Parse date
-            data_doc = row.get("datemissao", "") or row.get("datemissao", "")
-            if data_doc and "T" in data_doc:
-                data_doc = data_doc.split("T")[0]
-            elif data_doc and " " in data_doc:
-                data_doc = data_doc.split(" ")[0]
-
-            # Build receipt dict with ALL fields Rosie needs
+            # Construir o recibo exatamente como a Rosie Engine quer ler
             receipt = {
-                "id": f"ceap_{year}_{row.get('numdocumento', '')}_{dep_id}_{abs(hash(row.get('txtfornecedor', '')))}",
+                "id": f"ceap_{year}_{row.get('numdocumento', '')}_{dep_id}_{abs(hash(str(row.get('nomeFornecedor', ''))))}",
                 "deputy_id": str(dep_id),
-                "deputy_name": row.get("txnomeparlamentar", "").strip(),
-                "party": row.get("sgpartido", "").strip(),
-                "ufDeputado": row.get("sguf", "").strip(),
-                "dataEmissao": data_doc[:10] if data_doc else "",
-                "categoria": row.get("txtdescricao", "").strip(),
-                "subcategoria": row.get("txtdescricaoespecificacao", "").strip(),
-                "valorDocumento": valor,
-                "valorGlosa": float(row.get("vlrglosa", "0").replace(",", ".") or "0"),
-                "nomeFornecedor": row.get("txtfornecedor", "").strip(),
-                "cnpjFornecedor": row.get("txtcnpjcpf", "").strip(),
-                "ufFornecedor": row.get("sguf", "NA"),  # Note: CSV has deputy's UF, not supplier's
-                "numDocumento": row.get("numdocumento", "").strip(),
-                "numLote": row.get("numlote", "").strip(),
-                "numParcela": row.get("numparcela", "").strip(),
+                "deputy_name": str(row.get("deputado_nome", "")).strip(),
+                "party": str(row.get("deputado_siglaPartido", "")).strip(),
+                "ufDeputado": str(row.get("siglaUF", "")).strip(),
+                "dataEmissao": data_doc[:10] if data_doc and data_doc.lower() != 'nan' else "",
+                "categoria": str(row.get("tipoDespesa", "")).strip(),
+                "subcategoria": str(row.get("txtdescricaoespecificacao", "")).strip(),
+                "valorDocumento": float(row.get('valorDocumento', 0.0) if not pd.isna(row.get('valorDocumento')) else 0.0),
+                "valorGlosa": 0.0, # Nós usamos valorLiquido no Parquet diretamente
+                "nomeFornecedor": str(row.get("nomeFornecedor", "")).strip(),
+                "cnpjFornecedor": str(row.get("cnpjCpfFornecedor", "")).strip(),
+                "ufFornecedor": str(row.get("siglaUF", "NA")), # UF do Deputado no CEAP original
+                "numDocumento": str(row.get("numdocumento", "")).strip(),
+                "numLote": str(row.get("numlote", "")).strip(),
+                "numParcela": str(row.get("numparcela", "")).strip(),
                 "year": year,
             }
-
             receipts.append(receipt)
 
-        logger.info(f"  ✅ Parsed {len(receipts)} valid receipts (skipped {skipped} invalid rows)")
+        logger.info(f"  ✅ Parsed {len(receipts)} valid receipts (skipped {skipped} invalid/zero-value rows)")
         return receipts
 
     def _fetch_deputy_ids(self, limit: int) -> set:
@@ -329,7 +306,7 @@ class RosieWorker:
     def _save_report(self, report: Dict, filename: str = "rosie_report.json"):
         """Save the full Rosie report to data/processed/."""
         try:
-            base_path = Path(__file__).resolve().parent.parent.parent / "data" / "processed"
+            base_path = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
             base_path.mkdir(parents=True, exist_ok=True)
 
             filepath = base_path / filename
@@ -345,7 +322,7 @@ class RosieWorker:
     def _save_anomalies_csv(self, report: Dict, filename: str = "rosie_anomalies.csv"):
         """Save anomalies as CSV for easy consumption."""
         try:
-            base_path = Path(__file__).resolve().parent.parent.parent / "data" / "processed"
+            base_path = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
             base_path.mkdir(parents=True, exist_ok=True)
 
             filepath = base_path / filename
@@ -449,7 +426,7 @@ class RosieWorker:
     def _save_risk_ranking(self, report: Dict):
         """Save a human-readable risk ranking."""
         try:
-            base_path = Path(__file__).resolve().parent.parent.parent / "data" / "processed"
+            base_path = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
             filepath = base_path / "rosie_risk_ranking.txt"
 
             lines = [

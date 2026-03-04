@@ -100,6 +100,8 @@ class ExpensesWorker:
         totals = defaultdict(float)
         receipts = defaultdict(list)
         
+        import pandas as pd
+        raw_rows = []
         for row in reader:
             row = {k.lower(): v for k, v in row.items() if k}
             
@@ -110,6 +112,8 @@ class ExpensesWorker:
             dep_id = int(dep_id_str)
             if dep_id not in target_ids:
                 continue
+            
+            raw_rows.append(row)
                 
             try:
                 valor = float(row.get("vlrliquido", "0").replace(",", "."))
@@ -142,7 +146,33 @@ class ExpensesWorker:
                     "nomeFornecedor": fornecedor
                 }
                 receipts[dep_id].append(despesa_node)
-                    
+        
+        # Save raw data to Parquet for RosieWorker
+        if raw_rows:
+            try:
+                df = pd.DataFrame(raw_rows)
+                
+                # Convert numeric fields correctly
+                numeric_cols = ["vlrliquido", "vlrglosa"]
+                for col in numeric_cols:
+                    if col in df.columns:
+                        df[col] = df[col].astype(str).str.replace(",", ".").replace("", "0")
+                        df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
+                
+                # Certificar que todas as colunas sejam texto antes de salvar, exceto valores numericos
+                for col in df.columns:
+                    if col not in numeric_cols:
+                        df[col] = df[col].astype(str)
+                
+                output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
+                output_dir.mkdir(parents=True, exist_ok=True)
+                parquet_path = output_dir / f"ceap_{self.year}_raw.parquet"
+                
+                df.to_parquet(parquet_path, index=False)
+                logger.info(f"💾 Raw data saved to Parquet: {parquet_path}")
+            except Exception as e:
+                logger.error(f"❌ Failed to save raw Parquet data: {e}")
+                
         return totals, receipts
 
     def run(self, limit: int = 50):
