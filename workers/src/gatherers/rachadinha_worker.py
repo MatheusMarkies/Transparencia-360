@@ -20,7 +20,7 @@ from pathlib import Path
 
 # Configuração de caminhos absolutos para a raiz do worker
 CURRENT_DIR = Path(__file__).resolve().parent
-WORKER_ROOT = CURRENT_DIR.parent.parent
+WORKER_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.append(str(WORKER_ROOT))
 
 import logging
@@ -69,7 +69,7 @@ class RachadinhaScoringWorker:
     def salvar_relatorio_local(self, deputado_nome, external_id, score_final, detalhes):
         """Gera um arquivo JSON físico para compor o Dossiê do parlamentar usando caminhos absolutos."""
         # Salva na pasta data/downloads/notas_fiscais usando o WORKER_ROOT
-        pasta_reports = WORKER_ROOT / "data" / "downloads" / "notas_fiscais"
+        pasta_reports = WORKER_ROOT / "data" / "processed" / "rachadinha"
         pasta_reports.mkdir(parents=True, exist_ok=True)
         
         timestamp = time.strftime("%Y%m%d_%H%M%S")

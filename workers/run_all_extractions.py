@@ -71,6 +71,7 @@ def main():
         dirs = [
              base_path / "downloads" / "diarios_oficiais",
              base_path / "downloads" / "notas_fiscais",
+             base_path / "downloads" / "camara_docs",
              base_path / "processed"
         ]
         
@@ -132,34 +133,26 @@ def main():
         run_step(1, "CamaraGatherer (Base Data)", step_1)
 
         def run_step_1_new():
-            from extractors.camara_deputados import extrair_despesas_ceap, extrair_presencas
+            from extractors.camara_deputados import extrair_presencas
             import asyncio
-            asyncio.run(extrair_despesas_ceap(limit=LIMIT))
-            asyncio.run(extrair_presencas("2025-01-01", "2025-03-01"))
-        
-        def run_step_3_new():
-            from extractors.portal_transparencia import extrair_emendas, extrair_servidores
-            import asyncio
-            asyncio.run(extrair_emendas(2025))
-            asyncio.run(extrair_servidores())
+            asyncio.run(extrair_presencas("2023-01-01", "2026-03-01"))
 
-        def run_step_7_new():
-            from etl.tse import processar_doacoes, processar_bens
-            for yr in [2014, 2018, 2022]:
-                processar_doacoes(yr)
-                processar_bens(yr)
+        #def run_step_7_new():
+        #    from etl.tse import processar_doacoes, processar_bens
+        #    for yr in [2014, 2018, 2022]:
+        #        processar_doacoes(yr)
+        #        processar_bens(yr)
 
-        def run_step_22_new():
-            from etl.receita_federal import processar_socios, processar_empresas
-            processar_socios()
-            processar_empresas()
+        #def run_step_22_new():
+        #    from etl.receita_federal import processar_socios, processar_empresas
+        #    processar_socios()
+        #    processar_empresas()
 
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = [
                 executor.submit(run_step, 2, "Camara Extractors (CEAP/Presenças)", run_step_1_new),
-                executor.submit(run_step, 3, "Portal Transparência Extractors", run_step_3_new),
-                executor.submit(run_step, 7, "TSE ETL (Massive Dumps)", run_step_7_new),
-                executor.submit(run_step, 22, "Receita Federal ETL (QSA/Empresas)", run_step_22_new)
+                #executor.submit(run_step, 7, "TSE ETL (Massive Dumps)", run_step_7_new),
+                #executor.submit(run_step, 22, "Receita Federal ETL (QSA/Empresas)", run_step_22_new)
             ]
             [f.result() for f in futures]
 
@@ -170,13 +163,14 @@ def main():
 
         def run_step_4_legacy():
             from src.gatherers.expenses_worker import ExpensesWorker
-            for yr in [2022, 2023, 2024, 2025, 2026]:
+            for yr in [2023, 2024, 2025, 2026]:
                 ExpensesWorker(year=yr).run(limit=LIMIT)
         run_step(4, "ExpensesWorker (Legacy Sync)", run_step_4_legacy)
 
         def run_step_5_legacy():
             from src.gatherers.absences_worker import AbsencesWorker
-            AbsencesWorker(year=2024).run(limit=LIMIT)
+            for yr in [2023, 2024, 2025, 2026]:
+                AbsencesWorker(year=yr).run(limit=LIMIT)
         run_step(5, "AbsencesWorker", run_step_5_legacy)
 
         # Passo 6: Ingestão real dos dados em Parquet (A que demorava mais)
@@ -214,28 +208,28 @@ def main():
     # =========================================================================
     logger.info("\n🚀 FASE 3: Análises Analíticas e Grafos...")
 
-    def run_step_8():
-        from src.gatherers.wealth_anomaly_worker import WealthAnomalyWorker
-        WealthAnomalyWorker().run(limit=LIMIT)
+    #def run_step_8():
+    #    from src.gatherers.wealth_anomaly_worker import WealthAnomalyWorker
+    #    WealthAnomalyWorker().run(limit=LIMIT)
         
-    def run_step_9():
-        from src.gatherers.staff_anomaly_worker import StaffAnomalyWorker
-        StaffAnomalyWorker().run(limit=LIMIT)
+    #def run_step_9():
+    #    from src.gatherers.staff_anomaly_worker import StaffAnomalyWorker
+    #    StaffAnomalyWorker().run(limit=LIMIT)
         
-    def run_step_11():
-        from src.gatherers.spatial_anomaly_worker import SpatialAnomalyWorker
-        SpatialAnomalyWorker().run(limit=LIMIT)
+    #def run_step_11():
+    #    from src.gatherers.spatial_anomaly_worker import SpatialAnomalyWorker
+    #    SpatialAnomalyWorker().run(limit=LIMIT)
         
-    def run_step_15():
-        from src.gatherers.camara_nlp_gatherer import CamaraNLPGatherer
-        CamaraNLPGatherer().run(limit=LIMIT)
+    #def run_step_15():
+    #    from src.gatherers.camara_nlp_gatherer import CamaraNLPGatherer
+    #    CamaraNLPGatherer().run(limit=LIMIT)
 
     with ThreadPoolExecutor(max_workers=4) as executor:
         futures = [
-            executor.submit(run_step, 8, "WealthAnomalyWorker", run_step_8),
-            executor.submit(run_step, 9, "StaffAnomalyWorker", run_step_9),
-            executor.submit(run_step, 11, "SpatialAnomalyWorker", run_step_11),
-            executor.submit(run_step, 15, "CamaraNLPGatherer", run_step_15)
+            #executor.submit(run_step, 8, "WealthAnomalyWorker", run_step_8),
+            #executor.submit(run_step, 9, "StaffAnomalyWorker", run_step_9),
+            #executor.submit(run_step, 11, "SpatialAnomalyWorker", run_step_11),
+            #executor.submit(run_step, 15, "CamaraNLPGatherer", run_step_15)
         ]
         [f.result() for f in futures]
 
@@ -295,21 +289,21 @@ def main():
     #        
     #run_step(13, "EmendasGatherer (Data Extraction to Graph)", step_13)
 
-    def step_14():
-        from src.gatherers.emendas_pix_worker import EmendasPixWorker
-        uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-        user = os.getenv("NEO4J_USER", "neo4j")
-        password = os.getenv("NEO4J_PASSWORD", "admin123")
-        w = EmendasPixWorker(neo4j_uri=uri, neo4j_user=user, neo4j_password=password)
-        try: w.run()
-        finally: w.close()
-    run_step(14, "EmendasPixWorker (Circular Flow Anomaly Detection)", step_14)
+    #def step_14():
+    #    from src.gatherers.emendas_pix_worker import EmendasPixWorker
+    #    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    #    user = os.getenv("NEO4J_USER", "neo4j")
+    #    password = os.getenv("NEO4J_PASSWORD", "admin123")
+    #    w = EmendasPixWorker(neo4j_uri=uri, neo4j_user=user, neo4j_password=password)
+    #    try: w.run()
+    #    finally: w.close()
+    #run_step(14, "EmendasPixWorker (Circular Flow Anomaly Detection)", step_14)
 
-    def step_14_5():
-        from src.gatherers.pncp_worker import PNCPWorker
-        w = PNCPWorker()
-        w.run(limit=LIMIT)
-    run_step(14.5, "PNCP Worker (Contratos de Municípios Alvo)", step_14_5)
+    #def step_14_5():
+    #    from src.gatherers.pncp_worker import PNCPWorker
+    #    w = PNCPWorker()
+    #    w.run(limit=LIMIT)
+    #run_step(14.5, "PNCP Worker (Contratos de Municípios Alvo)", step_14_5)
 
     def step_15():
         """
@@ -431,10 +425,10 @@ def main():
             
     run_step(15, "ROSIE — Full CEAP Anomaly Detection Engine", step_15)
 
-    def step_16():
-        from src.nlp.coherence_worker import CoherenceWorker
-        CoherenceWorker().run()
-    run_step(16, "CoherenceWorker (Promises vs. Votes Alignment)", step_16)
+    #def step_16():
+    #    from src.nlp.coherence_worker import CoherenceWorker
+    #    CoherenceWorker().run()
+    #run_step(16, "CoherenceWorker (Promises vs. Votes Alignment)", step_16)
 
     def step_17():
         from src.nlp.gazette_text_fetcher import GazetteTextFetcher

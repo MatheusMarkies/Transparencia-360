@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 # Configuração de caminhos absolutos
 CURRENT_DIR = Path(__file__).resolve().parent
-WORKER_ROOT = CURRENT_DIR.parent.parent
+WORKER_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 REPORTS_DIR = WORKER_ROOT / "data" / "processed" / "super_reports"
-ROSIE_CSV_PATH = WORKER_ROOT / "data" / "processed" / "rosie_anomalies.csv"
+ROSIE_CSV_PATH = WORKER_ROOT / "data" / "processed" / "rosie" / "rosie_anomalies.csv"
 
 class SuperReportWorker:
     def __init__(self):

@@ -2,9 +2,8 @@
 Expenses Worker - Extracts real expense data from the Câmara dos Deputados.
 
 Strategy: Uses the "Turicas Logic" to mass-download the yearly ZIP file,
-fixes broken string patterns in memory, parses the CSV efficiently, and
-pushes EVERY receipt to the backend to maintain a 360 view of the expenses.
-OPTIMIZED: Skips massive downloads if the Parquet file already exists locally.
+fixes broken string patterns in memory, saves a CLEAN LOCAL CSV CACHE, 
+and pushes EVERY receipt to the backend to maintain a 360 view of the expenses.
 """
 
 import sys
@@ -15,7 +14,6 @@ import requests
 import argparse
 from pathlib import Path
 from collections import defaultdict
-import pandas as pd
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent.parent))
 
@@ -53,9 +51,9 @@ class ExpensesWorker:
         self.api = GovAPIClient(CAMARA_API_BASE, request_delay=0.3)
         self.backend = BackendClient()
         self.year = year
-        # Define o caminho do Parquet
-        self.output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
-        self.parquet_path = self.output_dir / f"ceap_{self.year}_raw.parquet"
+        # Define o caminho do Cache em CSV
+        self.output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "ceap"
+        self.csv_path = self.output_dir / f"ceap_{self.year}.csv"
 
     def _fetch_all_deputies(self) -> list:
         """Fetch all active deputy IDs and metadata from the modern API."""
@@ -74,148 +72,92 @@ class ExpensesWorker:
             page += 1
         return all_deputies
 
-    def _read_from_local_parquet(self, target_ids: set):
-        """Lê os dados diretamente do Parquet local se ele já existir."""
-        logger.info(f"📂 Encontrado arquivo local {self.parquet_path}. Pulando download do Governo...")
-        df = pd.read_parquet(self.parquet_path)
-        
-        totals = defaultdict(float)
-        receipts = defaultdict(list)
-        
-        for _, row in df.iterrows():
-            dep_id_str = str(row.get('idecadastro', '')).split('.')[0] # Tira o .0 se for float
-            if not dep_id_str.isdigit(): continue
-            
-            dep_id = int(dep_id_str)
-            if dep_id not in target_ids: continue
-            
-            try:
-                valor = float(row.get('vlrliquido', 0.0))
-            except ValueError:
-                valor = 0.0
-            
-            totals[dep_id] += valor
-            
-            categoria = str(row.get('txtdescricao', '')).strip().upper()
-            data_doc = str(row.get('datemissao', ''))
-            if data_doc and 'T' in data_doc: data_doc = data_doc.split('T')[0]
-            elif data_doc and ' ' in data_doc: data_doc = data_doc.split(' ')[0]
-            
-            if data_doc and data_doc != 'nan' and data_doc != 'None':
-                num_doc = str(row.get('numdocumento', 'unknown'))
-                fornecedor = str(row.get('txtfornecedor', 'Unknown'))
-                
-                despesa_node = {
-                    "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
-                    "dataEmissao": data_doc[:10],
-                    "ufFornecedor": str(row.get('sguf', 'NA')),
-                    "categoria": categoria,
-                    "valorDocumento": valor,
-                    "nomeFornecedor": fornecedor
-                }
-                receipts[dep_id].append(despesa_node)
-                
-        return totals, receipts
-
-
     def _mass_download_and_parse(self, target_ids: set):
-        """Baixa o ZIP massivo do ano e extrai notas fiscais."""
+        """Baixa o ZIP, repara, guarda o CSV local e processa as notas."""
         
-        # === A GRANDE OTIMIZAÇÃO: VERIFICA SE EXISTE NO DISCO PRIMEIRO ===
-        if self.parquet_path.exists():
-            return self._read_from_local_parquet(target_ids)
-
-        # Se não existe, vai buscar ao Governo
-        url = f"https://www.camara.leg.br/cotas/Ano-{self.year}.csv.zip"
-        logger.info(f"📥 Baixando pacote massivo do CEAP {self.year} (Logica Turicas)...")
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        response = requests.get(url, stream=True)
-        if response.status_code != 200:
-            logger.error(f"Erro ao baixar CSV: HTTP {response.status_code}")
-            return {}, {}
+        # === OTIMIZAÇÃO: LER DO CSV CACHE SE EXISTIR ===
+        if self.csv_path.exists():
+            logger.info(f"📂 Encontrado CSV local {self.csv_path}. Pulando download do Governo...")
+        else:
+            url = f"https://www.camara.leg.br/cotas/Ano-{self.year}.csv.zip"
+            logger.info(f"📥 Baixando pacote massivo do CEAP {self.year} (Logica Turicas)...")
             
-        zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-        filename = zip_file.filelist[0].filename
-        
-        replace_rules = ()
-        if self.year == 2011:
-            replace_rules = ((';"SN;', ";SN;"),)
-        elif self.year == 2018:
-            replace_rules = ((';"LUPA', ";LUPA"), (';"EMBAIXADA', ";EMBAIXADA"))
+            response = requests.get(url, stream=True, timeout=60)
+            if response.status_code != 200:
+                logger.error(f"Erro ao baixar CSV: HTTP {response.status_code}")
+                return {}, {}
+                
+            zip_file = zipfile.ZipFile(io.BytesIO(response.content))
+            filename = zip_file.filelist[0].filename
             
-        logger.info("🧹 Sanitizando e extraindo 100% das notas em memória...")
-        fobj = FixCSVWrapper(zip_file.open(filename), encoding="utf-8-sig", replace=replace_rules)
+            replace_rules = ()
+            if self.year == 2011:
+                replace_rules = ((';"SN;', ";SN;"),)
+            elif self.year == 2018:
+                replace_rules = ((';"LUPA', ";LUPA"), (';"EMBAIXADA', ";EMBAIXADA"))
+                
+            logger.info(f"🧹 Sanitizando e salvando base de dados localmente em {self.csv_path}...")
+            
+            # Lê o stream corrompido, corrige-o e escreve o ficheiro limpo
+            with zip_file.open(filename) as zf:
+                fobj = FixCSVWrapper(zf, encoding="utf-8-sig", replace=replace_rules)
+                with open(self.csv_path, "w", encoding="utf-8") as out_csv:
+                    for line in fobj:
+                        out_csv.write(line)
         
-        csv.field_size_limit(1024 ** 2)
-        reader = csv.DictReader(fobj, delimiter=";")
-        
+        logger.info("📊 Extraindo notas fiscais do CSV...")
         totals = defaultdict(float)
         receipts = defaultdict(list)
         
-        raw_rows = []
-        for row in reader:
-            row = {k.lower(): v for k, v in row.items() if k}
-            raw_rows.append(row) # Salva para o Parquet
-            
-            dep_id_str = row.get("idecadastro", "")
-            if not dep_id_str.isdigit():
-                continue
-                
-            dep_id = int(dep_id_str)
-            if dep_id not in target_ids:
-                continue
-                
-            try:
-                valor = float(row.get("vlrliquido", "0").replace(",", "."))
-            except ValueError:
-                valor = 0.0
-                
-            totals[dep_id] += valor
-            
-            # Extrai 100% das categorias
-            categoria = row.get("txtdescricao", "").strip().upper()
-            data_doc = row.get("datemissao", "")
-            
-            if data_doc and "T" in data_doc:
-                data_doc = data_doc.split("T")[0]
-            elif data_doc and " " in data_doc:
-                data_doc = data_doc.split(" ")[0]
-                
-            if data_doc:
-                num_doc = row.get("numdocumento", "unknown")
-                fornecedor = row.get("txtfornecedor", "Unknown")
-                
-                despesa_node = {
-                    "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
-                    "dataEmissao": data_doc[:10],
-                    "ufFornecedor": row.get("sguf", "NA"), 
-                    "categoria": categoria,
-                    "valorDocumento": valor,
-                    "nomeFornecedor": fornecedor
-                }
-                receipts[dep_id].append(despesa_node)
+        # Aumentar o limite para não quebrar em descrições enormes
+        csv.field_size_limit(1024 ** 2)
         
-        # Save raw data to Parquet for future runs and for RosieWorker
-        if raw_rows:
-            try:
-                df = pd.DataFrame(raw_rows)
+        with open(self.csv_path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f, delimiter=";")
+            
+            for row in reader:
+                # Normaliza as chaves
+                row_lower = {k.lower(): v for k, v in row.items() if k}
                 
-                numeric_cols = ["vlrliquido", "vlrglosa"]
-                for col in numeric_cols:
-                    if col in df.columns:
-                        df[col] = df[col].astype(str).str.replace(",", ".").replace("", "0")
-                        df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
+                dep_id_str = row_lower.get("idecadastro", "").strip()
+                if not dep_id_str.isdigit():
+                    continue
+                    
+                dep_id = int(dep_id_str)
+                if dep_id not in target_ids:
+                    continue
+                    
+                try:
+                    valor = float(row_lower.get("vlrliquido", "0").replace(",", "."))
+                except ValueError:
+                    valor = 0.0
+                    
+                totals[dep_id] += valor
                 
-                for col in df.columns:
-                    if col not in numeric_cols:
-                        df[col] = df[col].astype(str)
+                categoria = row_lower.get("txtdescricao", "").strip().upper()
+                data_doc = row_lower.get("datemissao", "")
                 
-                self.output_dir.mkdir(parents=True, exist_ok=True)
-                df.to_parquet(self.parquet_path, index=False)
-                logger.info(f"💾 Raw data saved to Parquet: {self.parquet_path}")
-            except Exception as e:
-                logger.error(f"❌ Failed to save raw Parquet data: {e}")
-                
+                if data_doc and "T" in data_doc:
+                    data_doc = data_doc.split("T")[0]
+                elif data_doc and " " in data_doc:
+                    data_doc = data_doc.split(" ")[0]
+                    
+                if data_doc:
+                    num_doc = row_lower.get("numdocumento", "unknown")
+                    fornecedor = row_lower.get("txtfornecedor", "Unknown")
+                    
+                    despesa_node = {
+                        "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
+                        "dataEmissao": data_doc[:10],
+                        "ufFornecedor": row_lower.get("sguf", "NA"), 
+                        "categoria": categoria,
+                        "valorDocumento": valor,
+                        "nomeFornecedor": fornecedor
+                    }
+                    receipts[dep_id].append(despesa_node)
+                    
         return totals, receipts
 
     def run(self, limit: int = 50):
@@ -226,7 +168,7 @@ class ExpensesWorker:
         target_deputies = deputies[:limit]
         target_ids = {d["id"] for d in target_deputies}
         
-        logger.info(f"Found {len(deputies)} deputies. Processing first {limit} via Bulk Data...")
+        logger.info(f"Found {len(deputies)} deputies. Processing first {limit} via Bulk CSV...")
 
         totals_dict, receipts_dict = self._mass_download_and_parse(target_ids)
 
@@ -240,7 +182,7 @@ class ExpensesWorker:
             
             logger.info(f"[{i+1}/{limit}] {name} -> Total: R$ {total_expenses:,.2f} ({notas_count} notas registradas)")
             
-            # Injeta 100% das notas no Backend
+            # Injeta as notas no Backend
             for receipt in receipts_dict.get(dep_id, []):
                 self.backend.ingest_despesa(external_id, receipt)
 
@@ -256,9 +198,8 @@ class ExpensesWorker:
 
         logger.info("=== Expenses Worker Complete ===")
 
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Worker de Gastos com Lógica Turicas (100% Dados)")
+    parser = argparse.ArgumentParser(description="Worker de Gastos (CSV Cache Direto)")
     parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
     args = parser.parse_args()
     
