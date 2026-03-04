@@ -1,0 +1,417 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_220610",
+        "total_anomalias": 34,
+        "detalhes": [
+            {
+                "supplier": "HERBERT PAOLO PEIXOTO RAMOS",
+                "totalValue": 70770.0,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 7 pagamentos totalizando R$70,770.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "AQUI AGENCIA DE PUBLICIDADE LTDA",
+                "totalValue": 133500.0,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 9 pagamentos totalizando R$133,500.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 23546.87,
+                "paymentCount": 63,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "HPE AUTOMOTORES DO BRASIL LTDA",
+                "totalValue": 90929.37,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3019)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Facebook Serviços Online do Brasil Ltda.",
+                "totalValue": 44197.29,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3163)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 7575.63,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 678.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3157)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOODS RESTAURANTE E LANCHONETE LTDA",
+                "totalValue": 67.8,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1116)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 4815.9,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "063 - 311 SUL - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 1210.3,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3002)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 429.55,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3105)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS CONNECTA CEILANDIA SUL LTDA",
+                "totalValue": 150.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1648)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AMAZON COMBUSTIVEIS PARA VEICULOS E CONSTRUCOES LTDA",
+                "totalValue": 3353.22,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0313)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SUPREMA MOBILIDADE LTDA",
+                "totalValue": 28170.0,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3111)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SERVIA O NACIONAL DE APREND. COMERCIAL",
+                "totalValue": 61.92,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2679)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM LINHAS AEREAS SA",
+                "totalValue": 10499.67,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0584)"
+                    }
+                ]
+            },
+            {
+                "supplier": "IRMAOS RUSSI LTDA",
+                "totalValue": 1644.96,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0035)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SCHONS SCHONS LTDA",
+                "totalValue": 984.2,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0724)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO OZIVAL LTDA",
+                "totalValue": 327.71,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0644)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO FENIX ODJ LTDA",
+                "totalValue": 324.13,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2122)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO EPTG LTDA",
+                "totalValue": 317.29,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0991)"
+                    }
+                ]
+            },
+            {
+                "supplier": "FACEBOOK SERVIÇOS ONLINE DO BRASIL LTDA",
+                "totalValue": 28297.78,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3140)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO BR 060 LTDA",
+                "totalValue": 304.94,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1430)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 5897.15,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "PARK BANDEIRA COMERCIO DE COMBUSTIVEIS E DERIVADOS DE PETROL",
+                "totalValue": 295.61,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1628)"
+                    }
+                ]
+            },
+            {
+                "supplier": "PATRAO 18",
+                "totalValue": 291.49,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1043)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO GOLDEN GAS 202 LTDA",
+                "totalValue": 288.26,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2258)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BR SOLUCOES TECNICAS E ADMINISTRATIVAS LTDA",
+                "totalValue": 2800.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0239)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BRASAL COMBUSTIVEIS LTDA",
+                "totalValue": 337.99,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2630)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS 310 SUL LTDA",
+                "totalValue": 228.04,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2194)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CHAVES LTDA",
+                "totalValue": 212.33,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0900)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO VIA ESTRUTURAL COMERCIO DE DERIVADOS DE PETROLEO LTDA",
+                "totalValue": 100.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1013)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO AEROPORTO LTDA",
+                "totalValue": 200.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2663)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CALAMA LTDA",
+                "totalValue": 200.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1071)"
+                    }
+                ]
+            }
+        ]
+    }
+}

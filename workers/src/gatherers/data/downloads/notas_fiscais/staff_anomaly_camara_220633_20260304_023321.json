@@ -1,0 +1,369 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_220633",
+        "total_anomalias": 30,
+        "detalhes": [
+            {
+                "supplier": "MNR Serviços Especializados LTDA",
+                "totalValue": 102700.0,
+                "paymentCount": 23,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 23 pagamentos totalizando R$102,700.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "QUADRA BRASIL SERVIÇOS EM COMUNICAÇÃO LTDA",
+                "totalValue": 127150.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$127,150.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "CONNECTVIEW LTDA",
+                "totalValue": 66000.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$66,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 27553.41,
+                "paymentCount": 59,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": -1329.33,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 4022.61,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SEM PARAR INSTITUIÇÃO DE PAGAMENTO LTDA.",
+                "totalValue": 6592.91,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3140)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO GOLDEN GAS 202 LTDA",
+                "totalValue": 9992.98,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2258)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO AGUIA DO IBIRAPUERA LTDA",
+                "totalValue": 16368.91,
+                "paymentCount": 61,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1313)"
+                    }
+                ]
+            },
+            {
+                "supplier": "UBER DO BRASIL TECNOLOGIA LTDA.",
+                "totalValue": 69.73,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3134)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ENEL - Eletropaulo Metropolitana Eletricidade de São Paulo S. A.",
+                "totalValue": 1984.34,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2298)"
+                    }
+                ]
+            },
+            {
+                "supplier": "EDVALDO FRANCISCO DE OLIVEIRA 49191160120",
+                "totalValue": 1197.4,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1188)"
+                    }
+                ]
+            },
+            {
+                "supplier": "VIVO TELEFONIA BRASIL S/A",
+                "totalValue": 1438.07,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2900)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFÔNICA BRASIL S/A - VIVO",
+                "totalValue": 3164.92,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3145)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONIA BRASIL S/A",
+                "totalValue": 809.99,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2038)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Telefônica Brasil S.A. VIVO",
+                "totalValue": 1572.35,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2828)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONICA BRASIL S/A VIVO",
+                "totalValue": 698.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1630)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONICA BRASIL S/A",
+                "totalValue": 677.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1968)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Latam Linhas Aéreas S.A",
+                "totalValue": 6089.29,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2985)"
+                    }
+                ]
+            },
+            {
+                "supplier": "UNIDAS LOCADORA S.A",
+                "totalValue": 349.76,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0820)"
+                    }
+                ]
+            },
+            {
+                "supplier": "RODOPOSTO RUBI LT",
+                "totalValue": 243.35,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0011)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SABESP - COMPANHIA DE SANEAMENTO BÁSICO DO ESTADO DE SÃO PAULO",
+                "totalValue": 836.48,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1907)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 840.31,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3227)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 200.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3105)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Kalunga SA",
+                "totalValue": 353.0,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2119)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ORGANIZACAO COMERCIAL LAGO AZUL LTDA",
+                "totalValue": 185.16,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0284)"
+                    }
+                ]
+            },
+            {
+                "supplier": "RODOPOSTO MARISTELA LTDA",
+                "totalValue": 146.67,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0632)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Claro NXT Telecomunicações S.A",
+                "totalValue": 1348.86,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3008)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 1251.59,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO AVENIDA LTDA",
+                "totalValue": 120.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0370)"
+                    }
+                ]
+            }
+        ]
+    }
+}

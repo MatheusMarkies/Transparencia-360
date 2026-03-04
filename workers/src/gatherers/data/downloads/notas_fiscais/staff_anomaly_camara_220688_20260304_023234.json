@@ -1,0 +1,285 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_220688",
+        "total_anomalias": 23,
+        "detalhes": [
+            {
+                "supplier": "TRANSSERVICE PETROLEO LTDA",
+                "totalValue": 50852.43,
+                "paymentCount": 66,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 66 pagamentos totalizando R$50,852.43"
+                    }
+                ]
+            },
+            {
+                "supplier": "MY CAR LOCAÇÃO DE VEICULOS LTDA",
+                "totalValue": 122006.62,
+                "paymentCount": 36,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 36 pagamentos totalizando R$122,006.62"
+                    }
+                ]
+            },
+            {
+                "supplier": "AGUAS DE TERESINA SAN. SPE SA",
+                "totalValue": 887.26,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0434)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 10660.0,
+                "paymentCount": 22,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SERVFAZ SERVIÇOS DE SEGURANÇA LTDA",
+                "totalValue": 104400.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1874)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Companhia Energética do Piauí",
+                "totalValue": 17425.44,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1087)"
+                    }
+                ]
+            },
+            {
+                "supplier": "PARLANET WEB E TECNOLOGIA EIRELI",
+                "totalValue": 9600.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2794)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 1609.7,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3157)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 12076.07,
+                "paymentCount": 16,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CARVALHO E ALMEIDA LTDA",
+                "totalValue": 7947.69,
+                "paymentCount": 25,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0656)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CLARO S.A.",
+                "totalValue": 1311.83,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1464)"
+                    }
+                ]
+            },
+            {
+                "supplier": "RESTAURANTE O TRAIRAO LTDA",
+                "totalValue": 195.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0445)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 1876.7,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOES COMBUSTIVEIS, LUBRIFICANTES E GLP LTDA",
+                "totalValue": 12800.0,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2258)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOMO COMUNICAÇÂO LTDA",
+                "totalValue": 1500.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1651)"
+                    }
+                ]
+            },
+            {
+                "supplier": "VIVO TELEFONICA BRASIL S.A. VIVO",
+                "totalValue": 123.92,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1742)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONIA BRASIL S/A",
+                "totalValue": 123.92,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2038)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Telefônica Brasil S.A. VIVO",
+                "totalValue": 237.84,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2828)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFÔNICA BRASIL S/A - VIVO",
+                "totalValue": 619.6,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3145)"
+                    }
+                ]
+            },
+            {
+                "supplier": "VIVO TELEFONIA BRASIL S/A",
+                "totalValue": 237.84,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2900)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TELEFONICA BRASIL S.A.",
+                "totalValue": 113.92,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2695)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ELDORADO COMUNICACAO E JORNALISMO LTDA",
+                "totalValue": 7000.0,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3013)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ALFA COMUNICAÇÃO E MARKETING DIGITAL LTDA",
+                "totalValue": 7000.0,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1509)"
+                    }
+                ]
+            }
+        ]
+    }
+}

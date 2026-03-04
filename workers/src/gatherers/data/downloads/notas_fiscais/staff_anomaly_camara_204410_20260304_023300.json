@@ -1,0 +1,309 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_204410",
+        "total_anomalias": 25,
+        "detalhes": [
+            {
+                "supplier": "J.B. RODRIGUES JUNIOR CIA LTDA",
+                "totalValue": 69188.15,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$69,188.15"
+                    }
+                ]
+            },
+            {
+                "supplier": "45.017.015DANIELRAMALHOMALUCELLI",
+                "totalValue": 66000.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$66,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "IMOBILIÁRIA MÔNACO PALHANO",
+                "totalValue": 65765.28,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$65,765.28"
+                    }
+                ]
+            },
+            {
+                "supplier": "CESAR AUGUSTO GOMES FILHO",
+                "totalValue": 50736.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$50,736.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 17075.3,
+                "paymentCount": 28,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 45278.95,
+                "paymentCount": 68,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Copel Distribuição S.A.",
+                "totalValue": 1589.88,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2337)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 31034.41,
+                "paymentCount": 29,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Claro NXT Telecomunicações S.A",
+                "totalValue": 1401.73,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3008)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 8465.62,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3227)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 5216.95,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "UBER DO BRASIL TECNOLOGIA LTDA.",
+                "totalValue": 78.08,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3134)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SUPREMA MOBILIDADE LTDA",
+                "totalValue": 4500.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3111)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO COLOSSAL MERCES LTDA",
+                "totalValue": 341.47,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0648)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO CINCO ESTRELAS LTDA",
+                "totalValue": 1315.74,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3105)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO ALMENARA LTDA",
+                "totalValue": 285.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0578)"
+                    }
+                ]
+            },
+            {
+                "supplier": "19 - 303 SUL - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 283.42,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1389)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO Z + Z 314 SUL LTDA",
+                "totalValue": 271.26,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1012)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO SANTO EXPEDITO LTDA",
+                "totalValue": 257.09,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1843)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO JK LTDA",
+                "totalValue": 253.88,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2077)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO MUSEU LTDA",
+                "totalValue": 200.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0447)"
+                    }
+                ]
+            },
+            {
+                "supplier": "BELIZE COMPANY AUTO POSTO LTDA",
+                "totalValue": 200.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2624)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SANEPAR",
+                "totalValue": 1913.85,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1677)"
+                    }
+                ]
+            },
+            {
+                "supplier": "WMS COMERCIO DE ARTIGOS DE PAPELARIA LTDA",
+                "totalValue": 169.5,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3157)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LIGGA TELECOMUNICAÇÕES SA",
+                "totalValue": 134.9,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0086)"
+                    }
+                ]
+            }
+        ]
+    }
+}

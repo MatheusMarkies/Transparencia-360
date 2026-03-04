@@ -1,0 +1,165 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_204574",
+        "total_anomalias": 13,
+        "detalhes": [
+            {
+                "supplier": "LOCAVIP- Locadora de Veículos Eireli",
+                "totalValue": 122330.0,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 10 pagamentos totalizando R$122,330.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "Triângullo Services Limp. Conser. E Segurança Privada",
+                "totalValue": 68000.0,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 8 pagamentos totalizando R$68,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "Topper Investimentos, Bens e Capital - Eireli",
+                "totalValue": 120000.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$120,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 65353.14,
+                "paymentCount": 84,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 23059.04,
+                "paymentCount": 17,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 39124.92,
+                "paymentCount": 39,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MANOEL CASSIO DE SOUZA GUEDES ME",
+                "totalValue": 759.3,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1170)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 5952.77,
+                "paymentCount": 7,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Claro S/A",
+                "totalValue": 6987.72,
+                "paymentCount": 19,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2037)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Cia Aérea - TAM",
+                "totalValue": 3233.77,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3042)"
+                    }
+                ]
+            },
+            {
+                "supplier": "PANTANAL VEÍCULOS LTDA",
+                "totalValue": 3170.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3169)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 11192.74,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3227)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Claro NXT Telecomunicações S.A",
+                "totalValue": 349.78,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3008)"
+                    }
+                ]
+            }
+        ]
+    }
+}

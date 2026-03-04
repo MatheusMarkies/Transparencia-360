@@ -1,0 +1,513 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_98057",
+        "total_anomalias": 42,
+        "detalhes": [
+            {
+                "supplier": "MAPAS DE IMOVEIS LTDA.",
+                "totalValue": 80375.1,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$80,375.10"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO TROPICO LTDA",
+                "totalValue": 1362.61,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0447)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO PIONEIRO LTDA",
+                "totalValue": 1005.49,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0258)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LATAM Airlines Brasil",
+                "totalValue": 5167.04,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO DE COMBUSTIVEIS 206 LTDA",
+                "totalValue": 14649.28,
+                "paymentCount": 22,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2783)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CLARO S.A",
+                "totalValue": 8149.57,
+                "paymentCount": 13,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1684)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Gol Linhas Aéreas",
+                "totalValue": 64.06,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3227)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AZUL",
+                "totalValue": 17451.54,
+                "paymentCount": 27,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TAM",
+                "totalValue": 7483.35,
+                "paymentCount": 16,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MOVIDA PARTICIPAÇÕES S.A.",
+                "totalValue": 125140.39,
+                "paymentCount": 19,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1827)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LOCALIZA RENT A CAR S/A",
+                "totalValue": 8096.17,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2991)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CLARO NEXTEL TELECOMUNICAÇÕES S.A",
+                "totalValue": 5781.59,
+                "paymentCount": 14,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2305)"
+                    }
+                ]
+            },
+            {
+                "supplier": "EDVALDO FRANCISCO DE OLIVEIRA 49191160120",
+                "totalValue": 2312.6,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1188)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Azul Linhas Aéreas",
+                "totalValue": 11363.97,
+                "paymentCount": 9,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3227)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GOL",
+                "totalValue": 4534.14,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3262)"
+                    }
+                ]
+            },
+            {
+                "supplier": "LOCALIZA FLEET SA",
+                "totalValue": 28874.9,
+                "paymentCount": 6,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1871)"
+                    }
+                ]
+            },
+            {
+                "supplier": "COM. DE MOVEIS C. MASCARENHAS LTDA",
+                "totalValue": 5225.0,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0846)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MUNICÍPIO DE BELO HORIZONTE",
+                "totalValue": 8223.69,
+                "paymentCount": 31,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2311)"
+                    }
+                ]
+            },
+            {
+                "supplier": "CEMIG DISTRIBUIÇÃO S.A.",
+                "totalValue": 4629.03,
+                "paymentCount": 18,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2783)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Cia Aérea - GOL",
+                "totalValue": 747.18,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2358)"
+                    }
+                ]
+            },
+            {
+                "supplier": "071 - LAGO NORTE - CASCOL COMBUSTIVEIS PARA VEICULOS LTDA",
+                "totalValue": 1064.19,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1956)"
+                    }
+                ]
+            },
+            {
+                "supplier": "MCOURA COMBSTÍVEIS DE AVIAÇÃO LTDA",
+                "totalValue": 6935.3,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0356)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO LAGO NORTE LTDA",
+                "totalValue": 1046.64,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1731)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO Z+Z 307 NORTE LTDA",
+                "totalValue": 283.39,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0843)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ACAT - Associação dos Condutores Auxiliares e Autônomos de Taxi - MG",
+                "totalValue": 3700.0,
+                "paymentCount": 20,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0194)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO CAXUXA MGM LTDA",
+                "totalValue": 260.46,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0333)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ROTA COMBUSTIVEIS LTDA",
+                "totalValue": 874.08,
+                "paymentCount": 5,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0587)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO RDG LTDA",
+                "totalValue": 220.01,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0863)"
+                    }
+                ]
+            },
+            {
+                "supplier": "Alto Posto Nascentes LTDA",
+                "totalValue": 219.55,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0059)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO AEL SAO JOSE LTDA",
+                "totalValue": 499.98,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0026)"
+                    }
+                ]
+            },
+            {
+                "supplier": "VIBRA ENERGIA S.A",
+                "totalValue": 2114.01,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0522)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO RESTAURANTE MAR DOCE - LTDA",
+                "totalValue": 539.32,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0386)"
+                    }
+                ]
+            },
+            {
+                "supplier": "COOPERATIVA AGROPECUARIA DO VALE DO PARACATU LTDA.",
+                "totalValue": 366.16,
+                "paymentCount": 2,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0061)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ROTA 406 COMBUSTIVEIS LTDA",
+                "totalValue": 182.7,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1114)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ASSOCIAÇÃO DOS TAXISTAS DO DISTRITO FEDERAL",
+                "totalValue": 175.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2473)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SINPETAXI",
+                "totalValue": 1750.0,
+                "paymentCount": 10,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2592)"
+                    }
+                ]
+            },
+            {
+                "supplier": "TÁXI LEGAL",
+                "totalValue": 700.0,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.2287)"
+                    }
+                ]
+            },
+            {
+                "supplier": "AUTO POSTO LS COMERCIO DE DERIVADOS DE PETROLEO LTDA",
+                "totalValue": 173.11,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0891)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO SERENA COLIBRI LTDA",
+                "totalValue": 364.9,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0439)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SOCIEDADE COMERCIAL CANAA -LTDA",
+                "totalValue": 402.34,
+                "paymentCount": 3,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0685)"
+                    }
+                ]
+            },
+            {
+                "supplier": "EMPREENDIMENTOS VIP LTDA",
+                "totalValue": 125.93,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0445)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ANTAXII",
+                "totalValue": 100.0,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0780)"
+                    }
+                ]
+            }
+        ]
+    }
+}

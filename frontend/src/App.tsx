@@ -33,6 +33,7 @@ interface Politician {
   position: string;
   expenses?: number;
   absences?: number;
+  presences?: number;
   wealthAnomaly?: number;
   cabinetRiskScore?: number;
   cabinetRiskDetails?: string;
@@ -97,54 +98,108 @@ function App() {
       if (gResp.data && gResp.data.length > 0) {
         const rawGraph = gResp.data[0];
 
-        // Formata os nós do Neo4j para o React Force Graph
+        // ---> NOVO: RADAR DE EMPRESAS SUSPEITAS PELA IA <---
+        // ---> RADAR DE LAVAGEM DE DINHEIRO (Busca as empresas marcadas pela IA) <---
+        let fornecedoresSuspeitos: string[] = [];
+        try {
+          if (p.staffAnomalyDetails) {
+            const anomalias = JSON.parse(p.staffAnomalyDetails);
+            fornecedoresSuspeitos = anomalias.map((a: any) => (a.supplier || a.nomeFornecedor || a.name || '').toUpperCase());
+          }
+        } catch (e) { }
+
+        const formatCurrency = (val: any) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+
+        // 1. MOLDANDO AS BOLHAS (Nós)
         const formattedNodes = rawGraph.nodes.map((n: any) => {
           let nodeName = n.labels[0];
-          let nodeSize = 5; // Tamanho base
+          let nodeSize = 5;
+          let nodeColor = undefined;
 
           if (n.labels.includes("Politico")) {
-            nodeName = n.properties.name;
-            nodeSize = 25; // Político é o centro (gigante)
+            nodeName = `🏛️ ${n.properties.name}`;
+            nodeSize = 40; // Deputado Gigante no centro
+            nodeColor = "#0f172a";
           }
-          // ---> NOVO BLOCO QUE PROCESSA AS SUPER BOLHAS <---
-          else if (n.labels.includes("DespesaAgrupada") || n.labels.includes("Despesa")) {
-            const valor = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n.properties.valorDocumento || 0);
-            const qtd = n.properties.qtd; // Puxa a contagem de NFs
-
-            if (qtd > 1) {
-              nodeName = `${n.properties.nomeFornecedor} (${qtd} notas juntas) = ${valor}`;
-            } else {
-              nodeName = `${n.properties.nomeFornecedor} = ${valor}`;
-            }
-
-            // O tamanho da bolha agora cresce exponencialmente de acordo com o GASTO TOTAL na empresa!
-            nodeSize = Math.max(4, Math.min(35, (n.properties.valorDocumento || 0) / 2000));
+          else if (n.labels.includes("Emenda")) {
+            nodeName = `💸 Emenda ${n.properties.ano} = ${formatCurrency(n.properties.valor || 0)}`;
+            nodeSize = Math.max(10, (n.properties.valor || 0) / 100000); // Cresce conforme o milhão
+            nodeColor = "#10b981"; // Verde Dinheiro
           }
-          // --------------------------------------------------
-          else if (n.labels.includes("Empresa")) {
-            nodeName = n.properties.name || `Fornecedor CNPJ: ${n.properties.cnpj}`;
+          else if (n.labels.includes("Municipio")) {
+            nodeName = `📍 ${n.properties.codigoIbge.startsWith('ESTADO') ? n.properties.codigoIbge : 'Pref. IBGE ' + n.properties.codigoIbge}`;
             nodeSize = 15;
-          } else if (n.labels.includes("Municipio")) {
-            nodeName = `Município: ${n.properties.codigoIbge}`;
-            nodeSize = 12;
+            nodeColor = "#3b82f6"; // Azul
+          }
+          else if (n.labels.includes("DespesaAgrupada")) {
+            const valorStr = formatCurrency(n.properties.valorDocumento || 0);
+            const qtd = n.properties.qtd;
+            const fornecedorNome = n.properties.nomeFornecedor || '';
+
+            nodeName = qtd > 1 ? `🛒 ${fornecedorNome} (${qtd} notas) = ${valorStr}` : `🛒 ${fornecedorNome} = ${valorStr}`;
+            nodeSize = Math.max(6, Math.min(30, (n.properties.valorDocumento || 0) / 2000));
+            nodeColor = "#f59e0b"; // Laranja/Amarelo
+
+            if (fornecedoresSuspeitos.some(sus => fornecedorNome.toUpperCase().includes(sus))) {
+              nodeName = `🚨 ANOMALIA ML: ${nodeName}`;
+              nodeSize = nodeSize * 1.5;
+              nodeColor = "#ef4444"; // Vermelho Alerta
+            }
+          }
+          else if (n.labels.includes("Empresa")) {
+            nodeName = `🏢 ${n.properties.name || 'CNPJ ' + n.properties.cnpj}`;
+            nodeSize = 20;
+            nodeColor = "#64748b"; // Cinza
+          }
+          else if (n.labels.includes("Pessoa")) {
+            nodeName = `👤 Sócio/Doador: ${n.properties.nome || 'Sigiloso'}`;
+            nodeSize = 14;
+            nodeColor = "#a855f7"; // Roxo
           }
 
-          return {
-            id: n.id,
-            name: nodeName,
-            group: n.labels[0],
-            val: nodeSize
-          };
+          return { id: n.id, name: nodeName, group: n.labels[0], val: nodeSize, color: nodeColor };
         });
 
-        // Formata as arestas (relacionamentos)
-        const formattedLinks = rawGraph.links.map((l: any) => ({
-          source: l.source,
-          target: l.target,
-          label: l.type
-        }));
+        // 2. MOLDANDO OS FIOS E AS PARTÍCULAS (Arestas)
+        const formattedLinks = rawGraph.links.map((l: any) => {
+          let linkColor = "#cbd5e1";
+          let linkWidth = 1;
+          let particles = 0;
+          const type = l.type;
 
-        setGraphData({ nodes: formattedNodes, links: formattedLinks });
+          if (type === "ENVIOU_EMENDA" || type === "DESTINADA_A") {
+            linkColor = "#34d399"; // Fio Verde (Emenda)
+            linkWidth = 2;
+            particles = 3;
+          } else if (type === "CONTRATOU") {
+            linkColor = "#94a3b8"; // Fio Cinza
+            linkWidth = 2;
+            particles = 2;
+          } else if (type === "DOOU_PARA_CAMPANHA") {
+            linkColor = "#c084fc"; // Fio Roxo (Retorno de Propina/Doação)
+            linkWidth = 4;
+            particles = 6;
+          } else if (type === "PAGOU_DESPESA") {
+            linkColor = "#fcd34d"; // Fio Amarelo
+            particles = 2;
+          }
+
+          // Se o destino for uma empresa fantasma apanhada pela IA:
+          const targetId = String(l.target).toUpperCase();
+          if (fornecedoresSuspeitos.some(sus => targetId.includes(sus))) {
+            linkColor = "#ef4444"; // Fio Vermelho
+            linkWidth = 4;
+            particles = 8; // Fluxo de dinheiro super acelerado!
+          }
+
+          return { source: l.source, target: l.target, label: l.type, color: linkColor, width: linkWidth, particles: particles };
+        });
+
+        // 3. Remove duplicações de segurança do Grafo
+        const uniqueNodes = Array.from(new Map(formattedNodes.map((item: any) => [item.id, item])).values());
+        const uniqueLinks = Array.from(new Map(formattedLinks.map((item: any) => [`${item.source}-${item.target}-${item.label}`, item])).values());
+
+        setGraphData({ nodes: uniqueNodes as any, links: uniqueLinks as any });
       } else {
         setGraphData({ nodes: [], links: [] });
       }
@@ -376,13 +431,27 @@ function App() {
                         <BarChart3 className="w-10 h-10 text-indigo-100" />
                       </div>
                       <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-xs font-bold text-slate-500">Presença em Plenário</span>
-                          <span className="text-xs font-black text-slate-800">{100 - (selectedPolitician.absences || 0)}%</span>
-                        </div>
-                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-500" style={{ width: `${100 - (selectedPolitician.absences || 0)}%` }} />
-                        </div>
+                        {(() => {
+                          const abs = selectedPolitician.absences || 0;
+                          const pres = selectedPolitician.presences || 0;
+                          const total = abs + pres;
+                          // Proteção contra divisão por zero e cálculo de percentagem real!
+                          const pct = total > 0 ? Math.round((pres / total) * 100) : 100;
+
+                          return (
+                            <>
+                              <div className="flex justify-between mb-2">
+                                <span className="text-xs font-bold text-slate-500">
+                                  Presença em Plenário ({pres} de {total} sessões)
+                                </span>
+                                <span className="text-xs font-black text-slate-800">{pct}%</span>
+                              </div>
+                              <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-indigo-500 transition-all duration-1000" style={{ width: `${pct}%` }} />
+                              </div>
+                            </>
+                          );
+                        })()}
                       </div>
 
                       {/* Detailed Expense Table */}
@@ -510,14 +579,18 @@ function App() {
                     graphData={graphData}
                     nodeLabel="name"
                     nodeAutoColorBy="group"
+                    nodeColor={(node: any) => node.color}
                     nodeVal="val"
-                    linkDirectionalParticles={3} // Cria as partículas de "dinheiro"
-                    linkDirectionalParticleSpeed={0.005} // Velocidade do fluxo
+                    linkColor={(link: any) => link.color}
+                    linkWidth={(link: any) => link.width}
+                    linkDirectionalParticles={(link: any) => link.particles}
+                    linkDirectionalParticleSpeed={(link: any) => link.color === "#ef4444" ? 0.015 : 0.005} // Sangra dinheiro rápido se for anomalia
+                    linkDirectionalParticleColor={(link: any) => link.color}
                     linkDirectionalArrowLength={3.5}
                     linkDirectionalArrowRelPos={1}
                     width={1100}
                     height={600}
-                    backgroundColor="#ffffff"
+                    backgroundColor="#f8fafc"
                   />
                 </div>
               )}

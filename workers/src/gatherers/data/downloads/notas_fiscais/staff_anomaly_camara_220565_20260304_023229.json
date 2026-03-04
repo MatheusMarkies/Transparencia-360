@@ -1,0 +1,105 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_220565",
+        "total_anomalias": 8,
+        "detalhes": [
+            {
+                "supplier": "MCO LOCADORA E SERVIÇOS",
+                "totalValue": 134000.0,
+                "paymentCount": 22,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 22 pagamentos totalizando R$134,000.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "Facebook Serviços Online do Brasil Ltda.",
+                "totalValue": 8676.79,
+                "paymentCount": 1,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.3163)"
+                    }
+                ]
+            },
+            {
+                "supplier": "INOVA SOLUÇÕES PRESTADORA DE SERVIÇOS LMTD",
+                "totalValue": 7788.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0470)"
+                    }
+                ]
+            },
+            {
+                "supplier": "POSTO T- SETE LTDA",
+                "totalValue": 50375.89,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0311)"
+                    }
+                ]
+            },
+            {
+                "supplier": "EQUATORIAL GOIáS DISTRIBUIDORA DE ENERGIA S.A",
+                "totalValue": 1767.33,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1162)"
+                    }
+                ]
+            },
+            {
+                "supplier": "SANEAGO",
+                "totalValue": 3031.18,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1710)"
+                    }
+                ]
+            },
+            {
+                "supplier": "GRAFICA E EDITORA COMUNICACAO VISUAL EIRELI",
+                "totalValue": 105000.0,
+                "paymentCount": 4,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.0731)"
+                    }
+                ]
+            },
+            {
+                "supplier": "ENEL - COMPANHIA DE ENERGIA ELÉTRICA",
+                "totalValue": 1946.94,
+                "paymentCount": 8,
+                "flags": [
+                    {
+                        "type": "ML_ANOMALIA",
+                        "severity": "LOW",
+                        "detail": "Detectado por Isolation Forest (score: -0.1800)"
+                    }
+                ]
+            }
+        ]
+    }
+}

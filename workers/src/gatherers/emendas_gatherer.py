@@ -44,15 +44,13 @@ class EmendasGatherer:
             
             # 2. Paginação (Vai virando a página até acabar as emendas daquele ano)
             while True:
-                params = {"nomeAutor": name, "ano": ano, "pagina": page}
+                params = {"codigoAutor": cpf, "ano": ano, "pagina": page}
                 emendas = self.portal.get("emendas", params=params)
                 
-                # Fallback: Se não achar pelo nome na página 1, tenta pelo CPF
-                if not emendas and page == 1:
-                    params = {"codigoAutor": cpf, "ano": ano, "pagina": page}
+                if not emendas:
+                    params = {"nomeAutor": name, "ano": ano, "pagina": page}
                     emendas = self.portal.get("emendas", params=params)
-                
-                # Se a lista voltar vazia, acabaram as páginas deste ano!
+
                 if not emendas:
                     break
                     
@@ -70,10 +68,6 @@ class EmendasGatherer:
                     
                     tipo_emenda = em.get("tipoEmenda", "Transferência Especial")
                     
-                    # -------------------------------------------------------------
-                    # NOVO: ASPIRADOR DE DADOS PROFUNDOS
-                    # -------------------------------------------------------------
-                    # 1. Tenta extrair a Função (e Subfunção para mais precisão)
                     funcao = em.get("funcao", em.get("nomeFuncao", ""))
                     if not funcao or str(funcao).strip() == "":
                         funcao = "Não Especificada"
@@ -82,27 +76,22 @@ class EmendasGatherer:
                     if subfuncao and funcao != "Não Especificada":
                         funcao = f"{funcao} ({subfuncao})"
                         
-                    # 2. Tenta extrair a Localidade global
                     localidade = em.get("localidadeDoGasto", "")
                     
-                    # --- INTELIGÊNCIA GEOGRÁFICA ---
                     municipios_array = em.get("municipios", [])
                     municipio_ibge = None
                     
-                    # 3. Se houver municípios na lista, extraímos o IBGE e o NOME EXATO da cidade
                     if municipios_array and isinstance(municipios_array, list) and len(municipios_array) > 0:
                         mun = municipios_array[0]
                         codigo_ibge_raw = mun.get("codigoIBGE", "")
                         if codigo_ibge_raw:
                             municipio_ibge = str(codigo_ibge_raw)
                             
-                        # Se a localidade do governo veio vazia, pegamos o nome exato da cidade do array!
                         if not localidade or str(localidade).strip() == "":
                             nome_cidade = mun.get("nomeIBGE", mun.get("nomeMunicipio", ""))
                             if nome_cidade:
                                 localidade = f"{nome_cidade}"
-                    
-                    # 4. Se não veio município, a emenda foi para o Estado ou União
+
                     if not municipio_ibge:
                         uf = em.get("ufBeneficiario", "")
                         if uf:

@@ -1,0 +1,64 @@
+{
+    "alerta": "RISCO_RACHADINHA",
+    "metadados": {
+        "deputado": "Tiririca",
+        "external_id": "camara_160976",
+        "score_risco": 50,
+        "detalhes": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'Strike Media' concentra 43.5% dos gastos totais (R$187,543.70).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: Strike Media",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/160976/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 10,
+                "max": 20,
+                "detail": "Turnover moderado: 30/46 fornecedores (65%) aparecem em apenas 1 ano.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/160976/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 15,
+                "max": 30,
+                "detail": "Concentração atípica de R$187,543.70 em Strike Media (71%). QSA não disponível para cruzamento.",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "Identificada emissão sequencial de NF-e (12 pagamentos) absorvendo >71% da cota específica.",
+                "proofData": {
+                    "entity": "Fornecedor: Strike Media",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/160976/despesas"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ]
+    }
+}

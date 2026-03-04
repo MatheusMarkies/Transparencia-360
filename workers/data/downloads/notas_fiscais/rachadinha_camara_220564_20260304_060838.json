@@ -1,0 +1,64 @@
+{
+    "alerta": "RISCO_RACHADINHA",
+    "metadados": {
+        "deputado": "Yandra Moura",
+        "external_id": "camara_220564",
+        "score_risco": 50,
+        "detalhes": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'TRIPE COMUNICAÇÃO E SERVIÇOS DE CONSULTORIA EM PUBLICIDADE LTDA' concentra 52.0% dos gastos totais (R$297,000.00).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: TRIPE COMUNICAÇÃO E SERVIÇOS DE CONSULTORIA EM PUBLICIDADE LTDA",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220564/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 10,
+                "max": 20,
+                "detail": "Turnover moderado: 23/44 fornecedores (52%) aparecem em apenas 1 ano.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220564/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 15,
+                "max": 30,
+                "detail": "Concentração atípica de R$297,000.00 em TRIPE COMUNICAÇÃO E SERVIÇOS DE CONSULTORIA EM PUBLICIDADE LTDA (73%). QSA não disponível para cruzamento.",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "Identificada emissão sequencial de NF-e (11 pagamentos) absorvendo >73% da cota específica.",
+                "proofData": {
+                    "entity": "Fornecedor: TRIPE COMUNICAÇÃO E SERVIÇOS DE CONSULTORIA EM PUBLICIDADE LTDA",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220564/despesas"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ]
+    }
+}

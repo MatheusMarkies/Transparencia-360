@@ -1,0 +1,61 @@
+{
+    "alerta": "RISCO_RACHADINHA",
+    "metadados": {
+        "deputado": "Fatima Pelaes",
+        "external_id": "camara_74065",
+        "score_risco": 55,
+        "detalhes": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'CP3 LTDA-ME' concentra 66.6% dos gastos totais (R$73,324.30).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: CP3 LTDA-ME",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/74065/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 0,
+                "max": 20,
+                "detail": "Dados insuficientes (< 2 anos de despesas).",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP.",
+                "proof": "Necessários pelo menos 2 anos de dados para análise de turnover.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 30,
+                "max": 30,
+                "detail": "ALERTA: 'CP3 LTDA-ME' (CNPJ: 09489958000162) concentra R$73,324.30 (77%) em tipos suspeitos. Sócios: , .",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "QSA consultado via Receita Federal — Sócios identificados: , . Verificar se algum possui vínculo com o gabinete.",
+                "proofData": {
+                    "entity": "Sócios: , ",
+                    "link": "https://brasilapi.com.br/api/cnpj/v1/09489958000162"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ]
+    }
+}

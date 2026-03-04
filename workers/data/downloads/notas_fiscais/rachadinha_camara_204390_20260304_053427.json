@@ -1,0 +1,64 @@
+{
+    "alerta": "RISCO_RACHADINHA",
+    "metadados": {
+        "deputado": "Professor Alcides",
+        "external_id": "camara_204390",
+        "score_risco": 65,
+        "detalhes": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'MBI Baiocchi Imoveis Condominios' concentra 47.4% dos gastos totais (R$233,513.70).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: MBI Baiocchi Imoveis Condominios",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/204390/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 10,
+                "max": 20,
+                "detail": "Turnover moderado: 7/11 fornecedores (64%) aparecem em apenas 1 ano.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Rotatividade acima da média — acompanhamento recomendado.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/204390/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 30,
+                "max": 30,
+                "detail": "ALERTA: 'FENIX COMUNICACAO, PRODUCAO E EVENTOS LTDA' (CNPJ: 28749686000137) concentra R$147,300.00 (100%) em tipos suspeitos. Sócios: .",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "QSA consultado via Receita Federal — Sócios identificados: . Verificar se algum possui vínculo com o gabinete.",
+                "proofData": {
+                    "entity": "Sócios: ",
+                    "link": "https://brasilapi.com.br/api/cnpj/v1/28749686000137"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ]
+    }
+}

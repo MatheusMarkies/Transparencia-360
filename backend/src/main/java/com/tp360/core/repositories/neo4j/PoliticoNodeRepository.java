@@ -26,33 +26,55 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
          * UPDATED: Agrega as despesas por Fornecedor (Super Bolhas) e mantém o fluxo
          * das Emendas.
          */
+        /**
+         * NOVO GRAFO INVESTIGATIVO: Extrai as Teias de Emendas e Triangulações
+         * Societárias
+         */
         @Query("MATCH (p:Politico {id: $politicoId}) " +
-                        "OPTIONAL MATCH (p)-[r1:ENVIOU_EMENDA]->(m:Municipio) " +
-                        "OPTIONAL MATCH (m)-[r2:CONTRATOU]->(e:Empresa) " +
-                        "WITH p, collect(DISTINCT m) AS municipios, collect(DISTINCT e) AS empresas, collect(DISTINCT r1) AS rels1, collect(DISTINCT r2) AS rels2 "
+        // 1. Caminho: Emendas -> Municipio -> Contratos (A Rota do Orçamento)
+                        "OPTIONAL MATCH (p)-[r1:ENVIOU_EMENDA]->(em:Emenda)-[r2:DESTINADA_A]->(m:Municipio) " +
+                        "OPTIONAL MATCH (m)-[r3:CONTRATOU]->(emp1:Empresa) " +
+                        "WITH p, collect(DISTINCT em) as emendas, collect(DISTINCT m) as municipios, collect(DISTINCT emp1) as empresas1, "
                         +
+                        "     collect(DISTINCT r1) as r1s, collect(DISTINCT r2) as r2s, collect(DISTINCT r3) as r3s " +
 
-                        // Agrupamento Mágico: Junta todas as NFs do mesmo fornecedor numa única linha
+                        // 2. Caminho: Corrupção Circular (Sócios das empresas que Doaram pro Deputado)
+                        "OPTIONAL MATCH (p)<-[r4:DOOU_PARA_CAMPANHA]-(socio:Pessoa)-[r5:SOCIO_DE|SOCIO_ADMINISTRADOR_DE]->(emp2:Empresa) "
+                        +
+                        "WITH p, emendas, municipios, empresas1, r1s, r2s, r3s, " +
+                        "     collect(DISTINCT socio) as socios, collect(DISTINCT emp2) as empresas2, " +
+                        "     collect(DISTINCT r4) as r4s, collect(DISTINCT r5) as r5s " +
+
+                        // 3. Caminho: Despesas Anômalas de Gabinete (Agrupadas para não estourar o
+                        // ecrã)
                         "OPTIONAL MATCH (p)-[:GEROU_DESPESA]->(d:Despesa) " +
-                        "WITH p, municipios, empresas, rels1, rels2, d.nomeFornecedor AS fornecedor, head(collect(d.categoria)) AS categoria, sum(d.valorDocumento) AS valorTotal, count(d) AS qtdDocs "
-                        +
-                        "WHERE fornecedor IS NOT NULL " +
-
-                        // Cria os "Super Nós" virtuais na memória do Neo4j para mandar pro Frontend
-                        "WITH p, municipios, empresas, rels1, rels2, " +
-                        "     collect({ id: 'forn_' + fornecedor, labels: ['DespesaAgrupada'], properties: { nomeFornecedor: fornecedor, categoria: categoria, valorDocumento: valorTotal, qtd: qtdDocs } }) AS nodesDespesa, "
-                        +
-                        "     collect({ id: 'rel_' + fornecedor, source: elementId(p), target: 'forn_' + fornecedor, type: 'TOTAL_PAGO' }) AS relsDespesa "
+                        "WITH p, emendas, municipios, empresas1, socios, empresas2, r1s, r2s, r3s, r4s, r5s, " +
+                        "     d.nomeFornecedor AS fornecedor, sum(d.valorDocumento) AS valorTotal, count(d) AS qtdDocs "
                         +
 
+                        "WITH p, emendas, municipios, empresas1, socios, empresas2, r1s, r2s, r3s, r4s, r5s, " +
+                        "     collect(CASE WHEN fornecedor IS NOT NULL THEN { id: 'forn_' + fornecedor, labels: ['DespesaAgrupada'], properties: { nomeFornecedor: fornecedor, valorDocumento: valorTotal, qtd: qtdDocs } } END) AS nodesDespesa, "
+                        +
+                        "     collect(CASE WHEN fornecedor IS NOT NULL THEN { id: 'rel_' + fornecedor, source: elementId(p), target: 'forn_' + fornecedor, type: 'PAGOU_DESPESA' } END) AS relsDespesa "
+                        +
+
+                        // Consolida e junta todas as bolhas e linhas num único JSON para o React
                         "WITH [ {id: elementId(p), labels: labels(p), properties: properties(p)} ] + " +
-                        "     [x IN municipios WHERE x IS NOT NULL | {id: elementId(x), labels: labels(x), properties: properties(x)}] + "
+                        "     [x IN emendas | {id: elementId(x), labels: labels(x), properties: properties(x)}] + " +
+                        "     [x IN municipios | {id: elementId(x), labels: labels(x), properties: properties(x)}] + " +
+                        "     [x IN (empresas1 + empresas2) | {id: elementId(x), labels: labels(x), properties: properties(x)}] + "
                         +
-                        "     [x IN empresas WHERE x IS NOT NULL | {id: elementId(x), labels: labels(x), properties: properties(x)}] + nodesDespesa AS allNodes, "
+                        "     [x IN socios | {id: elementId(x), labels: labels(x), properties: properties(x)}] + nodesDespesa AS allNodes, "
                         +
-                        "     [x IN rels1 WHERE x IS NOT NULL | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + "
+                        "     [x IN r1s | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + "
                         +
-                        "     [x IN rels2 WHERE x IS NOT NULL | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + relsDespesa AS allLinks "
+                        "     [x IN r2s | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + "
+                        +
+                        "     [x IN r3s | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + "
+                        +
+                        "     [x IN r4s | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + "
+                        +
+                        "     [x IN r5s | {id: elementId(x), source: elementId(startNode(x)), target: elementId(endNode(x)), type: type(x), properties: properties(x)}] + relsDespesa AS allLinks "
                         +
                         "RETURN { nodes: allNodes, links: allLinks }")
         List<Map<String, Object>> getFullConnectionGraph(@Param("politicoId") String politicoId);

@@ -1,0 +1,64 @@
+{
+    "alerta": "RISCO_RACHADINHA",
+    "metadados": {
+        "deputado": "Dorinaldo Malafaia",
+        "external_id": "camara_220573",
+        "score_risco": 75,
+        "detalhes": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 25,
+                "max": 40,
+                "detail": "Fornecedor 'ORBE PRODUTORA & SERVIÇOS LTDA' concentra 70.5% dos gastos totais (R$378,500.00).",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Concentração acima de 40% em único fornecedor pode indicar uso de empresa fachada para desvio.",
+                "proofData": {
+                    "entity": "Fornecedor: ORBE PRODUTORA & SERVIÇOS LTDA",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220573/despesas"
+                }
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 20,
+                "max": 20,
+                "detail": "ALERTA: 56 de 78 fornecedores (72%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Taxa de churn de 72% indica troca contínua de fornecedores, compatível com esquema de desvio.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220573/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 30,
+                "max": 30,
+                "detail": "ALERTA: 'ORBE PRODUTORA & SERVIÇOS LTDA' (CNPJ: 49494655000152) concentra R$378,500.00 (92%) em tipos suspeitos. Sócios: .",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "QSA consultado via Receita Federal — Sócios identificados: . Verificar se algum possui vínculo com o gabinete.",
+                "proofData": {
+                    "entity": "Sócios: ",
+                    "link": "https://brasilapi.com.br/api/cnpj/v1/49494655000152"
+                }
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ]
+    }
+}

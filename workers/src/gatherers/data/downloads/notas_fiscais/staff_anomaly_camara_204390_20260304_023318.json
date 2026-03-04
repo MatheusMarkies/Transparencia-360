@@ -1,0 +1,45 @@
+{
+    "alerta": "ANOMALIA_GABINETE",
+    "metadados": {
+        "external_id": "camara_204390",
+        "total_anomalias": 3,
+        "detalhes": [
+            {
+                "supplier": "JUSTINIANO & JUSTINIANO LTDA",
+                "totalValue": 108375.87,
+                "paymentCount": 37,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 37 pagamentos totalizando R$108,375.87"
+                    }
+                ]
+            },
+            {
+                "supplier": "FENIX COMUNICACAO, PRODUCAO E EVENTOS LTDA",
+                "totalValue": 147300.0,
+                "paymentCount": 12,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 12 pagamentos totalizando R$147,300.00"
+                    }
+                ]
+            },
+            {
+                "supplier": "MBI Baiocchi Imoveis Condominios",
+                "totalValue": 233513.7,
+                "paymentCount": 11,
+                "flags": [
+                    {
+                        "type": "CONCENTRACAO",
+                        "severity": "MEDIUM",
+                        "detail": "Recebe apenas deste deputado. 11 pagamentos totalizando R$233,513.70"
+                    }
+                ]
+            }
+        ]
+    }
+}
