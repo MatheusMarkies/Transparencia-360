@@ -4,6 +4,7 @@ Expenses Worker - Extracts real expense data from the Câmara dos Deputados.
 Strategy: Uses the "Turicas Logic" to mass-download the yearly ZIP file,
 fixes broken string patterns in memory, parses the CSV efficiently, and
 pushes EVERY receipt to the backend to maintain a 360 view of the expenses.
+OPTIMIZED: Skips massive downloads if the Parquet file already exists locally.
 """
 
 import sys
@@ -14,11 +15,12 @@ import requests
 import argparse
 from pathlib import Path
 from collections import defaultdict
+import pandas as pd
 
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent.parent))
 
 import logging
-from src.core.api_client import GovAPIClient, BackendClient
+from workers.src.core.api_client import GovAPIClient, BackendClient
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,6 +53,9 @@ class ExpensesWorker:
         self.api = GovAPIClient(CAMARA_API_BASE, request_delay=0.3)
         self.backend = BackendClient()
         self.year = year
+        # Define o caminho do Parquet
+        self.output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
+        self.parquet_path = self.output_dir / f"ceap_{self.year}_raw.parquet"
 
     def _fetch_all_deputies(self) -> list:
         """Fetch all active deputy IDs and metadata from the modern API."""
@@ -69,11 +74,58 @@ class ExpensesWorker:
             page += 1
         return all_deputies
 
+    def _read_from_local_parquet(self, target_ids: set):
+        """Lê os dados diretamente do Parquet local se ele já existir."""
+        logger.info(f"📂 Encontrado arquivo local {self.parquet_path}. Pulando download do Governo...")
+        df = pd.read_parquet(self.parquet_path)
+        
+        totals = defaultdict(float)
+        receipts = defaultdict(list)
+        
+        for _, row in df.iterrows():
+            dep_id_str = str(row.get('idecadastro', '')).split('.')[0] # Tira o .0 se for float
+            if not dep_id_str.isdigit(): continue
+            
+            dep_id = int(dep_id_str)
+            if dep_id not in target_ids: continue
+            
+            try:
+                valor = float(row.get('vlrliquido', 0.0))
+            except ValueError:
+                valor = 0.0
+            
+            totals[dep_id] += valor
+            
+            categoria = str(row.get('txtdescricao', '')).strip().upper()
+            data_doc = str(row.get('datemissao', ''))
+            if data_doc and 'T' in data_doc: data_doc = data_doc.split('T')[0]
+            elif data_doc and ' ' in data_doc: data_doc = data_doc.split(' ')[0]
+            
+            if data_doc and data_doc != 'nan' and data_doc != 'None':
+                num_doc = str(row.get('numdocumento', 'unknown'))
+                fornecedor = str(row.get('txtfornecedor', 'Unknown'))
+                
+                despesa_node = {
+                    "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
+                    "dataEmissao": data_doc[:10],
+                    "ufFornecedor": str(row.get('sguf', 'NA')),
+                    "categoria": categoria,
+                    "valorDocumento": valor,
+                    "nomeFornecedor": fornecedor
+                }
+                receipts[dep_id].append(despesa_node)
+                
+        return totals, receipts
+
+
     def _mass_download_and_parse(self, target_ids: set):
-        """
-        Baixa o ZIP massivo do ano, lê em memória e extrai TODAS as notas
-        fiscais dos deputados-alvo, sem filtros de categoria.
-        """
+        """Baixa o ZIP massivo do ano e extrai notas fiscais."""
+        
+        # === A GRANDE OTIMIZAÇÃO: VERIFICA SE EXISTE NO DISCO PRIMEIRO ===
+        if self.parquet_path.exists():
+            return self._read_from_local_parquet(target_ids)
+
+        # Se não existe, vai buscar ao Governo
         url = f"https://www.camara.leg.br/cotas/Ano-{self.year}.csv.zip"
         logger.info(f"📥 Baixando pacote massivo do CEAP {self.year} (Logica Turicas)...")
         
@@ -100,10 +152,10 @@ class ExpensesWorker:
         totals = defaultdict(float)
         receipts = defaultdict(list)
         
-        import pandas as pd
         raw_rows = []
         for row in reader:
             row = {k.lower(): v for k, v in row.items() if k}
+            raw_rows.append(row) # Salva para o Parquet
             
             dep_id_str = row.get("idecadastro", "")
             if not dep_id_str.isdigit():
@@ -112,8 +164,6 @@ class ExpensesWorker:
             dep_id = int(dep_id_str)
             if dep_id not in target_ids:
                 continue
-            
-            raw_rows.append(row)
                 
             try:
                 valor = float(row.get("vlrliquido", "0").replace(",", "."))
@@ -122,11 +172,10 @@ class ExpensesWorker:
                 
             totals[dep_id] += valor
             
-            # Extrai 100% das categorias (Combustível, Consultoria, Passagens, Divulgação, etc)
+            # Extrai 100% das categorias
             categoria = row.get("txtdescricao", "").strip().upper()
             data_doc = row.get("datemissao", "")
             
-            # Limpa a data do timestamp, se existir
             if data_doc and "T" in data_doc:
                 data_doc = data_doc.split("T")[0]
             elif data_doc and " " in data_doc:
@@ -136,7 +185,6 @@ class ExpensesWorker:
                 num_doc = row.get("numdocumento", "unknown")
                 fornecedor = row.get("txtfornecedor", "Unknown")
                 
-                # Gera o nó da despesa
                 despesa_node = {
                     "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
                     "dataEmissao": data_doc[:10],
@@ -147,29 +195,24 @@ class ExpensesWorker:
                 }
                 receipts[dep_id].append(despesa_node)
         
-        # Save raw data to Parquet for RosieWorker
+        # Save raw data to Parquet for future runs and for RosieWorker
         if raw_rows:
             try:
                 df = pd.DataFrame(raw_rows)
                 
-                # Convert numeric fields correctly
                 numeric_cols = ["vlrliquido", "vlrglosa"]
                 for col in numeric_cols:
                     if col in df.columns:
                         df[col] = df[col].astype(str).str.replace(",", ".").replace("", "0")
                         df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
                 
-                # Certificar que todas as colunas sejam texto antes de salvar, exceto valores numericos
                 for col in df.columns:
                     if col not in numeric_cols:
                         df[col] = df[col].astype(str)
                 
-                output_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "processed"
-                output_dir.mkdir(parents=True, exist_ok=True)
-                parquet_path = output_dir / f"ceap_{self.year}_raw.parquet"
-                
-                df.to_parquet(parquet_path, index=False)
-                logger.info(f"💾 Raw data saved to Parquet: {parquet_path}")
+                self.output_dir.mkdir(parents=True, exist_ok=True)
+                df.to_parquet(self.parquet_path, index=False)
+                logger.info(f"💾 Raw data saved to Parquet: {self.parquet_path}")
             except Exception as e:
                 logger.error(f"❌ Failed to save raw Parquet data: {e}")
                 
@@ -183,7 +226,7 @@ class ExpensesWorker:
         target_deputies = deputies[:limit]
         target_ids = {d["id"] for d in target_deputies}
         
-        logger.info(f"Found {len(deputies)} deputies. Processing first {limit} via Bulk CSV...")
+        logger.info(f"Found {len(deputies)} deputies. Processing first {limit} via Bulk Data...")
 
         totals_dict, receipts_dict = self._mass_download_and_parse(target_ids)
 
