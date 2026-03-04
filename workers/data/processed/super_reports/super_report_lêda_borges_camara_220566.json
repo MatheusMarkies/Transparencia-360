@@ -1,0 +1,107 @@
+{
+    "01_metadados": {
+        "internal_id": 1466,
+        "camara_id": "camara_220566",
+        "nome": "Lêda Borges",
+        "partido_estado": "PSDB - GO",
+        "risco_global": 16.0,
+        "data_extracao": "2026-03-04 12:46:18"
+    },
+    "02_documentos_lidos_e_grafos": {
+        "notas_fiscais_agrupadas": 0,
+        "empresas_qsa_e_contratos_mapeados": 0,
+        "municipios_recebedores_de_emendas": 0,
+        "promessas_campanha_identificadas": 0,
+        "votacoes_analisadas_nlp": 0
+    },
+    "03_estatisticas_patrimoniais_e_uso_maquina": {
+        "total_gasto_cota_parlamentar": 495353.28,
+        "taxa_ausencia_plenario": 4,
+        "presencas_plenario": 96,
+        "patrimonio_declarado_2022": null,
+        "fator_anomalia_patrimonial": null
+    },
+    "04_alertas_de_inteligencia": {
+        "motor_rachadinha_score": 20,
+        "motor_rachadinha_evidencias": [
+            {
+                "heuristic": "Doador Compulsório (CEAP Pessoal)",
+                "points": 0,
+                "max": 40,
+                "detail": "Distribuição de gastos com pessoal dentro da normalidade.",
+                "source": "Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.",
+                "proof": "Sem evidências de concentração atípica em pagamentos a assessores.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Porta Giratória (Turnover Fornecedores)",
+                "points": 20,
+                "max": 20,
+                "detail": "ALERTA: 168 de 222 fornecedores (76%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.",
+                "source": "Câmara API — Análise temporal de fornecedores CEAP (2023-2025).",
+                "proof": "Taxa de churn de 76% indica troca contínua de fornecedores, compatível com esquema de desvio.",
+                "proofData": {
+                    "entity": "Análise temporal 2023-2025",
+                    "link": "https://dadosabertos.camara.leg.br/api/v2/deputados/220566/despesas"
+                }
+            },
+            {
+                "heuristic": "Triangulação de Verbas (Cota + QSA)",
+                "points": 0,
+                "max": 30,
+                "detail": "Sem indícios de triangulação via cruzamento com Receita Federal.",
+                "source": "CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.",
+                "proof": "Dados batem com o padrão de consultorias e locações legislativas comuns.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Dispensas em Diários Oficiais (NLP)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem menções suspeitas em Diários Oficiais.",
+                "source": "Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.",
+                "proof": "Nenhum CNPJ suspeito encontrado em editais de dispensa.",
+                "proofData": null
+            },
+            {
+                "heuristic": "Processos Judiciais (DataJud)",
+                "points": 0,
+                "max": 15,
+                "detail": "Sem processos de improbidade encontrados no DataJud.",
+                "source": "DataJud (CNJ) — Processos de improbidade administrativa.",
+                "proof": "Consulta realizada em TRF1-5, STJ, TST.",
+                "proofData": null
+            }
+        ],
+        "anomalias_contratacao_gabinete_qtd": 3,
+        "anomalias_contratacao_gabinete_evidencias": [
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA",
+                "totalValue": 183.35,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_220566_7939595.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7939595.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA",
+                "totalValue": 217.59,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_220566_7939601.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7939601.pdf"
+            },
+            {
+                "type": "DESPESA_FISCAL",
+                "severity": "MEDIUM",
+                "detail": "Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA",
+                "totalValue": 206.13,
+                "doc_path": "D:\\Matheus Markies\\Downloads\\Test\\data\\downloads\\notas_fiscais\\dep_220566_7973819.pdf",
+                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7973819.pdf"
+            }
+        ],
+        "mencoes_suspeitas_diarios_oficiais": null,
+        "processos_judiciais_improbidade": 0
+    },
+    "05_llm_detective_prompt": "Você é um Investigador Sênior da Polícia Federal do Brasil e Auditor do TCU, especialista em crimes financeiros, peculato (rachadinha), lavagem de dinheiro e fraude à licitação.\n\nAnalise o dossiê de dados do parlamentar abaixo. NÃO INVENTE DADOS. Baseie-se EXCLUSIVAMENTE nos números e anomalias fornecidos no JSON.\n\nElabore um Relatório de Inteligência Policial rigoroso e direto contendo:\n1. **Hipótese Investigativa:** Baseado nas anomalias matemáticas, qual é o provável esquema em andamento? (Se os dados estiverem limpos, seja honesto e diga que não há indícios de fraude).\n2. **Red Flags (Sinais de Alerta):** Liste em bullet points os 3 maiores cruzamentos suspeitos encontrados nos dados.\n3. **Recomendação de Diligência:** Onde um auditor ou repórter investigativo deve procurar as próximas provas físicas (ex: quebrar sigilo de qual empresa, buscar imagens de qual rua, verificar folha de ponto de qual mês).\n\nDADOS DO PARLAMENTAR (JSON):\n{\n  \"01_metadados\": {\n    \"internal_id\": 1466,\n    \"camara_id\": \"camara_220566\",\n    \"nome\": \"Lêda Borges\",\n    \"partido_estado\": \"PSDB - GO\",\n    \"risco_global\": 16.0,\n    \"data_extracao\": \"2026-03-04 12:46:18\"\n  },\n  \"02_documentos_lidos_e_grafos\": {\n    \"notas_fiscais_agrupadas\": 0,\n    \"empresas_qsa_e_contratos_mapeados\": 0,\n    \"municipios_recebedores_de_emendas\": 0,\n    \"promessas_campanha_identificadas\": 0,\n    \"votacoes_analisadas_nlp\": 0\n  },\n  \"03_estatisticas_patrimoniais_e_uso_maquina\": {\n    \"total_gasto_cota_parlamentar\": 495353.28,\n    \"taxa_ausencia_plenario\": 4,\n    \"presencas_plenario\": 96,\n    \"patrimonio_declarado_2022\": null,\n    \"fator_anomalia_patrimonial\": null\n  },\n  \"04_alertas_de_inteligencia\": {\n    \"motor_rachadinha_score\": 20,\n    \"motor_rachadinha_evidencias\": [\n      {\n        \"heuristic\": \"Doador Compulsório (CEAP Pessoal)\",\n        \"points\": 0,\n        \"max\": 40,\n        \"detail\": \"Distribuição de gastos com pessoal dentro da normalidade.\",\n        \"source\": \"Dados abertos da Câmara (CEAP) — Análise de gastos com pessoal e assessoria.\",\n        \"proof\": \"Sem evidências de concentração atípica em pagamentos a assessores.\",\n        \"proofData\": null\n      },\n      {\n        \"heuristic\": \"Porta Giratória (Turnover Fornecedores)\",\n        \"points\": 20,\n        \"max\": 20,\n        \"detail\": \"ALERTA: 168 de 222 fornecedores (76%) aparecem em apenas 1 ano — padrão de 'laranjas' rotativos.\",\n        \"source\": \"Câmara API — Análise temporal de fornecedores CEAP (2023-2025).\",\n        \"proof\": \"Taxa de churn de 76% indica troca contínua de fornecedores, compatível com esquema de desvio.\",\n        \"proofData\": {\n          \"entity\": \"Análise temporal 2023-2025\",\n          \"link\": \"https://dadosabertos.camara.leg.br/api/v2/deputados/220566/despesas\"\n        }\n      },\n      {\n        \"heuristic\": \"Triangulação de Verbas (Cota + QSA)\",\n        \"points\": 0,\n        \"max\": 30,\n        \"detail\": \"Sem indícios de triangulação via cruzamento com Receita Federal.\",\n        \"source\": \"CEAP + Brasil API (QSA) — Cruzamento CNPJ→Sócios→Gabinete.\",\n        \"proof\": \"Dados batem com o padrão de consultorias e locações legislativas comuns.\",\n        \"proofData\": null\n      },\n      {\n        \"heuristic\": \"Dispensas em Diários Oficiais (NLP)\",\n        \"points\": 0,\n        \"max\": 15,\n        \"detail\": \"Sem menções suspeitas em Diários Oficiais.\",\n        \"source\": \"Querido Diário (OKBR) + NLP — Extração de dispensas e licitações.\",\n        \"proof\": \"Nenhum CNPJ suspeito encontrado em editais de dispensa.\",\n        \"proofData\": null\n      },\n      {\n        \"heuristic\": \"Processos Judiciais (DataJud)\",\n        \"points\": 0,\n        \"max\": 15,\n        \"detail\": \"Sem processos de improbidade encontrados no DataJud.\",\n        \"source\": \"DataJud (CNJ) — Processos de improbidade administrativa.\",\n        \"proof\": \"Consulta realizada em TRF1-5, STJ, TST.\",\n        \"proofData\": null\n      }\n    ],\n    \"anomalias_contratacao_gabinete_qtd\": 3,\n    \"anomalias_contratacao_gabinete_evidencias\": [\n      {\n        \"type\": \"DESPESA_FISCAL\",\n        \"severity\": \"MEDIUM\",\n        \"detail\": \"Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA\",\n        \"totalValue\": 183.35,\n        \"doc_path\": \"D:\\\\Matheus Markies\\\\Downloads\\\\Test\\\\data\\\\downloads\\\\notas_fiscais\\\\dep_220566_7939595.pdf\",\n        \"evidence_url\": \"https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7939595.pdf\"\n      },\n      {\n        \"type\": \"DESPESA_FISCAL\",\n        \"severity\": \"MEDIUM\",\n        \"detail\": \"Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA\",\n        \"totalValue\": 217.59,\n        \"doc_path\": \"D:\\\\Matheus Markies\\\\Downloads\\\\Test\\\\data\\\\downloads\\\\notas_fiscais\\\\dep_220566_7939601.pdf\",\n        \"evidence_url\": \"https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7939601.pdf\"\n      },\n      {\n        \"type\": \"DESPESA_FISCAL\",\n        \"severity\": \"MEDIUM\",\n        \"detail\": \"Documento extraído: ENEL - COMPANHIA DE ENERGIA ELÉTRICA\",\n        \"totalValue\": 206.13,\n        \"doc_path\": \"D:\\\\Matheus Markies\\\\Downloads\\\\Test\\\\data\\\\downloads\\\\notas_fiscais\\\\dep_220566_7973819.pdf\",\n        \"evidence_url\": \"https://www.camara.leg.br/cota-parlamentar/documentos/publ/3579/2025/7973819.pdf\"\n      }\n    ],\n    \"mencoes_suspeitas_diarios_oficiais\": null,\n    \"processos_judiciais_improbidade\": 0\n  }\n}\n\nResponda em formato Markdown bem formatado.\n"
+}
