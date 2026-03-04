@@ -115,12 +115,15 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
                         @Param("funcao") String funcao, @Param("localidade") String localidade);
 
         @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
-                        + "RETURN d.nomeFornecedor AS fornecedor, SUM(d.valorDocumento) AS total "
-                        + "ORDER BY total DESC LIMIT 5")
+                        + "WITH d.nomeFornecedor AS fornecedor, SUM(d.valorDocumento) AS total "
+                        + "ORDER BY total DESC LIMIT 5 "
+                        + "RETURN { fornecedor: fornecedor, total: total }")
         List<Map<String, Object>> findTopFornecedoresByPoliticoId(@Param("politicoId") String politicoId);
 
         @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
-                        + "RETURN d.categoria AS categoria, SUM(d.valorDocumento) AS total "
-                        + "ORDER BY total DESC")
+                        + "WITH d.categoria AS categoria, SUM(d.valorDocumento) AS total "
+                        + "ORDER BY total DESC "
+                        + "RETURN { categoria: categoria, total: total }")
         List<Map<String, Object>> findGastosPorCategoriaByPoliticoId(@Param("politicoId") String politicoId);
+
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
   Search,
@@ -64,6 +64,20 @@ function App() {
 
   const [topSuppliers, setTopSuppliers] = useState<any[]>([]);
   const [categoryExpenses, setCategoryExpenses] = useState<any[]>([]);
+
+  const fgRef = useRef<any>(null);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (fgRef.current) {
+        fgRef.current.d3Force('charge').strength(-2000);
+        fgRef.current.d3Force('link').distance(300);
+        fgRef.current.d3ReheatSimulation();
+      }
+    }, 100); // 100 milissegundos de atraso
+
+    return () => clearTimeout(timeoutId);
+  }, [graphData]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -218,6 +232,14 @@ function App() {
       setEmendasList(emResp.data);
     } catch (e) { console.error(e); }
 
+    // Fetch Dashboard Data
+    try {
+      const topResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/top-fornecedores`);
+      setTopSuppliers(topResp.data);
+      const catResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/gastos-categoria`);
+      setCategoryExpenses(catResp.data);
+    } catch (e) { console.error("Erro ao buscar dashboard:", e); }
+
     // Fetch Sources
     try {
       const sResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/sources`);
@@ -226,14 +248,6 @@ function App() {
       console.error("Error fetching sources:", e);
       setSources([]);
     }
-
-    // Fetch Dashboard Data
-    try {
-      const topResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/top-fornecedores`);
-      setTopSuppliers(topResp.data);
-      const catResp = await axios.get(`${BACKEND_URL}/politicians/${p.id}/gastos-categoria`);
-      setCategoryExpenses(catResp.data);
-    } catch (e) { console.error("Erro ao buscar dashboard:", e); }
 
     // Fetch Detailed Expenses
     try {
@@ -576,28 +590,68 @@ function App() {
                     <p className="text-xs font-bold text-slate-600">O tamanho das esferas representa o volume financeiro. As luzes mostram o fluxo do cofre público para o fornecedor.</p>
                   </div>
                   <ForceGraph2D
+                    ref={fgRef} // <-- Liga o nosso motor de física ao grafo
                     graphData={graphData}
-                    nodeLabel="name"
                     nodeAutoColorBy="group"
-                    nodeColor={(node: any) => node.color}
-                    nodeVal="val"
+                    // Mantemos o nodeLabel para o tooltip nativo (hover)
+                    nodeLabel="name"
                     linkColor={(link: any) => link.color}
                     linkWidth={(link: any) => link.width}
                     linkDirectionalParticles={(link: any) => link.particles}
-                    linkDirectionalParticleSpeed={(link: any) => link.color === "#ef4444" ? 0.015 : 0.005} // Sangra dinheiro rápido se for anomalia
+                    linkDirectionalParticleSpeed={(link: any) => link.color === "#ef4444" ? 0.015 : 0.005}
                     linkDirectionalParticleColor={(link: any) => link.color}
                     linkDirectionalArrowLength={3.5}
                     linkDirectionalArrowRelPos={1}
                     width={1100}
                     height={600}
                     backgroundColor="#f8fafc"
+
+                    // 🎨 A MÁGICA VISUAL: Desenhamos a bolha e o texto manualmente
+                    nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
+                      const label = node.name;
+                      const fontSize = 12 / globalScale; // O texto cresce/diminui junto com o zoom
+                      ctx.font = `${fontSize}px Sans-Serif`;
+
+                      // 1. Desenha a Bolha
+                      const nodeR = node.val * 0.6; // Raio da bolha
+                      ctx.beginPath();
+                      ctx.arc(node.x, node.y, nodeR, 0, 2 * Math.PI, false);
+                      ctx.fillStyle = node.color || '#94a3b8';
+                      ctx.fill();
+
+                      // Borda vermelha piscante/destacada para Anomalias
+                      if (node.color === "#ef4444") {
+                        ctx.lineWidth = 2 / globalScale;
+                        ctx.strokeStyle = "#991b1b";
+                        ctx.stroke();
+                      }
+
+                      // 2. Mede o tamanho do texto para criar uma "Plaquinha" de fundo
+                      const textWidth = ctx.measureText(label).width;
+                      const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.4);
+
+                      // Desenha o fundo branco semi-transparente do texto
+                      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                      ctx.fillRect(
+                        node.x - bckgDimensions[0] / 2,
+                        node.y + nodeR + (2 / globalScale), // Posiciona logo abaixo da bolha
+                        bckgDimensions[0],
+                        bckgDimensions[1]
+                      );
+
+                      // 3. Escreve o texto por cima do fundo
+                      ctx.textAlign = 'center';
+                      ctx.textBaseline = 'middle';
+                      ctx.fillStyle = node.color === "#ef4444" ? "#b91c1c" : "#1e293b"; // Texto vermelho escuro se for alerta
+                      ctx.fillText(label, node.x, node.y + nodeR + (2 / globalScale) + (bckgDimensions[1] / 2));
+                    }}
                   />
                 </div>
               )}
 
-              {/* NOVA ABA: DESPESAS BRUTAS */}
+              {/* NOVO DASHBOARD DE DESPESAS */}
               {activeTab === 'despesas' && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                   {/* Coluna da Esquerda: Gráficos de Agregação */}
                   <div className="space-y-6 flex flex-col h-[600px]">
@@ -610,7 +664,7 @@ function App() {
                         {topSuppliers.map((sup, i) => (
                           <div key={i} className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center group hover:bg-rose-50 transition-colors">
                             <span className="text-[11px] font-bold text-slate-600 line-clamp-1 w-3/5" title={sup.fornecedor}>{sup.fornecedor}</span>
-                            <span className="text-xs font-black text-rose-500 group-hover:scale-105 transition-transform">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(sup.total || 0)}</span>
+                            <span className="text-xs font-black text-rose-500 group-hover:scale-105 transition-transform">{formatCurrency(sup.total || 0)}</span>
                           </div>
                         ))}
                       </div>
@@ -629,7 +683,7 @@ function App() {
                             <div key={i} className="group">
                               <div className="flex justify-between mb-1.5 items-end">
                                 <span className="text-[10px] font-bold text-slate-500 line-clamp-1 w-2/3 uppercase tracking-tight">{cat.categoria}</span>
-                                <span className="text-[10px] font-black text-slate-700">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cat.total || 0)}</span>
+                                <span className="text-[10px] font-black text-slate-700">{formatCurrency(cat.total || 0)}</span>
                               </div>
                               <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                                 <div className="h-full bg-indigo-400 rounded-full group-hover:bg-indigo-500 transition-colors" style={{ width: `${pct}%` }}></div>
@@ -667,7 +721,7 @@ function App() {
                               <td className="py-3 text-xs font-bold text-slate-700">{d.nomeFornecedor}</td>
                               <td className="py-3 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{d.categoria}</td>
                               <td className="py-3 text-sm font-black text-rose-500 text-right whitespace-nowrap">
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d.valorDocumento || 0)}
+                                {formatCurrency(d.valorDocumento || 0)}
                               </td>
                             </tr>
                           ))}
