@@ -1,12 +1,20 @@
 """
-Expenses Worker - Extracts real expense data from the Câmara dos Deputados API.
+Expenses Worker - Extracts real expense data from the Câmara dos Deputados.
 
-Strategy: For each politician, fetches ALL expense records for a given year,
-sums up the total, and pushes a single aggregated value to the backend.
-This optimizes storage by only persisting the total instead of every receipt.
+Strategy: Uses the "Turicas Logic" to mass-download the yearly ZIP file,
+fixes broken string patterns in memory, parses the CSV efficiently, and
+pushes EVERY receipt to the backend to maintain a 360 view of the expenses.
 """
+
 import sys
+import io
+import csv
+import zipfile
+import requests
+import argparse
 from pathlib import Path
+from collections import defaultdict
+
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 import logging
@@ -17,6 +25,27 @@ logger = logging.getLogger(__name__)
 
 CAMARA_API_BASE = "https://dadosabertos.camara.leg.br/api/v2"
 
+# ==============================================================================
+# LÓGICA DO TURICAS PARA CORREÇÃO DE BUGS NOS CSVS DO GOVERNO
+# ==============================================================================
+class FixCSVWrapper(io.TextIOWrapper):
+    def __init__(self, *args, replace=(), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.replace = replace
+
+    def read(self, *args, **kwargs):
+        data = super().read(*args, **kwargs)
+        for first, second in self.replace:
+            data = data.replace(first, second)
+        return data
+
+    def readline(self, *args, **kwargs):
+        data = super().readline(*args, **kwargs)
+        for first, second in self.replace:
+            data = data.replace(first, second)
+        return data
+
+
 class ExpensesWorker:
     def __init__(self, year: int = 2025):
         self.api = GovAPIClient(CAMARA_API_BASE, request_delay=0.3)
@@ -24,7 +53,7 @@ class ExpensesWorker:
         self.year = year
 
     def _fetch_all_deputies(self) -> list:
-        """Fetch all active deputy IDs and external IDs."""
+        """Fetch all active deputy IDs and metadata from the modern API."""
         all_deputies = []
         page = 1
         while True:
@@ -32,7 +61,7 @@ class ExpensesWorker:
             if not resp or "dados" not in resp or len(resp["dados"]) == 0:
                 break
             all_deputies.extend(resp["dados"])
-            # Check if there's a next page
+            
             links = resp.get("links", [])
             has_next = any(l.get("rel") == "next" for l in links)
             if not has_next:
@@ -40,64 +69,109 @@ class ExpensesWorker:
             page += 1
         return all_deputies
 
-    def _aggregate_expenses(self, deputy_id: int, external_id: str) -> float:
-        """Fetches all expense pages for a deputy in the given year and sums totals.
-        Optimized: only stores the aggregated sum, not individual receipts.
-        NEW: Also posts individual receipts for specific categories (spatial anomaly)."""
-        valid_categories = ["FORNECIMENTO DE ALIMENTAÇÃO", "HOSPEDAGEM", "LOCAÇÃO OU FRETAMENTO DE VEÍCULOS AUTOMOTORES"]
-        total = 0.0
-        page = 1
-        while True:
-            resp = self.api.get(
-                f"deputados/{deputy_id}/despesas",
-                params={"ano": self.year, "pagina": page, "itens": 100, "ordem": "ASC"}
-            )
-            if not resp or "dados" not in resp or len(resp["dados"]) == 0:
-                break
-            for d in resp["dados"]:
-                valor = d.get("valorLiquido", 0.0)
-                total += valor
+    def _mass_download_and_parse(self, target_ids: set):
+        """
+        Baixa o ZIP massivo do ano, lê em memória e extrai TODAS as notas
+        fiscais dos deputados-alvo, sem filtros de categoria.
+        """
+        url = f"https://www.camara.leg.br/cotas/Ano-{self.year}.csv.zip"
+        logger.info(f"📥 Baixando pacote massivo do CEAP {self.year} (Logica Turicas)...")
+        
+        response = requests.get(url, stream=True)
+        if response.status_code != 200:
+            logger.error(f"Erro ao baixar CSV: HTTP {response.status_code}")
+            return {}, {}
+            
+        zip_file = zipfile.ZipFile(io.BytesIO(response.content))
+        filename = zip_file.filelist[0].filename
+        
+        replace_rules = ()
+        if self.year == 2011:
+            replace_rules = ((';"SN;', ";SN;"),)
+        elif self.year == 2018:
+            replace_rules = ((';"LUPA', ";LUPA"), (';"EMBAIXADA', ";EMBAIXADA"))
+            
+        logger.info("🧹 Sanitizando e extraindo 100% das notas em memória...")
+        fobj = FixCSVWrapper(zip_file.open(filename), encoding="utf-8-sig", replace=replace_rules)
+        
+        csv.field_size_limit(1024 ** 2)
+        reader = csv.DictReader(fobj, delimiter=";")
+        
+        totals = defaultdict(float)
+        receipts = defaultdict(list)
+        
+        for row in reader:
+            row = {k.lower(): v for k, v in row.items() if k}
+            
+            dep_id_str = row.get("idecadastro", "")
+            if not dep_id_str.isdigit():
+                continue
                 
-                categoria = d.get("tipoDespesa", "").upper()
-                if categoria in valid_categories:
-                    # Parse date safely (camara API format varies, usually has dataDocumento)
-                    data_doc = d.get("dataDocumento", "")
-                    # fallback to string if none
-                    data_str = str(data_doc).split("T")[0] if isinstance(data_doc, str) and "T" in data_doc else str(data_doc) if data_doc else None
+            dep_id = int(dep_id_str)
+            if dep_id not in target_ids:
+                continue
+                
+            try:
+                valor = float(row.get("vlrliquido", "0").replace(",", "."))
+            except ValueError:
+                valor = 0.0
+                
+            totals[dep_id] += valor
+            
+            # Extrai 100% das categorias (Combustível, Consultoria, Passagens, Divulgação, etc)
+            categoria = row.get("txtdescricao", "").strip().upper()
+            data_doc = row.get("datemissao", "")
+            
+            # Limpa a data do timestamp, se existir
+            if data_doc and "T" in data_doc:
+                data_doc = data_doc.split("T")[0]
+            elif data_doc and " " in data_doc:
+                data_doc = data_doc.split(" ")[0]
+                
+            if data_doc:
+                num_doc = row.get("numdocumento", "unknown")
+                fornecedor = row.get("txtfornecedor", "Unknown")
+                
+                # Gera o nó da despesa
+                despesa_node = {
+                    "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
+                    "dataEmissao": data_doc[:10],
+                    "ufFornecedor": row.get("sguf", "NA"), 
+                    "categoria": categoria,
+                    "valorDocumento": valor,
+                    "nomeFornecedor": fornecedor
+                }
+                receipts[dep_id].append(despesa_node)
                     
-                    if data_str:
-                        despesa_node = {
-                            "id": f"despesa_{d.get('codDocumento', d.get('numDocumento', 'unknown'))}",
-                            "dataEmissao": data_str[:10],
-                            "ufFornecedor": d.get("siglaUF", "NA"),
-                            "categoria": categoria,
-                            "valorDocumento": valor,
-                            "nomeFornecedor": d.get("nomeFornecedor", "Unknown")
-                        }
-                        self.backend.ingest_despesa(external_id, despesa_node)
-            links = resp.get("links", [])
-            has_next = any(l.get("rel") == "next" for l in links)
-            if not has_next:
-                break
-            page += 1
-        return round(total, 2)
+        return totals, receipts
 
     def run(self, limit: int = 50):
-        """Main execution: fetch deputies, aggregate expenses, push to backend."""
-        logger.info(f"=== Expenses Worker - Extracting {self.year} expenses ===")
+        """Main execution: fetch deputies, mass process CSV, push to backend."""
+        logger.info(f"=== Expenses Worker - Extracting 100% of {self.year} expenses ===")
+        
         deputies = self._fetch_all_deputies()
-        logger.info(f"Found {len(deputies)} deputies. Processing first {limit}...")
+        target_deputies = deputies[:limit]
+        target_ids = {d["id"] for d in target_deputies}
+        
+        logger.info(f"Found {len(deputies)} deputies. Processing first {limit} via Bulk CSV...")
 
-        for i, dep in enumerate(deputies[:limit]):
+        totals_dict, receipts_dict = self._mass_download_and_parse(target_ids)
+
+        for i, dep in enumerate(target_deputies):
             dep_id = dep["id"]
             name = dep["nome"]
             external_id = f"camara_{dep_id}"
 
-            logger.info(f"[{i+1}/{limit}] {name} - Fetching {self.year} expenses...")
-            total_expenses = self._aggregate_expenses(dep_id, external_id)
-            logger.info(f"  -> Total: R$ {total_expenses:,.2f}")
+            total_expenses = round(totals_dict.get(dep_id, 0.0), 2)
+            notas_count = len(receipts_dict.get(dep_id, []))
+            
+            logger.info(f"[{i+1}/{limit}] {name} -> Total: R$ {total_expenses:,.2f} ({notas_count} notas registradas)")
+            
+            # Injeta 100% das notas no Backend
+            for receipt in receipts_dict.get(dep_id, []):
+                self.backend.ingest_despesa(external_id, receipt)
 
-            # Update only the expenses field for this politician
+            # Injeta o Político com o total atualizado
             self.backend.ingest_politician({
                 "externalId": external_id,
                 "name": name,
@@ -111,7 +185,9 @@ class ExpensesWorker:
 
 
 if __name__ == "__main__":
-    worker = ExpensesWorker(year=2025)
+    parser = argparse.ArgumentParser(description="Worker de Gastos com Lógica Turicas (100% Dados)")
     parser.add_argument("--limit", type=int, default=15, help="Number of parliamentarians to process")
     args = parser.parse_args()
+    
+    worker = ExpensesWorker(year=2025)
     worker.run(limit=args.limit)

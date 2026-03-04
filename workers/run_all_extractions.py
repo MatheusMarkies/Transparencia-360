@@ -170,7 +170,7 @@ def main():
 
         def run_step_4_legacy():
             from src.gatherers.expenses_worker import ExpensesWorker
-            for yr in [2024, 2025]:
+            for yr in [2022, 2023, 2024, 2025, 2026]:
                 ExpensesWorker(year=yr).run(limit=LIMIT)
         run_step(4, "ExpensesWorker (Legacy Sync)", run_step_4_legacy)
 
@@ -180,17 +180,17 @@ def main():
         run_step(5, "AbsencesWorker", run_step_5_legacy)
 
         # Passo 6: Ingestão real dos dados em Parquet (A que demorava mais)
-        def ingestao_dados():
-            from ingest_parquet import ingest_camara_despesas, ingest_emendas
-            import asyncio
+        #def ingestao_dados():
+        #    from ingest_parquet import ingest_camara_despesas, ingest_emendas
+        #    import asyncio
+        #    
+        #    async def run_ingestion():
+        #        await ingest_camara_despesas()
+        #        await ingest_emendas()
+        #        
+        #    asyncio.run(run_ingestion())
             
-            async def run_ingestion():
-                await ingest_camara_despesas()
-                await ingest_emendas()
-                
-            asyncio.run(run_ingestion())
-            
-        run_step(6, "Ingestão de Arquivos Parquet (Fase 2)", ingestao_dados)
+        #run_step(6, "Ingestão de Arquivos Parquet (Fase 2)", ingestao_dados)
 
         def step_19():
             import requests
@@ -310,6 +310,35 @@ def main():
         w = PNCPWorker()
         w.run(limit=LIMIT)
     run_step(14.5, "PNCP Worker (Contratos de Municípios Alvo)", step_14_5)
+
+    def step_15():
+        """
+        ROSIE — Full CEAP Anomaly Detection Engine
+        
+        Runs 12 classifiers on all CEAP receipts:
+        1.  MealPriceOutlier      — Statistical outlier on meal expenses (IQR)
+        2.  TravelSpeed            — Physically impossible trips (Haversine)
+        3.  MonthlySubquotaLimit   — Over-limit spending per subcota
+        4.  ElectionPeriod         — Spending during election campaigns
+        5.  WeekendHoliday         — Expenses on non-working days
+        6.  DuplicateReceipt       — Same receipt submitted twice (hash fingerprint)
+        7.  CNPJBlacklist          — CEIS/CNEP blacklisted companies
+        8.  CompanyAge             — Payments to very new companies
+        9.  BenfordLaw             — Benford's Law digit distribution (Chi²)
+        10. HighValueOutlier       — Global z-score anomaly detection
+        11. SuspiciousSupplier     — Same supplier serving too many deputies
+        12. SequentialReceipt      — Sequential nota fiscal numbers
+        
+        Outputs:
+        - data/processed/rosie_report.json       (full structured report)
+        - data/processed/rosie_anomalies.csv     (flat anomaly list)
+        - data/processed/rosie_risk_ranking.txt  (human-readable ranking)
+        - Backend API push (rosie risk scores per politician)
+        """
+        from src.gatherers.rosie_worker import RosieWorker
+        worker = RosieWorker(years=[2022, 2023, 2024, 2025, 2026])
+        worker.run(limit=LIMIT)
+    run_step(15, "ROSIE — Full CEAP Anomaly Detection Engine", step_15)
 
     def step_16():
         from src.nlp.coherence_worker import CoherenceWorker

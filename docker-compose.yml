@@ -11,7 +11,8 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # Modificado: Salva os dados do Postgres numa pasta local no seu disco D:
+      - ./db_data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d tp360"]
       interval: 10s
@@ -45,19 +46,13 @@ services:
       NEO4J_apoc_import_file_use__neo4j__config: "true"
       NEO4J_dbms_security_procedures_unrestricted: apoc.*
     volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-      - neo4j_import:/var/lib/neo4j/import
-      - neo4j_plugins:/plugins
+      # Modificado: Salva os grafos, logs e plugins do Neo4j numa pasta local no seu disco D:
+      - ./db_data/neo4j/data:/data
+      - ./db_data/neo4j/logs:/logs
+      - ./db_data/neo4j/import:/var/lib/neo4j/import
+      - ./db_data/neo4j/plugins:/plugins
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  postgres_data:
-  neo4j_data:
-  neo4j_logs:
-  neo4j_import:
-  neo4j_plugins:
