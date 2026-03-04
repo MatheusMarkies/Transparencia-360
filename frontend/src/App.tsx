@@ -11,7 +11,11 @@ import {
   Network,
   BarChart3,
   AlertCircle,
-  Users
+  Users,
+  Bot,
+  Calculator,
+  Copy,
+  CalendarOff
 } from 'lucide-react';
 import ForceGraph2D from 'react-force-graph-2d';
 
@@ -49,6 +53,10 @@ interface Politician {
   nlpGazetteDetails?: string;
   judicialRiskScore?: number;
   judicialRiskDetails?: string;
+
+  rosieBenfordCount?: number;
+  rosieDuplicateCount?: number;
+  rosieWeekendCount?: number;
 }
 
 function App() {
@@ -503,8 +511,95 @@ function App() {
                     />
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* =========================================================
+                      MOTOR ROSIE (SERENATA DE AMOR) - DADOS REAIS DA API
+                      ========================================================= */}
+                  {((selectedPolitician.rosieBenfordCount || 0) > 0 ||
+                    (selectedPolitician.rosieDuplicateCount || 0) > 0 ||
+                    (selectedPolitician.rosieWeekendCount || 0) > 0) && (
+                      <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="bg-gradient-to-r from-rose-600 to-orange-500 p-6">
+                          <h3 className="text-xl font-black text-white flex items-center gap-3 tracking-tight">
+                            <Bot className="w-7 h-7 text-rose-100" />
+                            Auditoria Matemática (Motor Rosie)
+                          </h3>
+                          <p className="text-rose-100 mt-2 text-xs font-bold uppercase tracking-widest">
+                            Scoring de Anomalias Fiscais na Cota Parlamentar (CEAP)
+                          </p>
+                        </div>
 
+                        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                          {/* ALERTA 1: LEI DE BENFORD */}
+                          {(selectedPolitician.rosieBenfordCount || 0) > 0 && (
+                            <div className="bg-rose-50/50 rounded-2xl p-6 border border-rose-100 relative overflow-hidden group hover:bg-rose-50 transition-colors">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="bg-rose-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                  <Calculator className="w-5 h-5 text-rose-600" />
+                                </div>
+                                <span className="bg-rose-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
+                                  Crítico
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-slate-800 mb-1">Quebra da Lei de Benford</h4>
+                              <div className="text-3xl font-black text-rose-600 mb-4 tracking-tighter">
+                                {selectedPolitician.rosieBenfordCount} <span className="text-xs font-bold text-rose-400 tracking-normal">ocorrências</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                <strong className="text-slate-800">O Santo Graal da auditoria de fraudes.</strong> O desvio padrão deste gabinete quebrou a barreira matemática.
+                                <br /><br />
+                                <span className="text-rose-700 font-bold">Diagnóstico:</span> Os valores destas notas fiscais não são orgânicos. É um forte indício de intervenção humana (Notas Frias), onde valores estão a ser "inventados" no teclado.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ALERTA 2: DUPLICATAS */}
+                          {(selectedPolitician.rosieDuplicateCount || 0) > 0 && (
+                            <div className="bg-orange-50/50 rounded-2xl p-6 border border-orange-100 relative overflow-hidden group hover:bg-orange-50 transition-colors">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="bg-orange-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                  <Copy className="w-5 h-5 text-orange-600" />
+                                </div>
+                                <span className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
+                                  Alto
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-slate-800 mb-1">Reembolsos Duplicados</h4>
+                              <div className="text-3xl font-black text-orange-600 mb-4 tracking-tighter">
+                                {selectedPolitician.rosieDuplicateCount} <span className="text-xs font-bold text-orange-400 tracking-normal">ocorrências</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                A Rosie detetou o clássico erro humano de estelionato: submeter o mesmo recibo duas (ou mais) vezes para receber o reembolso a dobrar da Câmara.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ALERTA 3: TURISMO PARLAMENTAR */}
+                          {(selectedPolitician.rosieWeekendCount || 0) > 0 && (
+                            <div className="bg-amber-50/50 rounded-2xl p-6 border border-amber-100 relative overflow-hidden group hover:bg-amber-50 transition-colors">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="bg-amber-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                  <CalendarOff className="w-5 h-5 text-amber-600" />
+                                </div>
+                                <span className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
+                                  Médio
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-slate-800 mb-1">Turismo Parlamentar</h4>
+                              <div className="text-3xl font-black text-amber-600 mb-4 tracking-tighter">
+                                {selectedPolitician.rosieWeekendCount} <span className="text-xs font-bold text-amber-400 tracking-normal">ocorrências</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                O motor de cruzamento temporal isolou despesas efetuadas fora do expediente oficial, em dias que não havia qualquer expediente em Brasília.
+                              </p>
+                            </div>
+                          )}
+
+                        </div>
+                      </div>
+                    )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* STAFF ANOMALIES (Mantido) */}
                     {selectedPolitician.staffAnomalyCount != null && selectedPolitician.staffAnomalyCount > 0 && (
                       <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
@@ -528,7 +623,7 @@ function App() {
                       </div>
                     )}
 
-                    {/* NOVO: RISCO JUDICIÁRIO (DATAJUD) */}
+                    {/* RISCO JUDICIÁRIO (DATAJUD) */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
@@ -551,7 +646,7 @@ function App() {
                       )}
                     </div>
 
-                    {/* NOVO: NLP GAZETTE (DIÁRIOS OFICIAIS) */}
+                    {/* NLP GAZETTE (DIÁRIOS OFICIAIS) */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 md:col-span-2">
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
@@ -578,7 +673,6 @@ function App() {
                         </div>
                       )}
                     </div>
-
                   </div>
                 </div>
               )}

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Transient;
+import lombok.Data;
 
 @Entity
 @Table(name = "politicians")
+@Data
 public class Politician {
 
     @Id
@@ -82,6 +84,15 @@ public class Politician {
     @OneToMany(mappedBy = "politician", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes = new ArrayList<>();
 
+    @Column(name = "rosie_benford_count")
+    private Integer rosieBenfordCount;
+
+    @Column(name = "rosie_duplicate_count")
+    private Integer rosieDuplicateCount;
+
+    @Column(name = "rosie_weekend_count")
+    private Integer rosieWeekendCount;
+
     @Transient
     @JsonProperty("overallRiskScore")
     public Double getOverallRiskScore() {
@@ -101,296 +112,5 @@ public class Politician {
 
         // Arredonda para 1 casa decimal (ex: 85.4)
         return Math.round(finalScore * 10.0) / 10.0;
-    }
-
-    // Accessors
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getExternalId() {
-        return externalId;
-    }
-
-    public void setExternalId(String externalId) {
-        this.externalId = externalId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getParty() {
-        return party;
-    }
-
-    public void setParty(String party) {
-        this.party = party;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public Integer getAbsences() {
-        return absences;
-    }
-
-    public void setAbsences(Integer absences) {
-        this.absences = absences;
-    }
-
-    public Double getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(Double expenses) {
-        this.expenses = expenses;
-    }
-
-    public Double getStateAffinity() {
-        return stateAffinity;
-    }
-
-    public void setStateAffinity(Double stateAffinity) {
-        this.stateAffinity = stateAffinity;
-    }
-
-    public Integer getPropositions() {
-        return propositions;
-    }
-
-    public void setPropositions(Integer propositions) {
-        this.propositions = propositions;
-    }
-
-    public Integer getFrentes() {
-        return frentes;
-    }
-
-    public void setFrentes(Integer frentes) {
-        this.frentes = frentes;
-    }
-
-    public Double getDeclaredAssets() {
-        return declaredAssets;
-    }
-
-    public void setDeclaredAssets(Double declaredAssets) {
-        this.declaredAssets = declaredAssets;
-    }
-
-    public Double getDeclaredAssets2018() {
-        return declaredAssets2018;
-    }
-
-    public void setDeclaredAssets2018(Double declaredAssets2018) {
-        this.declaredAssets2018 = declaredAssets2018;
-    }
-
-    public Double getDeclaredAssets2014() {
-        return declaredAssets2014;
-    }
-
-    public void setDeclaredAssets2014(Double declaredAssets2014) {
-        this.declaredAssets2014 = declaredAssets2014;
-    }
-
-    public Double getWealthAnomaly() {
-        return wealthAnomaly;
-    }
-
-    public void setWealthAnomaly(Double wealthAnomaly) {
-        this.wealthAnomaly = wealthAnomaly;
-    }
-
-    public Integer getStaffAnomalyCount() {
-        return staffAnomalyCount;
-    }
-
-    public void setStaffAnomalyCount(Integer staffAnomalyCount) {
-        this.staffAnomalyCount = staffAnomalyCount;
-    }
-
-    public String getStaffAnomalyDetails() {
-        return staffAnomalyDetails;
-    }
-
-    public void setStaffAnomalyDetails(String staffAnomalyDetails) {
-        this.staffAnomalyDetails = staffAnomalyDetails;
-    }
-
-    public List<Promise> getPromises() {
-        return promises;
-    }
-
-    public void setPromises(List<Promise> promises) {
-        this.promises = promises;
-    }
-
-    public List<Vote> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<Vote> votes) {
-        this.votes = votes;
-    }
-
-    public Integer getCabinetRiskScore() {
-        return cabinetRiskScore;
-    }
-
-    public void setCabinetRiskScore(Integer cabinetRiskScore) {
-        this.cabinetRiskScore = cabinetRiskScore;
-    }
-
-    public String getCabinetRiskDetails() {
-        return cabinetRiskDetails;
-    }
-
-    public void setCabinetRiskDetails(String cabinetRiskDetails) {
-        this.cabinetRiskDetails = cabinetRiskDetails;
-    }
-
-    public Integer getGhostEmployeeCount() {
-        return ghostEmployeeCount;
-    }
-
-    public void setGhostEmployeeCount(Integer ghostEmployeeCount) {
-        this.ghostEmployeeCount = ghostEmployeeCount;
-    }
-
-    public String getGhostEmployeeDetails() {
-        return ghostEmployeeDetails;
-    }
-
-    public void setGhostEmployeeDetails(String ghostEmployeeDetails) {
-        this.ghostEmployeeDetails = ghostEmployeeDetails;
-    }
-
-    public Integer getNlpGazetteCount() {
-        return nlpGazetteCount;
-    }
-
-    public void setNlpGazetteCount(Integer nlpGazetteCount) {
-        this.nlpGazetteCount = nlpGazetteCount;
-    }
-
-    public Integer getNlpGazetteScore() {
-        return nlpGazetteScore;
-    }
-
-    public void setNlpGazetteScore(Integer nlpGazetteScore) {
-        this.nlpGazetteScore = nlpGazetteScore;
-    }
-
-    public String getNlpGazetteDetails() {
-        return nlpGazetteDetails;
-    }
-
-    public void setNlpGazetteDetails(String nlpGazetteDetails) {
-        this.nlpGazetteDetails = nlpGazetteDetails;
-    }
-
-    // Teleportation Anomaly (Spatial Match)
-    private Integer teleportAnomalyCount;
-    @Column(columnDefinition = "TEXT")
-    private String teleportAnomalyDetails;
-
-    public Integer getTeleportAnomalyCount() {
-        return teleportAnomalyCount;
-    }
-
-    public void setTeleportAnomalyCount(Integer teleportAnomalyCount) {
-        this.teleportAnomalyCount = teleportAnomalyCount;
-    }
-
-    public String getTeleportAnomalyDetails() {
-        return teleportAnomalyDetails;
-    }
-
-    public void setTeleportAnomalyDetails(String teleportAnomalyDetails) {
-        this.teleportAnomalyDetails = teleportAnomalyDetails;
-    }
-
-    // Emendas Pix Anomaly (Circular Flow)
-    private Integer emendasPixAnomalyCount;
-    @Column(columnDefinition = "TEXT")
-    private String emendasPixAnomalyDetails;
-
-    public Integer getEmendasPixAnomalyCount() {
-        return emendasPixAnomalyCount;
-    }
-
-    public void setEmendasPixAnomalyCount(Integer emendasPixAnomalyCount) {
-        this.emendasPixAnomalyCount = emendasPixAnomalyCount;
-    }
-
-    public String getEmendasPixAnomalyDetails() {
-        return emendasPixAnomalyDetails;
-    }
-
-    public void setEmendasPixAnomalyDetails(String emendasPixAnomalyDetails) {
-        this.emendasPixAnomalyDetails = emendasPixAnomalyDetails;
-    }
-
-    public Integer getJudicialRiskScore() {
-        return judicialRiskScore;
-    }
-
-    public void setJudicialRiskScore(Integer judicialRiskScore) {
-        this.judicialRiskScore = judicialRiskScore;
-    }
-
-    public String getJudicialRiskDetails() {
-        return judicialRiskDetails;
-    }
-
-    public void setJudicialRiskDetails(String judicialRiskDetails) {
-        this.judicialRiskDetails = judicialRiskDetails;
-    }
-
-    public Integer getCabinetSize() {
-        return cabinetSize;
-    }
-
-    public void setCabinetSize(Integer cabinetSize) {
-        this.cabinetSize = cabinetSize;
-    }
-
-    public String getCabinetDetails() {
-        return cabinetDetails;
-    }
-
-    public void setCabinetDetails(String cabinetDetails) {
-        this.cabinetDetails = cabinetDetails;
-    }
-
-    public Integer getPresences() {
-        return presences;
-    }
-
-    public void setPresences(Integer presences) {
-        this.presences = presences;
     }
 }
