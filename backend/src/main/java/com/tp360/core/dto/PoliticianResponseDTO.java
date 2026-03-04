@@ -39,6 +39,13 @@ public class PoliticianResponseDTO {
     private Integer judicialRiskScore;
     private String judicialRiskDetails;
 
+    // Motor Rosie (Serenata de Amor)
+    private Integer rosieBenfordCount;
+    private Integer rosieDuplicateCount;
+    private Integer rosieWeekendCount;
+    private Integer rosieHealthCount;
+    private Integer rosieLuxuryCount;
+
     // Score Dinâmico de Risco Global
     private Double overallRiskScore; // NOVO CAMPO
 
@@ -68,6 +75,11 @@ public class PoliticianResponseDTO {
         this.nlpGazetteDetails = politician.getNlpGazetteDetails();
         this.judicialRiskScore = politician.getJudicialRiskScore();
         this.judicialRiskDetails = politician.getJudicialRiskDetails();
+        this.rosieBenfordCount = politician.getRosieBenfordCount();
+        this.rosieDuplicateCount = politician.getRosieDuplicateCount();
+        this.rosieWeekendCount = politician.getRosieWeekendCount();
+        this.rosieHealthCount = politician.getRosieHealthCount();
+        this.rosieLuxuryCount = politician.getRosieLuxuryCount();
         this.overallRiskScore = politician.getOverallRiskScore(); // CÁLCULO IA (Matemática)
     }
 

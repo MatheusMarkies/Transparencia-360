@@ -9,7 +9,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 # Injetando a chave da API fornecida
-os.environ["PORTAL_API_KEY"] = ""
+os.environ["PORTAL_API_KEY"] = "7c582554ddd97a21198f7bd9c1d4d4e9"
 os.environ["NEO4J_PASSWORD"] = "admin123"
 
 # Ensure imports work
@@ -264,36 +264,36 @@ def main():
             if driver: driver.close()
     run_step(12, "CrossMatchOrchestrator (Deep Neo4j Graph Builder)", step_12)
 
-    def step_13():
-        from src.gatherers.emendas_gatherer import EmendasGatherer
-        import requests
-        import asyncio
-        
-        try:
-            resp = requests.get("http://localhost:8080/api/v1/politicians/search?name=", timeout=30)
-            if resp.status_code == 200:
-                pols = resp.json()
-                if pols:
-                    # ---> ADICIONE ESTA LINHA AQUI <---
-                    pols = sorted(pols, key=lambda k: str(k.get('name', '')))
-                    gatherer = EmendasGatherer(pols, limit=LIMIT)
-                    
-                    if asyncio.iscoroutinefunction(gatherer.run):
-                        asyncio.run(gatherer.run())
-                    else:
-                        try:
-                            loop = asyncio.get_event_loop()
-                        except RuntimeError:
-                            loop = asyncio.new_event_loop()
-                            asyncio.set_event_loop(loop)
-                            
-                        gatherer.run()
-            else:
-                logger.error(f"Step 13 failed: HTTP {resp.status_code}")
-        except Exception as e:
-            logger.error(f"Step 13 failed: {e}")
-            
-    run_step(13, "EmendasGatherer (Data Extraction to Graph)", step_13)
+    #def step_13():
+    #    from src.gatherers.emendas_gatherer import EmendasGatherer
+    #    import requests
+    #    import asyncio
+    #    
+    #    try:
+    #        resp = requests.get("http://localhost:8080/api/v1/politicians/search?name=", timeout=30)
+    #        if resp.status_code == 200:
+    #            pols = resp.json()
+    #           if pols:
+    #                # ---> ADICIONE ESTA LINHA AQUI <---
+    #                pols = sorted(pols, key=lambda k: str(k.get('name', '')))
+    #                gatherer = EmendasGatherer(pols, limit=LIMIT)
+    #                
+    #                if asyncio.iscoroutinefunction(gatherer.run):
+    #                    asyncio.run(gatherer.run())
+    #                else:
+    #                    try:
+    #                        loop = asyncio.get_event_loop()
+    #                    except RuntimeError:
+    #                        loop = asyncio.new_event_loop()
+    #                        asyncio.set_event_loop(loop)
+    #                        
+    #                    gatherer.run()
+    #        else:
+    #            logger.error(f"Step 13 failed: HTTP {resp.status_code}")
+    #    except Exception as e:
+    #        logger.error(f"Step 13 failed: {e}")
+    #        
+    #run_step(13, "EmendasGatherer (Data Extraction to Graph)", step_13)
 
     def step_14():
         from src.gatherers.emendas_pix_worker import EmendasPixWorker
@@ -338,6 +338,96 @@ def main():
         from src.gatherers.rosie_worker import RosieWorker
         worker = RosieWorker(years=[2022, 2023, 2024, 2025, 2026])
         worker.run(limit=LIMIT)
+        
+        # Inlined push_rosie_to_backend to fix python scope issues
+        """Lê o CSV de anomalias da Rosie e injeta os totais reais no Backend Java."""
+        import pandas as pd
+        import requests
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        logger.info("📡 Iniciando injeção dos dados da Rosie no Banco de Dados...")
+        
+        try:
+            df = pd.read_csv("data/processed/rosie_anomalies.csv")
+            deputados = df['deputy_id'].unique()
+            base_url = "http://localhost:8080/api/v1/politicians"
+            
+            for dep_id in deputados:
+                anomalias_deputado = df[df['deputy_id'] == dep_id]
+                contagem = anomalias_deputado['classifier'].value_counts().to_dict()
+                
+                benford = int(contagem.get('BenfordLawClassifier', 0))
+                duplicatas = int(contagem.get('DuplicateReceiptClassifier', 0))
+                fim_semana = int(contagem.get('WeekendHolidayClassifier', 0))
+                saude_irregular = int(contagem.get('PersonalHealthExpenseClassifier', 0))
+                luxo_pessoal = int(contagem.get('LuxuryPersonalExpenseClassifier', 0))
+                
+                ext_id = f"camara_{dep_id}"
+                
+                try:
+                    resp = requests.get(f"{base_url}/external/{ext_id}")
+                    if resp.status_code == 200:
+                        pol = resp.json()
+                        pol['rosieBenfordCount'] = benford
+                        pol['rosieDuplicateCount'] = duplicatas
+                        pol['rosieWeekendCount'] = fim_semana
+                        pol['rosieHealthCount'] = saude_irregular
+                        pol['rosieLuxuryCount'] = luxo_pessoal
+                        
+                        current_risk = pol.get('cabinetRiskScore') or 0
+                        
+                        dets = []
+                        if pol.get('cabinetRiskDetails'):
+                            try:
+                                dets = json.loads(pol['cabinetRiskDetails'])
+                            except:
+                                pass
+                                
+                        if benford > 0:
+                            current_risk = min(100, current_risk + 50)
+                            dets.append({
+                                "indicator": "Auditoria Matemática (ROSIE)",
+                                "score": 50,
+                                "description": f"Encontradas {benford} notas fiscais orgânicas com desvios na Lei de Benford (Possibilidade de fraudes manuais)."
+                            })
+                        if duplicatas > 0:
+                            current_risk = min(100, current_risk + 20)
+                            dets.append({
+                                "indicator": "Auditoria Matemática (ROSIE)",
+                                "score": 20,
+                                "description": f"Encontrados {duplicatas} envios duplicados do mesmo recibo para ressarcimento."
+                            })
+                        if saude_irregular > 0:
+                            current_risk = min(100, current_risk + 40)
+                            dets.append({
+                                "indicator": "Desvio de Fundo de Saúde",
+                                "score": 40,
+                                "description": f"Encontrados {saude_irregular} gastos com serviços médicos e estéticos proibidos na CEAP."
+                            })
+                        if luxo_pessoal > 0:
+                            current_risk = min(100, current_risk + 30)
+                            dets.append({
+                                "indicator": "Desvio Imoral (Luxo)",
+                                "score": 30,
+                                "description": f"Encontrados {luxo_pessoal} pagamentos em Pet Shops, Joalherias ou Resorts."
+                            })
+                            
+                        pol['cabinetRiskScore'] = current_risk
+                        pol['cabinetRiskDetails'] = json.dumps(dets, ensure_ascii=False)
+                        
+                        update_resp = requests.post(base_url, json=pol)
+                        if update_resp.status_code in [200, 201]:
+                            logger.info(f"  ✅ Deputado {ext_id}: Integrado no Painel!")
+                        else:
+                            logger.error(f"  ❌ Erro ao enviar {ext_id}: HTTP {update_resp.status_code}")
+                except Exception as e:
+                    logger.error(f"Erro na requisição da API para {ext_id}: {e}")
+        except Exception as e:
+            logger.error(f"Falha ao ler rosie_anomalies.csv: {e}")
+        except Exception as e:
+            logger.error(f"Falha ao ler rosie_anomalies.csv: {e}. O motor da Rosie rodou?")
+            
     run_step(15, "ROSIE — Full CEAP Anomaly Detection Engine", step_15)
 
     def step_16():

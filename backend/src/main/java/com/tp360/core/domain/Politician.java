@@ -93,6 +93,22 @@ public class Politician {
     @Column(name = "rosie_weekend_count")
     private Integer rosieWeekendCount;
 
+    @Column(name = "rosie_health_count")
+    private Integer rosieHealthCount;
+
+    @Column(name = "rosie_luxury_count")
+    private Integer rosieLuxuryCount;
+
+    // Teleportation Anomaly (Spatial Match)
+    private Integer teleportAnomalyCount;
+    @Column(columnDefinition = "TEXT")
+    private String teleportAnomalyDetails;
+
+    // Emendas Pix Anomaly (Circular Flow)
+    private Integer emendasPixAnomalyCount;
+    @Column(columnDefinition = "TEXT")
+    private String emendasPixAnomalyDetails;
+
     @Transient
     @JsonProperty("overallRiskScore")
     public Double getOverallRiskScore() {
@@ -113,4 +129,10 @@ public class Politician {
         // Arredonda para 1 casa decimal (ex: 85.4)
         return Math.round(finalScore * 10.0) / 10.0;
     }
+
+    public Integer getRosieHealthCount() { return rosieHealthCount; }
+    public void setRosieHealthCount(Integer rosieHealthCount) { this.rosieHealthCount = rosieHealthCount; }
+
+    public Integer getRosieLuxuryCount() { return rosieLuxuryCount; }
+    public void setRosieLuxuryCount(Integer rosieLuxuryCount) { this.rosieLuxuryCount = rosieLuxuryCount; }
 }

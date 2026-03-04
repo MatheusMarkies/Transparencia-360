@@ -22,11 +22,14 @@ public class FrontendSearchController {
 
     private final PoliticianRepository politicianRepository;
     private final com.tp360.core.repositories.neo4j.PoliticoNodeRepository politicoNodeRepository;
+    private final com.tp360.core.service.DataIngestionService dataIngestionService;
 
     public FrontendSearchController(PoliticianRepository politicianRepository,
-            com.tp360.core.repositories.neo4j.PoliticoNodeRepository politicoNodeRepository) {
+            com.tp360.core.repositories.neo4j.PoliticoNodeRepository politicoNodeRepository,
+            com.tp360.core.service.DataIngestionService dataIngestionService) {
         this.politicianRepository = politicianRepository;
         this.politicoNodeRepository = politicoNodeRepository;
+        this.dataIngestionService = dataIngestionService;
     }
 
     @GetMapping("/search")
@@ -44,6 +47,19 @@ public class FrontendSearchController {
         Optional<Politician> politician = politicianRepository.findById(id);
         return politician.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/external/{externalId}")
+    public ResponseEntity<Politician> getPoliticianByExternalId(@PathVariable String externalId) {
+        Optional<Politician> politician = politicianRepository.findByExternalId(externalId);
+        return politician.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Politician> updatePolitician(@RequestBody Politician politician) {
+        Politician saved = dataIngestionService.ingestPolitician(politician);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}/graph")

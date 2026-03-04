@@ -2,15 +2,18 @@ import logging
 import json
 import requests
 import argparse
+import csv
 from datetime import datetime
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Configuração de caminhos absolutos
 CURRENT_DIR = Path(__file__).resolve().parent
 WORKER_ROOT = CURRENT_DIR.parent.parent
 REPORTS_DIR = WORKER_ROOT / "data" / "processed" / "super_reports"
+ROSIE_CSV_PATH = WORKER_ROOT / "data" / "processed" / "rosie_anomalies.csv"
 
 class SuperReportWorker:
     def __init__(self):
@@ -22,26 +25,28 @@ class SuperReportWorker:
         Gera a string exata (o Prompt) que será enviada para a API da LLM no futuro.
         Nesta fase, apenas construímos o texto para validação humana.
         """
-        prompt = f"""Você é um Investigador Sênior da Polícia Federal do Brasil e Auditor do TCU, especialista em crimes financeiros, peculato (rachadinha), lavagem de dinheiro e fraude à licitação.
+        prompt = f"""Você é um Investigador Sênior da Polícia Federal do Brasil e Auditor Especialista em Dados do TCU. O seu foco é investigar crimes financeiros, peculato (rachadinha), lavagem de dinheiro e o uso de notas frias na Cota Parlamentar (CEAP).
 
 Analise o dossiê de dados do parlamentar abaixo. NÃO INVENTE DADOS. Baseie-se EXCLUSIVAMENTE nos números e anomalias fornecidos no JSON.
 
+Preste atenção máxima à secção '05_auditoria_matematica_rosie'. A quebra da Lei de Benford indica fortemente a fabricação manual de notas fiscais (notas frias). Gastos repetidos idênticos (duplicatas) ou gastos em hotéis aos fins de semana apontam para desvio de finalidade.
+
 Elabore um Relatório de Inteligência Policial rigoroso e direto contendo:
-1. **Hipótese Investigativa:** Baseado nas anomalias matemáticas, qual é o provável esquema em andamento? (Se os dados estiverem limpos, seja honesto e diga que não há indícios de fraude).
-2. **Red Flags (Sinais de Alerta):** Liste em bullet points os 3 maiores cruzamentos suspeitos encontrados nos dados.
-3. **Recomendação de Diligência:** Onde um auditor ou repórter investigativo deve procurar as próximas provas físicas (ex: quebrar sigilo de qual empresa, buscar imagens de qual rua, verificar folha de ponto de qual mês).
+1. **Hipótese Investigativa:** Baseado na auditoria matemática e nas anomalias contratuais, qual é o provável modus operandi do esquema em andamento? (Ex: Fabricação de notas frias para saque em espécie, financiamento de campanhas ocultas, turismo com dinheiro público).
+2. **Materialidade (Red Flags):** Liste em bullet points as 3 a 5 maiores provas matemáticas ou flagrantes encontrados nos dados (cite a quebra de Benford, valores duplicados exatos, datas anômalas, etc).
+3. **Recomendação de Quebra de Sigilo:** Onde um delegado da PF deve focar a próxima fase da investigação física para materializar o crime? (ex: quebrar sigilo bancário de quem? buscar notas originais de qual fornecedor?).
 
 DADOS DO PARLAMENTAR (JSON):
 {json.dumps(dossier_data, indent=2, ensure_ascii=False)}
 
-Responda em formato Markdown bem formatado.
+Responda obrigatoriamente em formato Markdown profissional e policial.
 """
         return prompt
 
     def run(self, limit=50):
-        logger.info("=== Gerando Dossiês para IA (Modo Preparação de Prompt) ===")
+        logger.info("=== Gerando Dossiês para IA (Integrando Motor Rosie e Provas) ===")
         try:
-            # 1. Pega os deputados
+            # 1. Pega os deputados do Backend
             resp = requests.get(f"{self.base_url}/search?name=")
             if resp.status_code != 200:
                 logger.error(f"Erro ao buscar políticos da API: HTTP {resp.status_code}")
@@ -49,10 +54,27 @@ Responda em formato Markdown bem formatado.
             
             politicians = resp.json()
             
-            # Ordena pelos mais suspeitos primeiro (maior score de risco)!
-            # Usamos float() e fallback para 0 caso o valor seja None
+            # Ordena pelos mais suspeitos primeiro!
             politicians = sorted(politicians, key=lambda x: float(x.get('overallRiskScore') or 0), reverse=True)[:limit]
             
+            # 2. PRÉ-CARREGA AS PROVAS TEXTUAIS DA ROSIE PARA MEMÓRIA
+            rosie_data = {}
+            if ROSIE_CSV_PATH.exists():
+                with open(ROSIE_CSV_PATH, 'r', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        dep_id = row.get('deputy_id', '')
+                        if dep_id not in rosie_data:
+                            rosie_data[dep_id] = []
+                        # Guarda apenas as 15 primeiras fraudes de cada um para não estourar a memória (tokens) da IA
+                        if len(rosie_data[dep_id]) < 15:
+                            rosie_data[dep_id].append({
+                                "classificador_tecnico": row.get('classifier', ''),
+                                "prova_textual": row.get('reason', '')
+                            })
+            else:
+                logger.warning(f"Ficheiro de anomalias {ROSIE_CSV_PATH} não encontrado. Execute o rosie_worker.py primeiro!")
+
             for p in politicians:
                 pol_id = p.get('id')
                 name = p.get('name')
@@ -60,16 +82,15 @@ Responda em formato Markdown bem formatado.
                 
                 logger.info(f"\n🔍 Compilando dossiê de {name} (Risco Global: {risk_score})")
                 
-                # 2. Busca Detalhes Consolidados e Grafo
+                # 3. Busca Detalhes Consolidados e Grafo
                 details_resp = requests.get(f"{self.base_url}/{pol_id}")
                 graph_resp = requests.get(f"{self.base_url}/{pol_id}/graph")
                 
                 details = details_resp.json() if details_resp.status_code == 200 else p
                 graph_data = graph_resp.json() if graph_resp.status_code == 200 else {"nodes": [], "links": []}
                 
-                # 3. Contagem Inteligente de Documentos no Grafo
+                # 4. Contagem Inteligente de Documentos no Grafo
                 nodes = graph_data.get('nodes', [])
-                
                 despesas_count = sum(1 for n in nodes if 'Despesa' in str(n.get('group', '')) or 'R$' in str(n.get('name', '')))
                 empresas_count = sum(1 for n in nodes if 'Empresa' in str(n.get('group', '')) or 'Fornecedor' in str(n.get('name', '')))
                 municipios_count = sum(1 for n in nodes if 'Municipio' in str(n.get('group', '')) or 'Município' in str(n.get('name', '')))
@@ -81,14 +102,17 @@ Responda em formato Markdown bem formatado.
                     try: return json.loads(data_string)
                     except: return str(data_string)
 
-                # 4. Monta a Estrutura do Dossiê (O que a IA vai ler)
+                # Busca as provas exatas no CSV que carregámos
+                ext_id_clean = details.get("externalId", "").replace("camara_", "")
+                evidencias_rosie_textuais = rosie_data.get(ext_id_clean, [])
+
+                # 5. Monta a Estrutura do Dossiê Gigante
                 dossier = {
                     "01_metadados": {
-                        "internal_id": pol_id,
                         "camara_id": details.get("externalId"),
                         "nome": name,
                         "partido_estado": f"{details.get('party')} - {details.get('state')}",
-                        "risco_global": details.get("overallRiskScore"),
+                        "risco_global": risk_score,
                         "data_extracao": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     },
                     "02_documentos_lidos_e_grafos": {
@@ -112,17 +136,22 @@ Responda em formato Markdown bem formatado.
                         "anomalias_contratacao_gabinete_evidencias": safe_json_load(details.get("staffAnomalyDetails")),
                         "mencoes_suspeitas_diarios_oficiais": details.get("nlpGazetteCount"),
                         "processos_judiciais_improbidade": details.get("judicialRiskScore")
+                    },
+                    "05_auditoria_matematica_rosie": {
+                        "quebra_lei_de_benford_qtd": details.get("rosieBenfordCount") or 0,
+                        "reembolsos_duplicados_qtd": details.get("rosieDuplicateCount") or 0,
+                        "gastos_turismo_fim_de_semana_qtd": details.get("rosieWeekendCount") or 0,
+                        "evidencias_textuais_extraidas_das_notas": evidencias_rosie_textuais
                     }
                 }
                 
-                # 5. Geração do Prompt
+                # 6. Geração do Prompt final
                 prompt_para_llm = self.generate_detective_prompt(dossier)
                 
-                # Anexa o Dossiê e o Prompt final no relatório para o Dev revisar
                 final_report = dossier.copy()
-                final_report["05_llm_detective_prompt"] = prompt_para_llm
+                final_report["06_llm_detective_prompt"] = prompt_para_llm
                 
-                # 6. Salva no Disco
+                # 7. Salva no Disco
                 filename = f"super_report_{name.replace(' ', '_').lower()}_{details.get('externalId')}.json"
                 filepath = REPORTS_DIR / filename
                 with open(filepath, 'w', encoding='utf-8') as f:

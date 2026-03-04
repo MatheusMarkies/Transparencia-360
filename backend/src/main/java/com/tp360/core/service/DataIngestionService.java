@@ -143,6 +143,21 @@ public class DataIngestionService {
             if (data.getJudicialRiskDetails() != null) {
                 p.setJudicialRiskDetails(data.getJudicialRiskDetails());
             }
+            if (data.getRosieBenfordCount() != null) {
+                p.setRosieBenfordCount(data.getRosieBenfordCount());
+            }
+            if (data.getRosieDuplicateCount() != null) {
+                p.setRosieDuplicateCount(data.getRosieDuplicateCount());
+            }
+            if (data.getRosieWeekendCount() != null) {
+                p.setRosieWeekendCount(data.getRosieWeekendCount());
+            }
+            if (data.getRosieHealthCount() != null) {
+                p.setRosieHealthCount(data.getRosieHealthCount());
+            }
+            if (data.getRosieLuxuryCount() != null) {
+                p.setRosieLuxuryCount(data.getRosieLuxuryCount());
+            }
             if (data.getCabinetSize() != null) {
                 p.setCabinetSize(data.getCabinetSize());
             }
@@ -255,6 +270,16 @@ public class DataIngestionService {
             count++;
         if (p.getJudicialRiskScore() != null)
             count++;
+        if (p.getRosieBenfordCount() != null)
+            count++;
+        if (p.getRosieDuplicateCount() != null)
+            count++;
+        if (p.getRosieWeekendCount() != null)
+            count++;
+        if (p.getRosieHealthCount() != null)
+            count++;
+        if (p.getRosieLuxuryCount() != null)
+            count++;
         if (p.getCabinetSize() != null)
             count++;
         if (p.getCabinetDetails() != null)
@@ -309,6 +334,16 @@ public class DataIngestionService {
             survivor.setJudicialRiskScore(source.getJudicialRiskScore());
         if (survivor.getJudicialRiskDetails() == null && source.getJudicialRiskDetails() != null)
             survivor.setJudicialRiskDetails(source.getJudicialRiskDetails());
+        if (survivor.getRosieBenfordCount() == null && source.getRosieBenfordCount() != null)
+            survivor.setRosieBenfordCount(source.getRosieBenfordCount());
+        if (survivor.getRosieDuplicateCount() == null && source.getRosieDuplicateCount() != null)
+            survivor.setRosieDuplicateCount(source.getRosieDuplicateCount());
+        if (survivor.getRosieWeekendCount() == null && source.getRosieWeekendCount() != null)
+            survivor.setRosieWeekendCount(source.getRosieWeekendCount());
+        if (survivor.getRosieHealthCount() == null && source.getRosieHealthCount() != null)
+            survivor.setRosieHealthCount(source.getRosieHealthCount());
+        if (survivor.getRosieLuxuryCount() == null && source.getRosieLuxuryCount() != null)
+            survivor.setRosieLuxuryCount(source.getRosieLuxuryCount());
         if (survivor.getCabinetSize() == null && source.getCabinetSize() != null)
             survivor.setCabinetSize(source.getCabinetSize());
         if (survivor.getCabinetDetails() == null && source.getCabinetDetails() != null)

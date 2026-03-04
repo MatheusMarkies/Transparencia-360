@@ -1116,6 +1116,67 @@ class SequentialReceiptClassifier(BaseClassifier):
 
 
 # =============================================================================
+# NEW CLASSIFIERS: PERSONAL HEALTH AND LUXURY EXPENSES
+# =============================================================================
+
+class PersonalHealthExpenseClassifier(BaseClassifier):
+    """
+    Deteta gastos com saúde pessoal, estética ou odontologia na CEAP.
+    O caso Erika Hilton: despesas médicas possuem cota própria. 
+    Se aparecem na CEAP, indica desvio de finalidade.
+    """
+    def fit(self, dataset: List[Dict]) -> 'PersonalHealthExpenseClassifier':
+        self._is_fitted = True
+        return self
+
+    def predict(self, receipt: Dict) -> Dict:
+        import re
+        supplier_name = str(receipt.get("nomeFornecedor", "")).upper()
+        # Palavras que expõem clínicas e procedimentos estéticos/médicos no CNPJ
+        pattern = r'\b(CLINICA|ODONTO|ODONTOLOGIA|ODONTOLOGICA|ESTETICA|CIRURGIA|PLASTICA|DERMATOLOGIA|FARMACIA|BOTOX|HARMONIZACAO|HOSPITAL|MEDIC[OA]|SPA)\b'
+        
+        if re.search(pattern, supplier_name):
+            return {
+                "is_suspicious": True,
+                "classifier": self.name,
+                "confidence": 0.95,
+                "reason": f"Despesa médica/estética irregular na CEAP. Fornecedor: '{supplier_name}'. Gastos de saúde têm fundo próprio e são vedados na Cota Parlamentar.",
+                "details": {"supplier_name": supplier_name},
+                "receipt_id": receipt.get("id", "unknown"),
+                "deputy_id": receipt.get("deputy_id", "unknown")
+            }
+            
+        return {"is_suspicious": False, "classifier": self.name, "confidence": 0.0, "reason": "", "details": {}}
+
+
+class LuxuryPersonalExpenseClassifier(BaseClassifier):
+    """
+    Deteta gastos em joalherias, pet shops, supermercados e resorts.
+    Comum em fraudes de uso pessoal do dinheiro público.
+    """
+    def fit(self, dataset: List[Dict]) -> 'LuxuryPersonalExpenseClassifier':
+        self._is_fitted = True
+        return self
+
+    def predict(self, receipt: Dict) -> Dict:
+        import re
+        supplier_name = str(receipt.get("nomeFornecedor", "")).upper()
+        pattern = r'\b(PET SHOP|VETERINARI[OA]|RESORT|JOALHERIA|JOIAS|COSMETICOS|BELEZA|CABELEIREIRO|BARBEARIA)\b'
+        
+        if re.search(pattern, supplier_name):
+            return {
+                "is_suspicious": True,
+                "classifier": self.name,
+                "confidence": 0.90,
+                "reason": f"Indício de gasto pessoal/luxo proibido. Fornecedor: '{supplier_name}'.",
+                "details": {"supplier_name": supplier_name},
+                "receipt_id": receipt.get("id", "unknown"),
+                "deputy_id": receipt.get("deputy_id", "unknown")
+            }
+            
+        return {"is_suspicious": False, "classifier": self.name, "confidence": 0.0, "reason": "", "details": {}}
+
+# =============================================================================
 # ROSIE ENGINE — ORCHESTRATES ALL CLASSIFIERS
 # =============================================================================
 
@@ -1157,6 +1218,8 @@ class RosieEngine:
                 HighValueOutlierClassifier(z_threshold=3.5),
                 SuspiciousSupplierClassifier(max_deputies_per_supplier=30),
                 SequentialReceiptClassifier(max_sequential=3),
+                PersonalHealthExpenseClassifier(),
+                LuxuryPersonalExpenseClassifier(),
             ]
 
         logger.info(f"🤖 Rosie Engine initialized with {len(self.classifiers)} classifiers")

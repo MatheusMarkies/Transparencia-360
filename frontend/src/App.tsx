@@ -15,7 +15,9 @@ import {
   Bot,
   Calculator,
   Copy,
-  CalendarOff
+  CalendarOff,
+  Stethoscope,
+  ShoppingBag
 } from 'lucide-react';
 import ForceGraph2D from 'react-force-graph-2d';
 
@@ -57,6 +59,8 @@ interface Politician {
   rosieBenfordCount?: number;
   rosieDuplicateCount?: number;
   rosieWeekendCount?: number;
+  rosieHealthCount?: number;
+  rosieLuxuryCount?: number;
 }
 
 function App() {
@@ -516,7 +520,9 @@ function App() {
                       ========================================================= */}
                   {((selectedPolitician.rosieBenfordCount || 0) > 0 ||
                     (selectedPolitician.rosieDuplicateCount || 0) > 0 ||
-                    (selectedPolitician.rosieWeekendCount || 0) > 0) && (
+                    (selectedPolitician.rosieWeekendCount || 0) > 0 ||
+                    (selectedPolitician.rosieHealthCount || 0) > 0 ||
+                    (selectedPolitician.rosieLuxuryCount || 0) > 0) && (
                       <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="bg-gradient-to-r from-rose-600 to-orange-500 p-6">
                           <h3 className="text-xl font-black text-white flex items-center gap-3 tracking-tight">
@@ -591,6 +597,50 @@ function App() {
                               </div>
                               <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
                                 O motor de cruzamento temporal isolou despesas efetuadas fora do expediente oficial, em dias que não havia qualquer expediente em Brasília.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ALERTA 4: SAÚDE E ESTÉTICA NA CEAP */}
+                          {(selectedPolitician.rosieHealthCount || 0) > 0 && (
+                            <div className="bg-rose-50/50 rounded-2xl p-6 border border-rose-100 relative overflow-hidden group hover:bg-rose-50 transition-colors">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="bg-rose-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                  <Stethoscope className="w-5 h-5 text-rose-600" />
+                                </div>
+                                <span className="bg-rose-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
+                                  Ilegalidade
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-slate-800 mb-1">Gasto Médico/Estético na CEAP</h4>
+                              <div className="text-3xl font-black text-rose-600 mb-4 tracking-tighter">
+                                {selectedPolitician.rosieHealthCount} <span className="text-xs font-bold text-rose-400 tracking-normal">ocorrências</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                O motor de NLP identificou recibos de Clínicas, Odontologia ou Estética mascarados na prestação de contas.
+                                <br /><br />
+                                <span className="text-rose-700 font-bold">Diagnóstico:</span> A Cota Parlamentar (CEAP) proíbe gastos de saúde pessoal, que possuem um fundo de ressarcimento paralelo. Indica possível estelionato ou falsidade ideológica no reembolso.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ALERTA 5: LUXO PESSOAL NA CEAP */}
+                          {(selectedPolitician.rosieLuxuryCount || 0) > 0 && (
+                            <div className="bg-purple-50/50 rounded-2xl p-6 border border-purple-100 relative overflow-hidden group hover:bg-purple-50 transition-colors">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="bg-purple-100 p-2.5 rounded-xl group-hover:scale-110 transition-transform">
+                                  <ShoppingBag className="w-5 h-5 text-purple-600" />
+                                </div>
+                                <span className="bg-purple-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
+                                  Imoralidade
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-slate-800 mb-1">Luxo & Consumo Pessoal</h4>
+                              <div className="text-3xl font-black text-purple-600 mb-4 tracking-tighter">
+                                {selectedPolitician.rosieLuxuryCount} <span className="text-xs font-bold text-purple-400 tracking-normal">ocorrências</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                                A Rosie interceptou pagamentos suspeitos em Pet Shops, Joalherias, Resorts de Férias ou Salões de Beleza misturados no bloco de reembolso parlamentar.
                               </p>
                             </div>
                           )}
