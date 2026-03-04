@@ -24,11 +24,9 @@ from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
 from typing import List, Dict, Optional
+from src.gatherers.rosie_engine import RosieEngine
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
-
-# Rosie Engine import (same directory)
-from rosie_engine import RosieEngine
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("rosie_worker")
