@@ -2,6 +2,7 @@
 data/downloads/
 data/raw/
 data/clean/
+data/doacoes/
 
 # Python
 __pycache__/

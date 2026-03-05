@@ -8,9 +8,10 @@ import shutil
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
-# Injetando a chave da API fornecida
 os.environ["PORTAL_API_KEY"] = "7c582554ddd97a21198f7bd9c1d4d4e9"
 os.environ["NEO4J_PASSWORD"] = "admin123"
+os.environ["GOOGLE_CLOUD_PROJECT"] = "tactile-sentry-284814"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.expanduser("~"), ".config", "gcloud", "application_default_credentials.json")
 
 # Ensure imports work
 sys.path.append(str(Path(__file__).resolve().parent))
@@ -185,6 +186,48 @@ def main():
         #    asyncio.run(run_ingestion())
             
         #run_step(6, "Ingestão de Arquivos Parquet (Fase 2)", ingestao_dados)
+
+        logger.info("\n🚀 FASE 2: Ingestão de Dados (Carga na API/DB)...")
+
+        def run_step_4_legacy():
+            from src.gatherers.expenses_worker import ExpensesWorker
+            for yr in [2023, 2024, 2025, 2026]:
+                ExpensesWorker(year=yr).run(limit=LIMIT)
+        run_step(4, "ExpensesWorker (Legacy Sync)", run_step_4_legacy)
+
+        def run_step_5_legacy():
+            from src.gatherers.absences_worker import AbsencesWorker
+            for yr in [2023, 2024, 2025, 2026]:
+                AbsencesWorker(year=yr).run(limit=LIMIT)
+        run_step(5, "AbsencesWorker", run_step_5_legacy)
+
+        # ---> INÍCIO DA INTEGRAÇÃO DO TSE <---
+        def step_7_tse_doacoes():
+            from src.loaders.tse_batch_loader import TSEBatchLoader
+            
+            # Pega as credenciais que já estão configuradas no topo do run_all_extractions
+            uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+            user = os.getenv("NEO4J_USER", "neo4j")
+            password = os.getenv("NEO4J_PASSWORD", "admin123")
+            
+            loader = TSEBatchLoader()
+            # Rodamos para 2022 inicialmente (pode adicionar um loop para 2018 se quiser)
+            loader.run_donation_ingestion(uri, user, password, target_year="2022")
+            
+        run_step(7, "TSE Batch Loader (Doações para o Neo4j)", step_7_tse_doacoes)
+
+        def step_7_5_receita_federal_doadores():
+            from src.loaders.rfb_cnpj_loader import RFBCNPJLoader
+            
+            uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+            user = os.getenv("NEO4J_USER", "neo4j")
+            password = os.getenv("NEO4J_PASSWORD", "admin123")
+    
+            rfb_dir = str(Path(__file__).resolve().parent.parent / "data" / "receita_federal")
+            loader = RFBCNPJLoader(data_dir=rfb_dir)
+            loader.run_targeted_donor_ingestion(uri, user, password)
+            
+        run_step(7.5, "RFB Malha Fina (Ligando Doadores a Empresas)", step_7_5_receita_federal_doadores)
 
         def step_19():
             import requests

@@ -19,7 +19,8 @@ import {
   Copy,
   CalendarOff,
   Stethoscope,
-  ShoppingBag
+  ShoppingBag,
+  Building2
 } from 'lucide-react';
 import ForceGraph2D from 'react-force-graph-2d';
 
@@ -70,7 +71,7 @@ function App() {
   const [results, setResults] = useState<Politician[]>([]);
   const [selectedPolitician, setSelectedPolitician] = useState<Politician | null>(null);
   const [allPoliticians, setAllPoliticians] = useState<Politician[]>([]);
-  const [activeTab, setActiveTab] = useState<'geral' | 'inteligencia' | 'grafo' | 'fontes' | 'despesas' | 'emendas'>('geral');
+  const [activeTab, setActiveTab] = useState<'geral' | 'inteligencia' | 'grafo' | 'fontes' | 'despesas' | 'emendas' | 'doacoes'>('geral');
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [sources, setSources] = useState<any[]>([]);
   const [expensesList, setExpensesList] = useState<any[]>([]);
@@ -79,6 +80,10 @@ function App() {
 
   const [topSuppliers, setTopSuppliers] = useState<any[]>([]);
   const [categoryExpenses, setCategoryExpenses] = useState<any[]>([]);
+
+  const [companySearch, setCompanySearch] = useState('');
+  const [companyDonations, setCompanyDonations] = useState<any[]>([]);
+  const [isSearchingCompany, setIsSearchingCompany] = useState(false);
 
   const fgRef = useRef<any>(null);
 
@@ -111,6 +116,21 @@ function App() {
       const resp = await axios.get(`${BACKEND_URL}/politicians/search?name=${query}`);
       setResults(resp.data);
     } catch (e) { console.error(e); }
+  };
+
+  const handleCompanySearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!companySearch.trim()) return;
+
+    setIsSearchingCompany(true);
+    try {
+      const resp = await axios.get(`${BACKEND_URL}/investigacao/doacoes-risco?nomeEmpresa=${companySearch}`);
+      setCompanyDonations(resp.data);
+    } catch (error) {
+      console.error("Erro ao buscar malha fina societária:", error);
+    } finally {
+      setIsSearchingCompany(false);
+    }
   };
 
   const selectPolitician = async (p: Politician) => {
@@ -433,6 +453,8 @@ function App() {
               {/* NOVAS ABAS AQUI */}
               <button onClick={() => setActiveTab('despesas')} className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeTab === 'despesas' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Extrato CEAP</button>
               <button onClick={() => setActiveTab('emendas')} className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeTab === 'emendas' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Emendas (Orçamento)</button>
+
+              <button onClick={() => setActiveTab('doacoes')} className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeTab === 'doacoes' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>Doações & Malha Fina</button>
 
               <button
                 className={`px-8 py-3 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'fontes' ? 'bg-white text-indigo-600 shadow-lg ring-1 ring-slate-100' : 'text-slate-500 hover:text-slate-700'}`}
@@ -1038,6 +1060,82 @@ function App() {
                   {emendasList.length === 0 && (
                     <div className="text-center py-20">
                       <p className="text-slate-400 font-bold">Nenhuma emenda capturada para este político no período.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* NOVA ABA: DOAÇÕES E MALHA FINA SOCIETÁRIA */}
+              {activeTab === 'doacoes' && (
+                <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 min-h-[600px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <div>
+                      <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                        <Building2 className="w-6 h-6 text-indigo-600" /> Malha Fina Societária
+                      </h3>
+                      <p className="text-xs font-bold text-slate-400 mt-1">
+                        Cruze doadores de campanha com o Quadro de Sócios da Receita Federal
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleCompanySearch} className="flex relative max-w-md w-full">
+                      <input
+                        type="text"
+                        placeholder="Buscar empresa (ex: BANCO MASTER)..."
+                        className="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all font-bold text-slate-700 text-sm outline-none uppercase"
+                        value={companySearch}
+                        onChange={(e) => setCompanySearch(e.target.value)}
+                      />
+                      <button
+                        type="submit"
+                        disabled={isSearchingCompany}
+                        className="absolute right-2 top-2 bottom-2 bg-indigo-600 text-white px-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                      >
+                        {isSearchingCompany ? 'Buscando...' : 'Pesquisar'}
+                      </button>
+                    </form>
+                  </div>
+
+                  {companyDonations.length > 0 ? (
+                    <div className="overflow-x-auto rounded-2xl border border-slate-100">
+                      <table className="w-full text-left border-collapse">
+                        <thead className="bg-slate-50 border-b border-slate-100">
+                          <tr className="text-slate-400 text-[10px] uppercase tracking-widest">
+                            <th className="p-4 font-black">Político Beneficiado</th>
+                            <th className="p-4 font-black">Doador (Pessoa Física)</th>
+                            <th className="p-4 font-black">CPF (Mascarado)</th>
+                            <th className="p-4 font-black">Empresa Vinculada</th>
+                            <th className="p-4 font-black">CNPJ</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                          {companyDonations.map((d, i) => (
+                            <tr
+                              key={i}
+                              className={`transition-colors group ${d.politicoNome === selectedPolitician?.name ? 'bg-indigo-50/50' : 'hover:bg-slate-50/80'}`}
+                            >
+                              <td className="p-4 text-sm font-black text-slate-800 uppercase tracking-tight">
+                                {d.politicoNome === selectedPolitician?.name && <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 mr-2" />}
+                                {d.politicoNome}
+                              </td>
+                              <td className="p-4 text-xs font-bold text-slate-600 uppercase">{d.doadorNome}</td>
+                              <td className="p-4 text-[11px] font-mono text-slate-400">{d.doadorCpf || 'N/A'}</td>
+                              <td className="p-4 text-xs font-black text-rose-600 uppercase tracking-tight">{d.empresaNome}</td>
+                              <td className="p-4 text-[11px] font-mono text-slate-400">{d.empresaCnpj}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
+                      <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-4">
+                        <Search className="w-8 h-8 text-slate-300" />
+                      </div>
+                      <p className="text-sm font-black text-slate-500 uppercase tracking-widest">Nenhuma conexão encontrada</p>
+                      <p className="text-xs font-bold text-slate-400 mt-2 max-w-sm text-center">
+                        Faça uma pesquisa acima para rastrear se empresas suspeitas financiaram campanhas através de seus sócios ou diretores.
+                      </p>
                     </div>
                   )}
                 </div>

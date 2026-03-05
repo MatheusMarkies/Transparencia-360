@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import com.tp360.core.domain.Promise;
 import com.tp360.core.domain.Vote;
+import com.tp360.core.dto.DoacaoRiscoDTO;
 import com.tp360.core.dto.GraphDataDTO;
 
 @RestController
@@ -240,5 +241,12 @@ public class FrontendSearchController {
         } catch (Exception e) {
             return ResponseEntity.ok(anomalyMap);
         }
+    }
+
+    @GetMapping("/doacoes-risco")
+    public List<DoacaoRiscoDTO> rastrearDoacoesPorEmpresa(@RequestParam String nomeEmpresa) {
+        // Exemplo de uso: GET /api/v1/investigacao/doacoes-risco?nomeEmpresa=BANCO
+        // MASTER
+        return politicoNodeRepository.findDoadoresLigadosAEmpresa(nomeEmpresa);
     }
 }

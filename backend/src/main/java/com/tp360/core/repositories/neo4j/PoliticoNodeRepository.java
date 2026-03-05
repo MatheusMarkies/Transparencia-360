@@ -1,5 +1,6 @@
 package com.tp360.core.repositories.neo4j;
 
+import com.tp360.core.dto.DoacaoRiscoDTO;
 import com.tp360.core.entities.neo4j.PoliticoNode;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -125,5 +126,18 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
                         + "ORDER BY total DESC "
                         + "RETURN { categoria: categoria, total: total }")
         List<Map<String, Object>> findGastosPorCategoriaByPoliticoId(@Param("politicoId") String politicoId);
+
+        @Query("MATCH (pol:Politico)<-[:DOOU_PARA_CAMPANHA]-(doador:Pessoa)-[:SOCIO_DE|SOCIO_ADMINISTRADOR_DE|APORTOU_CAPITAL_EM]->(empresa:Empresa) "
+                        +
+                        "WHERE toLower(empresa.name) CONTAINS toLower($termoEmpresa) " +
+                        "RETURN pol.name AS politicoNome, doador.name AS doadorNome, doador.cpf AS doadorCpf, empresa.name AS empresaNome, empresa.cnpj AS empresaCnpj")
+        List<DoacaoRiscoDTO> findDoadoresLigadosAEmpresa(@Param("termoEmpresa") String termoEmpresa);
+
+        // Opcional: Busca por uma lista de CNPJs suspeitos (Watchlist)
+        @Query("MATCH (pol:Politico)<-[:DOOU_PARA_CAMPANHA]-(doador:Pessoa)-[:SOCIO_DE|SOCIO_ADMINISTRADOR_DE|APORTOU_CAPITAL_EM]->(empresa:Empresa) "
+                        +
+                        "WHERE empresa.cnpj IN $cnpjsRisco " +
+                        "RETURN pol.name AS politicoNome, doador.name AS doadorNome, doador.cpf AS doadorCpf, empresa.name AS empresaNome, empresa.cnpj AS empresaCnpj")
+        List<DoacaoRiscoDTO> findDoacoesPorCnpjsDeRisco(@Param("cnpjsRisco") List<String> cnpjsRisco);
 
 }
