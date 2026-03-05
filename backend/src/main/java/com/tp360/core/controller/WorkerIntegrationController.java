@@ -57,6 +57,22 @@ public class WorkerIntegrationController {
         return ResponseEntity.ok(despesa);
     }
 
+    @PostMapping("/rosie-anomaly")
+    public ResponseEntity<String> ingestRosieAnomaly(
+            @RequestBody java.util.Map<String, Object> payload) {
+        String receiptId = (String) payload.get("receiptId");
+        java.util.Map<String, Object> anomaly = (java.util.Map<String, Object>) payload.get("anomaly");
+
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            String anomalyJson = mapper.writeValueAsString(anomaly);
+            dataIngestionService.ingestRosieAnomaly(receiptId, anomalyJson);
+            return ResponseEntity.ok("Anomaly associated with receipt: " + receiptId);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error processing anomaly: " + e.getMessage());
+        }
+    }
+
     // --- Emendas Pix Anomaly (Circular Graph) Endpoints ---
 
     @PostMapping("/politician/{externalId}/emenda_pix/{municipioIbge}")

@@ -6,11 +6,13 @@ import {
   ShieldAlert,
   Database,
   ChevronRight,
+  ChevronLeft,
   LayoutDashboard,
   Cpu,
   Network,
   BarChart3,
   AlertCircle,
+  AlertTriangle,
   Users,
   Bot,
   Calculator,
@@ -73,6 +75,7 @@ function App() {
   const [sources, setSources] = useState<any[]>([]);
   const [expensesList, setExpensesList] = useState<any[]>([]);
   const [emendasList, setEmendasList] = useState<any[]>([]);
+  const [expensesPage, setExpensesPage] = useState<number>(1);
 
   const [topSuppliers, setTopSuppliers] = useState<any[]>([]);
   const [categoryExpenses, setCategoryExpenses] = useState<any[]>([]);
@@ -268,6 +271,9 @@ function App() {
     } catch (e) {
       console.error("Error fetching detailed expenses:", e);
     }
+
+    // Reset pagination
+    setExpensesPage(1);
   };
 
   const formatCurrency = (val: any) => {
@@ -840,39 +846,149 @@ function App() {
                   </div>
 
                   {/* Coluna da Direita: Extrato Físico (Linha a Linha) */}
-                  <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[600px] flex flex-col">
-                    <div className="flex justify-between items-center mb-6">
-                      <div>
-                        <h3 className="text-xl font-black text-slate-800 tracking-tight">Extrato Físico Detalhado</h3>
-                        <p className="text-xs font-bold text-slate-400 mt-1">Inspeção linha a linha das notas emitidas</p>
+                  {(() => {
+                    const ITEMS_PER_PAGE = 30;
+                    const totalPages = Math.max(1, Math.ceil(expensesList.length / ITEMS_PER_PAGE));
+                    const safePage = Math.min(expensesPage, totalPages);
+                    const startIdx = (safePage - 1) * ITEMS_PER_PAGE;
+                    const pageItems = expensesList.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    return (
+                      <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl p-8 border border-slate-100 h-[700px] flex flex-col">
+                        <div className="flex justify-between items-center mb-6">
+                          <div>
+                            <h3 className="text-xl font-black text-slate-800 tracking-tight">Extrato Físico Detalhado</h3>
+                            <p className="text-xs font-bold text-slate-400 mt-1">Inspeção linha a linha das notas emitidas</p>
+                          </div>
+                          <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">{expensesList.length} notas</span>
+                        </div>
+                        <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                          <table className="w-full text-left border-collapse">
+                            <thead className="sticky top-0 bg-white/95 backdrop-blur-sm shadow-sm z-10">
+                              <tr className="text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-100">
+                                <th className="pb-3 font-black">Data</th>
+                                <th className="pb-3 font-black">Fornecedor</th>
+                                <th className="pb-3 font-black">Categoria</th>
+                                <th className="pb-3 font-black text-right">Valor</th>
+                                <th className="pb-3 font-black text-center">🤖 Rosie</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-50">
+                              {pageItems.map((d, i) => {
+                                const expId = d.id || '';
+
+                                // Parse anomalies array from the JSON string provided by the backend natively
+                                let anomalies: any[] = [];
+                                try {
+                                  if (typeof d.rosieAnomalies === 'string') {
+                                    anomalies = JSON.parse(d.rosieAnomalies);
+                                  } else if (Array.isArray(d.rosieAnomalies)) {
+                                    anomalies = d.rosieAnomalies;
+                                  }
+                                } catch (e) {
+                                  console.error("Error parsing rosie anomalies for", expId, e);
+                                }
+
+                                // Deduplicate classifiers for this receipt
+                                const uniqueClassifiers = [...new Set(anomalies.map((a: any) => a.classifier))];
+                                const maxConfidence = anomalies.length > 0 ? Math.max(...anomalies.map((a: any) => a.confidence || 0)) : 0;
+
+                                return (
+                                  <tr key={startIdx + i} className={`hover:bg-slate-50/80 transition-colors group ${anomalies.length > 0 ? 'bg-rose-50/30' : ''}`}>
+                                    <td className="py-3 text-[11px] text-slate-400 font-mono whitespace-nowrap">{d.dataEmissao || 'S/ Data'}</td>
+                                    <td className="py-3 text-xs font-bold text-slate-700">{d.nomeFornecedor}</td>
+                                    <td className="py-3 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{d.categoria}</td>
+                                    <td className="py-3 text-sm font-black text-rose-500 text-right whitespace-nowrap">
+                                      {formatCurrency(d.valorDocumento || 0)}
+                                    </td>
+                                    <td className="py-3 text-center">
+                                      {anomalies.length > 0 ? (
+                                        <div className="relative group/rosie inline-block">
+                                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider cursor-help ${maxConfidence >= 0.8 ? 'bg-rose-100 text-rose-700 border border-rose-200' :
+                                            maxConfidence >= 0.5 ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                                              'bg-slate-100 text-slate-600 border border-slate-200'
+                                            }`}>
+                                            <AlertTriangle className="w-3 h-3" />
+                                            {uniqueClassifiers.length}
+                                          </span>
+                                          {/* Tooltip */}
+                                          <div className="absolute bottom-full right-0 mb-2 w-72 p-3 bg-slate-900 text-white rounded-xl shadow-2xl text-left z-50 pointer-events-none opacity-0 group-hover/rosie:opacity-100 transition-opacity duration-200">
+                                            <p className="text-[10px] uppercase tracking-widest text-rose-400 font-black mb-2">Alertas Rosie ({anomalies.length})</p>
+                                            <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                                              {uniqueClassifiers.map((cls, ci) => {
+                                                const firstAnomaly = anomalies.find((a: any) => a.classifier === cls);
+                                                return (
+                                                  <div key={ci} className="text-[10px] leading-snug">
+                                                    <span className="font-bold text-amber-300">{String(cls).replace('Classifier', '')}</span>
+                                                    <span className="text-slate-300 ml-1">— {firstAnomaly?.reason || 'Suspeita detectada'}</span>
+                                                  </div>
+                                                );
+                                              })}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <span className="text-slate-200 text-[10px]">—</span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Pagination Controls */}
+                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+                          <p className="text-[10px] font-bold text-slate-400">
+                            Mostrando {startIdx + 1}–{Math.min(startIdx + ITEMS_PER_PAGE, expensesList.length)} de {expensesList.length}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setExpensesPage(p => Math.max(1, p - 1))}
+                              disabled={safePage <= 1}
+                              className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <ChevronLeft className="w-4 h-4 text-slate-600" />
+                            </button>
+                            <div className="flex items-center gap-1">
+                              {Array.from({ length: Math.min(totalPages, 7) }, (_, idx) => {
+                                let pageNum: number;
+                                if (totalPages <= 7) {
+                                  pageNum = idx + 1;
+                                } else if (safePage <= 4) {
+                                  pageNum = idx + 1;
+                                } else if (safePage >= totalPages - 3) {
+                                  pageNum = totalPages - 6 + idx;
+                                } else {
+                                  pageNum = safePage - 3 + idx;
+                                }
+                                return (
+                                  <button
+                                    key={pageNum}
+                                    onClick={() => setExpensesPage(pageNum)}
+                                    className={`min-w-[32px] h-8 rounded-lg text-[11px] font-black transition-all ${safePage === pageNum
+                                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
+                                      : 'text-slate-500 hover:bg-slate-100'
+                                      }`}
+                                  >
+                                    {pageNum}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <button
+                              onClick={() => setExpensesPage(p => Math.min(totalPages, p + 1))}
+                              disabled={safePage >= totalPages}
+                              className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <ChevronRight className="w-4 h-4 text-slate-600" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">{expensesList.length} notas recentes</span>
-                    </div>
-                    <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
-                      <table className="w-full text-left border-collapse">
-                        <thead className="sticky top-0 bg-white/95 backdrop-blur-sm shadow-sm z-10">
-                          <tr className="text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-100">
-                            <th className="pb-3 font-black">Data</th>
-                            <th className="pb-3 font-black">Fornecedor</th>
-                            <th className="pb-3 font-black">Categoria</th>
-                            <th className="pb-3 font-black text-right">Valor</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                          {expensesList.slice(0, 500).map((d, i) => (
-                            <tr key={i} className="hover:bg-slate-50/80 transition-colors group">
-                              <td className="py-3 text-[11px] text-slate-400 font-mono whitespace-nowrap">{d.dataEmissao || 'S/ Data'}</td>
-                              <td className="py-3 text-xs font-bold text-slate-700">{d.nomeFornecedor}</td>
-                              <td className="py-3 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{d.categoria}</td>
-                              <td className="py-3 text-sm font-black text-rose-500 text-right whitespace-nowrap">
-                                {formatCurrency(d.valorDocumento || 0)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                 </div>
               )}

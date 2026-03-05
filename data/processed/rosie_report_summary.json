@@ -1,0 +1,163 @@
+{
+  "total_anomalies": 1315,
+  "deputies_with_anomalies": 1,
+  "anomalies_by_classifier": {
+    "BenfordLawClassifier": 1099,
+    "WeekendHolidayClassifier": 109,
+    "MonthlySubquotaLimitClassifier": 5,
+    "ElectionPeriodClassifier": 98,
+    "HighValueOutlierClassifier": 4
+  },
+  "top_risk_deputies": [
+    [
+      "204379",
+      {
+        "risk_score": 100.0,
+        "n_anomalies": 1315,
+        "n_classifiers_triggered": 5,
+        "total_confidence": 1040.352,
+        "top_anomalies": [
+          {
+            "is_suspicious": true,
+            "classifier": "HighValueOutlierClassifier",
+            "confidence": 0.95,
+            "reason": "Valor R$ 98,350.00 é outlier para 'DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.' (z-score=8.68, média=R$ 6,012.86)",
+            "details": {
+              "valor": 98350.0,
+              "category": "DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.",
+              "z_score": 8.679,
+              "mean": 6012.86,
+              "std": 10638.58
+            },
+            "receipt_id": "despesa_unknown_d2cf6a9f6335ee0",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_8800da4abd31d2d",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_2cbbd9b80b218dd",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_2cbbd9b80b218dd",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_2cbbd9b80b218dd",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_a67d84d6ac4714b",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_fa4f55cfc38e2f2",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_746f6a4b5439755",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_746f6a4b5439755",
+            "deputy_id": "204379"
+          },
+          {
+            "is_suspicious": true,
+            "classifier": "BenfordLawClassifier",
+            "confidence": 0.85,
+            "reason": "A distribuição matemática dos gastos quebra a Lei de Benford. Isto indica provável digitação manual de valores fictícios nas notas fiscais.",
+            "details": {
+              "chi_squared": 569.016,
+              "dynamic_critical_value": 211.7,
+              "significance_level": 0.01
+            },
+            "receipt_id": "despesa_unknown_5c08a08813e135e",
+            "deputy_id": "204379"
+          }
+        ],
+        "classifier_counts": {
+          "BenfordLawClassifier": 1099,
+          "WeekendHolidayClassifier": 109,
+          "MonthlySubquotaLimitClassifier": 5,
+          "ElectionPeriodClassifier": 98,
+          "HighValueOutlierClassifier": 4
+        }
+      }
+    ]
+  ]
+}

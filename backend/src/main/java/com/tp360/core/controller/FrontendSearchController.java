@@ -175,4 +175,70 @@ public class FrontendSearchController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(politicoNodeRepository.findGastosPorCategoriaByPoliticoId(opt.get().getExternalId()));
     }
+
+    @GetMapping("/{id}/rosie-anomalies")
+    public ResponseEntity<Map<String, Object>> getRosieAnomalies(@PathVariable Long id) {
+        Optional<Politician> opt = politicianRepository.findById(id);
+        if (opt.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        Politician p = opt.get();
+        // Extract the numeric deputy ID from externalId (e.g., "camara_204379" ->
+        // "204379")
+        String externalId = p.getExternalId();
+        String deputyNumericId = externalId != null && externalId.contains("_")
+                ? externalId.substring(externalId.lastIndexOf("_") + 1)
+                : externalId;
+
+        // Search for the Rosie report file on disk
+        java.nio.file.Path reportsDir = java.nio.file.Paths.get(System.getProperty("user.dir"))
+                .resolve("data").resolve("processed").resolve("rosie_reports");
+
+        Map<String, Object> anomalyMap = new java.util.HashMap<>();
+
+        if (!java.nio.file.Files.isDirectory(reportsDir)) {
+            return ResponseEntity.ok(anomalyMap);
+        }
+
+        try {
+            // Find the report file matching this deputy ID
+            java.util.Optional<java.nio.file.Path> reportFile = java.nio.file.Files.list(reportsDir)
+                    .filter(path -> path.getFileName().toString().endsWith("_" + deputyNumericId + ".json"))
+                    .findFirst();
+
+            if (reportFile.isEmpty()) {
+                return ResponseEntity.ok(anomalyMap);
+            }
+
+            String content = java.nio.file.Files.readString(reportFile.get(), java.nio.charset.StandardCharsets.UTF_8);
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, Object> report = mapper.readValue(content,
+                    new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {
+                    });
+
+            // Build receipt_id -> list of anomalies map
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> allAnomalies = (List<Map<String, Object>>) report
+                    .get("todas_anomalias_detalhadas");
+            if (allAnomalies != null) {
+                for (Map<String, Object> anomaly : allAnomalies) {
+                    String receiptId = (String) anomaly.get("receipt_id");
+                    if (receiptId != null) {
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> list = (List<Map<String, Object>>) anomalyMap
+                                .computeIfAbsent(receiptId, k -> new ArrayList<>());
+                        Map<String, Object> entry = new java.util.HashMap<>();
+                        entry.put("classifier", anomaly.get("classifier"));
+                        entry.put("reason", anomaly.get("reason"));
+                        entry.put("confidence", anomaly.get("confidence"));
+                        list.add(entry);
+                    }
+                }
+            }
+
+            return ResponseEntity.ok(anomalyMap);
+        } catch (Exception e) {
+            return ResponseEntity.ok(anomalyMap);
+        }
+    }
 }

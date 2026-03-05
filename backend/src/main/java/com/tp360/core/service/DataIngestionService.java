@@ -433,6 +433,38 @@ public class DataIngestionService {
         }
     }
 
+    @Transactional("transactionManager")
+    public void ingestRosieAnomaly(String receiptId, String newAnomalyJson) {
+        Optional<com.tp360.core.entities.neo4j.DespesaNode> optDespesa = despesaNodeRepository.findById(receiptId);
+        if (optDespesa.isPresent()) {
+            com.tp360.core.entities.neo4j.DespesaNode despesa = optDespesa.get();
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                java.util.List<Object> anomalies;
+
+                if (despesa.getRosieAnomalies() != null && !despesa.getRosieAnomalies().isEmpty()) {
+                    anomalies = mapper.readValue(despesa.getRosieAnomalies(),
+                            new com.fasterxml.jackson.core.type.TypeReference<java.util.List<Object>>() {
+                            });
+                } else {
+                    anomalies = new java.util.ArrayList<>();
+                }
+
+                Object newAnomaly = mapper.readValue(newAnomalyJson, Object.class);
+                anomalies.add(newAnomaly);
+
+                despesa.setRosieAnomalies(mapper.writeValueAsString(anomalies));
+                despesaNodeRepository.save(despesa);
+            } catch (Exception e) {
+                org.slf4j.LoggerFactory.getLogger(DataIngestionService.class)
+                        .error("Failed to append Rosie anomaly for receipt {}: {}", receiptId, e.getMessage());
+            }
+        } else {
+            org.slf4j.LoggerFactory.getLogger(DataIngestionService.class)
+                    .warn("Received Rosie anomaly but receipt {} not found in Neo4j", receiptId);
+        }
+    }
+
     // --- Emendas Pix Anomaly (Circular Graph) Ingestion ---
 
     @Transactional("transactionManager")

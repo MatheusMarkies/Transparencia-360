@@ -85,8 +85,8 @@ public interface PoliticoNodeRepository extends Neo4jRepository<PoliticoNode, St
          */
         @Query("MATCH (p:Politico {id: $politicoId})-[:GEROU_DESPESA]->(d:Despesa) "
                         + "RETURN { id: d.id, dataEmissao: d.dataEmissao, nomeFornecedor: d.nomeFornecedor, "
-                        + "categoria: d.categoria, valorDocumento: d.valorDocumento } "
-                        + "ORDER BY d.dataEmissao DESC LIMIT 500")
+                        + "categoria: d.categoria, valorDocumento: d.valorDocumento, rosieAnomalies: d.rosieAnomalies } "
+                        + "ORDER BY d.dataEmissao DESC")
         List<Map<String, Object>> findDespesasMapByPoliticoId(@Param("politicoId") String politicoId);
 
         /**

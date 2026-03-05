@@ -153,8 +153,12 @@ class ExpensesWorker:
                     num_doc = row_lower.get("numdocumento", "unknown")
                     fornecedor = row_lower.get("txtfornecedor", "Unknown")
                     
+                    # Define ID determinístico para não duplicar nós no Neo4j entre execuções
+                    import hashlib
+                    hash_fornecedor = hashlib.md5(fornecedor.encode("utf-8")).hexdigest()[:15]
+                    
                     despesa_node = {
-                        "id": f"despesa_{num_doc}_{abs(hash(fornecedor))}",
+                        "id": f"despesa_{num_doc}_{hash_fornecedor}",
                         "dataEmissao": data_doc[:10],
                         "ufFornecedor": row_lower.get("sguf", "NA"), 
                         "categoria": categoria,

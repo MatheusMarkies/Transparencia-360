@@ -630,7 +630,19 @@ class DuplicateReceiptClassifier(BaseClassifier):
 
     def fit(self, dataset: List[Dict]) -> 'DuplicateReceiptClassifier':
         self.fingerprints = defaultdict(list)
+        
+        # ---> MÁGICA: Conjunto de IDs já vistos <---
+        # Se a base do governo vier com linhas repetidas (mesmo recibo),
+        # nós bloqueamos para não gerar um falso alerta de fraude.
+        seen_ids = set()
+        
         for r in dataset:
+            rid = r.get("id")
+            if rid:
+                if rid in seen_ids:
+                    continue  # Ignora a entrada porque é a MESMA nota
+                seen_ids.add(rid)
+                
             fp = self._make_fingerprint(r)
             self.fingerprints[fp].append(r)
 
@@ -643,6 +655,7 @@ class DuplicateReceiptClassifier(BaseClassifier):
         fp = self._make_fingerprint(receipt)
         group = self.fingerprints.get(fp, [])
 
+        # Se houver apenas 1 recibo ÚNICO neste grupo, ele é inocente.
         if len(group) <= 1:
             return {"is_suspicious": False, "classifier": self.name,
                     "confidence": 0.0, "reason": "", "details": {}}
@@ -656,14 +669,11 @@ class DuplicateReceiptClassifier(BaseClassifier):
         confidence = min(0.7 + (n_duplicates - 2) * 0.1, 0.95)
 
         # MUDANÇA DE LÓGICA PARA TELEFONIA:
-        # Faturas de TELEFONIA no mesmo dia SÃO suspeitas (podem ser a mesma fatura submetida 2x),
-        # mas damos o benefício da dúvida se o número do documento/fatura for comprovadamente diferente,
-        # pois podem ser duas linhas de celular do gabinete pagas no mesmo dia.
+        # Damos o benefício da dúvida se o número do documento/fatura for comprovadamente diferente,
+        # pois podem ser duas linhas de celular corporativas diferentes pagas no mesmo dia.
         if cat == "TELEFONIA":
             docs_in_group = {str(r.get("numDocumento", "")).strip() for r in group if str(r.get("numDocumento", "")).strip() not in ("", "0", "S/N")}
             if len(docs_in_group) > 1:
-                # O deputado submeteu várias faturas no mesmo dia e mesmo valor, mas com NÚMEROS DIFERENTES.
-                # Logo, não é fraude, são apenas múltiplas contas telefónicas.
                 return {"is_suspicious": False, "classifier": self.name,
                         "confidence": 0.0, "reason": "", "details": {}}
 
@@ -671,7 +681,7 @@ class DuplicateReceiptClassifier(BaseClassifier):
             "is_suspicious": True,
             "classifier": self.name,
             "confidence": round(confidence, 3),
-            "reason": (f"Recibo potencialmente duplicado: {n_duplicates} recibos de "
+            "reason": (f"Recibo potencialmente duplicado: {n_duplicates} recibos DISTINTOS de "
                        f"R$ {valor:.2f} para '{fornecedor}' emitidos exatamente no mesmo dia ({data_doc})."),
             "details": {
                 "fingerprint": fp,
@@ -819,7 +829,6 @@ class CompanyAgeClassifier(BaseClassifier):
         return {"is_suspicious": False, "classifier": self.name,
                 "confidence": 0.0, "reason": "", "details": {}}
 
-
 # =============================================================================
 # CLASSIFIER 9: BENFORD'S LAW
 # =============================================================================
@@ -827,11 +836,9 @@ class CompanyAgeClassifier(BaseClassifier):
 class BenfordLawClassifier(BaseClassifier):
     """
     Applies Benford's Law (first-digit distribution) to detect
-    manipulated financial data. Works at the deputy level: if a
-    deputy's expense values deviate significantly from expected
-    Benford distribution, flag all their receipts with a penalty.
-
-    Uses Chi-squared test for significance.
+    manipulated financial data. 
+    ADJUSTED: Lowered sensitivity for real-world CEAP data where fixed 
+    prices (e.g. R$ 50 taxi, R$ 150 meals) naturally skew the distribution.
     """
 
     # Expected frequencies for first digit (Benford's Law)
@@ -840,11 +847,12 @@ class BenfordLawClassifier(BaseClassifier):
         5: 0.07918, 6: 0.06695, 7: 0.05799, 8: 0.05115, 9: 0.04576
     }
 
-    def __init__(self, significance_level: float = 0.05, min_receipts: int = 50):
+    # Aumentamos o min_receipts para 100 para ter uma amostra estatística real
+    def __init__(self, significance_level: float = 0.01, min_receipts: int = 100):
         super().__init__()
         self.significance_level = significance_level
         self.min_receipts = min_receipts
-        self.deputy_scores: Dict[str, float] = {}  # dep_id -> chi2 p-value
+        self.deputy_scores: Dict[str, float] = {}  
         self.deputy_flags: Dict[str, bool] = {}
 
     def fit(self, dataset: List[Dict]) -> 'BenfordLawClassifier':
@@ -862,7 +870,6 @@ class BenfordLawClassifier(BaseClassifier):
             # Count first digits
             first_digits = Counter()
             for v in values:
-                # Get first significant digit
                 abs_v = abs(v)
                 if abs_v >= 1:
                     first_digit = int(str(abs_v).lstrip("0")[0])
@@ -881,15 +888,20 @@ class BenfordLawClassifier(BaseClassifier):
                 if expected > 0:
                     chi2 += (observed - expected) ** 2 / expected
 
-            # Chi-squared critical value for 8 degrees of freedom at 0.05: 15.507
-            # at 0.01: 20.090
-            critical_value = 15.507  # df=8, alpha=0.05
-            self.deputy_flags[dep_id] = chi2 > critical_value
-            self.deputy_scores[dep_id] = chi2
+            # MUDANÇA CRUCIAL:
+            # Em vez do valor acadêmico estrito de 15.507 ou 20.090, 
+            # subimos o limite de corte para 100.0 devido à natureza "viciada" de gastos fixos.
+            # Além disso, o Chi2 escala com o 'total' (N). Vamos usar uma penalização.
+            
+            # Limite dinâmico: Permite mais folga para quem tem milhares de notas
+            dynamic_critical_value = 50.0 + (total * 0.15) 
+            
+            self.deputy_flags[dep_id] = chi2 > dynamic_critical_value
+            self.deputy_scores[dep_id] = (chi2, dynamic_critical_value)
 
         flagged = sum(1 for v in self.deputy_flags.values() if v)
         logger.info(f"[BenfordLaw] Fitted: {flagged}/{len(self.deputy_flags)} deputies "
-                     f"deviate from Benford's Law")
+                     f"deviate from Benford's Law (Adjusted Sensitivity)")
         self._is_fitted = True
         return self
 
@@ -899,26 +911,30 @@ class BenfordLawClassifier(BaseClassifier):
             return {"is_suspicious": False, "classifier": self.name,
                     "confidence": 0.0, "reason": "", "details": {}}
 
-        chi2 = self.deputy_scores.get(dep_id, 0)
-        # Confidence scales with how far chi2 exceeds critical value
-        confidence = min(0.5 + (chi2 - 15.507) / 50.0, 0.85)
+        scores = self.deputy_scores.get(dep_id)
+        if not scores:
+            return {"is_suspicious": False, "classifier": self.name,
+                    "confidence": 0.0, "reason": "", "details": {}}
+            
+        chi2, critical_val = scores
+        
+        # Confiança agora cresce baseada no quão além do NOVO limite ele foi
+        confidence = min(0.5 + (chi2 - critical_val) / 200.0, 0.85)
 
         return {
             "is_suspicious": True,
             "classifier": self.name,
             "confidence": round(max(confidence, 0.5), 3),
-            "reason": (f"Distribuição de dígitos dos gastos deste deputado viola "
-                       f"a Lei de Benford (χ²={chi2:.2f}, limiar=15.51). "
-                       f"Pode indicar manipulação de valores."),
+            "reason": (f"A distribuição matemática dos gastos quebra a Lei de Benford. "
+                       f"Isto indica provável digitação manual de valores fictícios nas notas fiscais."),
             "details": {
                 "chi_squared": round(chi2, 3),
-                "critical_value": 15.507,
+                "dynamic_critical_value": round(critical_val, 3),
                 "significance_level": self.significance_level,
             },
             "receipt_id": receipt.get("id", "unknown"),
             "deputy_id": dep_id,
         }
-
 
 # =============================================================================
 # CLASSIFIER 10: HIGH VALUE OUTLIER (GLOBAL Z-SCORE)

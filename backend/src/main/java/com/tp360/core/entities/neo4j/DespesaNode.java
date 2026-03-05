@@ -27,4 +27,7 @@ public class DespesaNode {
 
     @Property("nomeFornecedor")
     private String nomeFornecedor;
+
+    @Property("rosieAnomalies")
+    private String rosieAnomalies; // JSON string with all anomalies detected by Rosie
 }
