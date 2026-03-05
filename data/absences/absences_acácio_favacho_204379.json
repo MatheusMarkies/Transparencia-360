@@ -1,2480 +1,2492 @@
 {
-  "2023": {
-    "ano": 2023,
-    "ultima_atualizacao": "2026-03-04T19:31:43.314740",
-    "sessoes_legislativas_totais": 100,
-    "presencas_totais": 156,
-    "faltas_estimadas": 0,
-    "sessoes_detalhadas": [
-      {
-        "id": "sessao_67053",
-        "data": "2023-01-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67087",
-        "data": "2023-02-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67091",
-        "data": "2023-02-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67113",
-        "data": "2023-02-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67116",
-        "data": "2023-02-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67126",
-        "data": "2023-02-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67134",
-        "data": "2023-03-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67185",
-        "data": "2023-03-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67204",
-        "data": "2023-03-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67223",
-        "data": "2023-03-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67239",
-        "data": "2023-03-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67277",
-        "data": "2023-03-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67314",
-        "data": "2023-03-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67330",
-        "data": "2023-03-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67349",
-        "data": "2023-03-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67389",
-        "data": "2023-03-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67417",
-        "data": "2023-03-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67431",
-        "data": "2023-03-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67551",
-        "data": "2023-04-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67487",
-        "data": "2023-04-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67569",
-        "data": "2023-04-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67607",
-        "data": "2023-04-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67660",
-        "data": "2023-04-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67676",
-        "data": "2023-04-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67766",
-        "data": "2023-04-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67771",
-        "data": "2023-04-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67785",
-        "data": "2023-04-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67828",
-        "data": "2023-04-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67877",
-        "data": "2023-05-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67868",
-        "data": "2023-05-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67898",
-        "data": "2023-05-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_67927",
-        "data": "2023-05-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68091",
-        "data": "2023-05-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68085",
-        "data": "2023-05-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68119",
-        "data": "2023-05-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68212",
-        "data": "2023-05-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68208",
-        "data": "2023-05-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68222",
-        "data": "2023-05-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68337",
-        "data": "2023-05-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68364",
-        "data": "2023-05-31",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68430",
-        "data": "2023-06-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68094",
-        "data": "2023-06-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68474",
-        "data": "2023-06-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68539",
-        "data": "2023-06-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68532",
-        "data": "2023-06-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68552",
-        "data": "2023-06-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68633",
-        "data": "2023-06-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68652",
-        "data": "2023-06-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68659",
-        "data": "2023-06-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68637",
-        "data": "2023-06-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68686",
-        "data": "2023-06-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68857",
-        "data": "2023-07-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68792",
-        "data": "2023-07-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68872",
-        "data": "2023-07-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68884",
-        "data": "2023-07-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68889",
-        "data": "2023-07-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69008",
-        "data": "2023-08-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68834",
-        "data": "2023-08-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69027",
-        "data": "2023-08-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69068",
-        "data": "2023-08-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69125",
-        "data": "2023-08-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_68687",
-        "data": "2023-08-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69153",
-        "data": "2023-08-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69203",
-        "data": "2023-08-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69221",
-        "data": "2023-08-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69315",
-        "data": "2023-08-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69372",
-        "data": "2023-08-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69462",
-        "data": "2023-08-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69478",
-        "data": "2023-08-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69535",
-        "data": "2023-08-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69641",
-        "data": "2023-08-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69480",
-        "data": "2023-08-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69493",
-        "data": "2023-08-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69578",
-        "data": "2023-08-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69671",
-        "data": "2023-08-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69577",
-        "data": "2023-08-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69572",
-        "data": "2023-08-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69714",
-        "data": "2023-08-31",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69757",
-        "data": "2023-09-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69679",
-        "data": "2023-09-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69784",
-        "data": "2023-09-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69709",
-        "data": "2023-09-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69776",
-        "data": "2023-09-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69719",
-        "data": "2023-09-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69781",
-        "data": "2023-09-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69873",
-        "data": "2023-09-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69856",
-        "data": "2023-09-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69908",
-        "data": "2023-09-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69881",
-        "data": "2023-09-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69770",
-        "data": "2023-09-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69961",
-        "data": "2023-09-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69998",
-        "data": "2023-09-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70046",
-        "data": "2023-09-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69902",
-        "data": "2023-09-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70013",
-        "data": "2023-09-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69796",
-        "data": "2023-09-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70075",
-        "data": "2023-09-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_69997",
-        "data": "2023-09-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70025",
-        "data": "2023-09-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70199",
-        "data": "2023-09-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70079",
-        "data": "2023-09-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70165",
-        "data": "2023-09-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70134",
-        "data": "2023-09-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70091",
-        "data": "2023-09-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70237",
-        "data": "2023-09-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70334",
-        "data": "2023-10-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70232",
-        "data": "2023-10-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70359",
-        "data": "2023-10-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70535",
-        "data": "2023-10-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70557",
-        "data": "2023-10-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70495",
-        "data": "2023-10-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70558",
-        "data": "2023-10-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70586",
-        "data": "2023-10-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70687",
-        "data": "2023-10-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70599",
-        "data": "2023-10-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70723",
-        "data": "2023-10-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70766",
-        "data": "2023-10-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70841",
-        "data": "2023-10-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70844",
-        "data": "2023-10-31",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70822",
-        "data": "2023-10-31",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70879",
-        "data": "2023-11-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70756",
-        "data": "2023-11-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70948",
-        "data": "2023-11-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70954",
-        "data": "2023-11-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70866",
-        "data": "2023-11-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70980",
-        "data": "2023-11-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70961",
-        "data": "2023-11-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_70991",
-        "data": "2023-11-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71041",
-        "data": "2023-11-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71245",
-        "data": "2023-11-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71060",
-        "data": "2023-11-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71265",
-        "data": "2023-11-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71303",
-        "data": "2023-11-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71348",
-        "data": "2023-11-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71367",
-        "data": "2023-11-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71271",
-        "data": "2023-11-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71382",
-        "data": "2023-11-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71463",
-        "data": "2023-12-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71483",
-        "data": "2023-12-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71449",
-        "data": "2023-12-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71393",
-        "data": "2023-12-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71506",
-        "data": "2023-12-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71538",
-        "data": "2023-12-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71657",
-        "data": "2023-12-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71658",
-        "data": "2023-12-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71513",
-        "data": "2023-12-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71524",
-        "data": "2023-12-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71676",
-        "data": "2023-12-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71713",
-        "data": "2023-12-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71724",
-        "data": "2023-12-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71741",
-        "data": "2023-12-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71744",
-        "data": "2023-12-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71686",
-        "data": "2023-12-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71701",
-        "data": "2023-12-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71765",
-        "data": "2023-12-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71780",
-        "data": "2023-12-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      }
-    ]
+  "resumo": {
+    "2023": {
+      "ano": 2023,
+      "ultima_atualizacao": "2026-03-05T00:29:10.962331",
+      "sessoes_legislativas_totais": 156,
+      "presencas_totais": 156,
+      "faltas_estimadas": 0
+    },
+    "2024": {
+      "ano": 2024,
+      "ultima_atualizacao": "2026-03-05T00:29:19.379439",
+      "sessoes_legislativas_totais": 108,
+      "presencas_totais": 108,
+      "faltas_estimadas": 0
+    },
+    "2025": {
+      "ano": 2025,
+      "ultima_atualizacao": "2026-03-05T00:29:26.479603",
+      "sessoes_legislativas_totais": 133,
+      "presencas_totais": 133,
+      "faltas_estimadas": 0
+    },
+    "2026": {
+      "ano": 2026,
+      "ultima_atualizacao": "2026-03-05T00:29:32.367691",
+      "sessoes_legislativas_totais": 10,
+      "presencas_totais": 10,
+      "faltas_estimadas": 0
+    }
   },
-  "2024": {
-    "ano": 2024,
-    "ultima_atualizacao": "2026-03-04T19:31:58.680115",
-    "sessoes_legislativas_totais": 100,
-    "presencas_totais": 108,
-    "faltas_estimadas": 0,
-    "sessoes_detalhadas": [
-      {
-        "id": "sessao_71828",
-        "data": "2024-02-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71846",
-        "data": "2024-02-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71852",
-        "data": "2024-02-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71866",
-        "data": "2024-02-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71957",
-        "data": "2024-03-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_71967",
-        "data": "2024-03-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72067",
-        "data": "2024-03-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72080",
-        "data": "2024-03-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72149",
-        "data": "2024-03-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72167",
-        "data": "2024-03-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72199",
-        "data": "2024-03-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72379",
-        "data": "2024-04-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72401",
-        "data": "2024-04-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72483",
-        "data": "2024-04-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72403",
-        "data": "2024-04-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72472",
-        "data": "2024-04-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72511",
-        "data": "2024-04-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72612",
-        "data": "2024-04-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72165",
-        "data": "2024-04-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72567",
-        "data": "2024-04-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72646",
-        "data": "2024-04-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72766",
-        "data": "2024-05-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72786",
-        "data": "2024-05-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72540",
-        "data": "2024-05-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72750",
-        "data": "2024-05-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72795",
-        "data": "2024-05-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72794",
-        "data": "2024-05-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72857",
-        "data": "2024-05-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73028",
-        "data": "2024-05-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72820",
-        "data": "2024-05-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73046",
-        "data": "2024-05-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73088",
-        "data": "2024-05-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73120",
-        "data": "2024-05-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73144",
-        "data": "2024-05-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73216",
-        "data": "2024-06-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_72979",
-        "data": "2024-06-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73259",
-        "data": "2024-06-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73378",
-        "data": "2024-06-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73163",
-        "data": "2024-06-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73414",
-        "data": "2024-06-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73517",
-        "data": "2024-06-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73518",
-        "data": "2024-06-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73605",
-        "data": "2024-06-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73624",
-        "data": "2024-06-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73639",
-        "data": "2024-06-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73677",
-        "data": "2024-07-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73723",
-        "data": "2024-07-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73678",
-        "data": "2024-07-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73694",
-        "data": "2024-07-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73826",
-        "data": "2024-07-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73863",
-        "data": "2024-07-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73890",
-        "data": "2024-07-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73833",
-        "data": "2024-07-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_73902",
-        "data": "2024-07-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74046",
-        "data": "2024-08-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74077",
-        "data": "2024-08-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74111",
-        "data": "2024-08-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74196",
-        "data": "2024-08-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74211",
-        "data": "2024-08-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74120",
-        "data": "2024-08-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74181",
-        "data": "2024-08-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74189",
-        "data": "2024-08-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74191",
-        "data": "2024-08-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74243",
-        "data": "2024-08-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74255",
-        "data": "2024-08-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74293",
-        "data": "2024-09-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74312",
-        "data": "2024-09-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74253",
-        "data": "2024-09-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74240",
-        "data": "2024-09-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74274",
-        "data": "2024-09-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74336",
-        "data": "2024-09-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74362",
-        "data": "2024-09-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74411",
-        "data": "2024-10-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74337",
-        "data": "2024-10-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74413",
-        "data": "2024-10-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74254",
-        "data": "2024-10-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74525",
-        "data": "2024-10-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74542",
-        "data": "2024-10-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74597",
-        "data": "2024-10-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74581",
-        "data": "2024-10-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74390",
-        "data": "2024-10-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74584",
-        "data": "2024-10-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74619",
-        "data": "2024-10-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74683",
-        "data": "2024-11-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74684",
-        "data": "2024-11-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74846",
-        "data": "2024-11-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74868",
-        "data": "2024-11-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74911",
-        "data": "2024-11-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74530",
-        "data": "2024-11-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74948",
-        "data": "2024-11-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_74920",
-        "data": "2024-11-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75052",
-        "data": "2024-11-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75070",
-        "data": "2024-11-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75106",
-        "data": "2024-11-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75154",
-        "data": "2024-12-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75159",
-        "data": "2024-12-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75203",
-        "data": "2024-12-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75231",
-        "data": "2024-12-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75257",
-        "data": "2024-12-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75283",
-        "data": "2024-12-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75271",
-        "data": "2024-12-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75304",
-        "data": "2024-12-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75334",
-        "data": "2024-12-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75344",
-        "data": "2024-12-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75358",
-        "data": "2024-12-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75363",
-        "data": "2024-12-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75369",
-        "data": "2024-12-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75372",
-        "data": "2024-12-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      }
-    ]
-  },
-  "2025": {
-    "ano": 2025,
-    "ultima_atualizacao": "2026-03-04T19:32:05.508280",
-    "sessoes_legislativas_totais": 100,
-    "presencas_totais": 133,
-    "faltas_estimadas": 0,
-    "sessoes_detalhadas": [
-      {
-        "id": "sessao_75386",
-        "data": "2025-02-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75389",
-        "data": "2025-02-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75392",
-        "data": "2025-02-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75395",
-        "data": "2025-02-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75404",
-        "data": "2025-02-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75405",
-        "data": "2025-02-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75413",
-        "data": "2025-02-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75428",
-        "data": "2025-02-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75415",
-        "data": "2025-02-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75444",
-        "data": "2025-02-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75446",
-        "data": "2025-02-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75445",
-        "data": "2025-02-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75466",
-        "data": "2025-03-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75468",
-        "data": "2025-03-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75499",
-        "data": "2025-03-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75500",
-        "data": "2025-03-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75464",
-        "data": "2025-03-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75585",
-        "data": "2025-03-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75702",
-        "data": "2025-03-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75672",
-        "data": "2025-03-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75760",
-        "data": "2025-04-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75779",
-        "data": "2025-04-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75790",
-        "data": "2025-04-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75874",
-        "data": "2025-04-08",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75921",
-        "data": "2025-04-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75930",
-        "data": "2025-04-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75987",
-        "data": "2025-04-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75988",
-        "data": "2025-04-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_75989",
-        "data": "2025-04-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76126",
-        "data": "2025-04-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76128",
-        "data": "2025-04-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76158",
-        "data": "2025-04-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76209",
-        "data": "2025-05-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76389",
-        "data": "2025-05-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76401",
-        "data": "2025-05-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76185",
-        "data": "2025-05-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76459",
-        "data": "2025-05-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76496",
-        "data": "2025-05-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76513",
-        "data": "2025-05-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76462",
-        "data": "2025-05-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76561",
-        "data": "2025-05-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76551",
-        "data": "2025-05-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76585",
-        "data": "2025-05-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76638",
-        "data": "2025-06-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76720",
-        "data": "2025-06-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76809",
-        "data": "2025-06-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76877",
-        "data": "2025-06-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76915",
-        "data": "2025-06-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76706",
-        "data": "2025-06-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76937",
-        "data": "2025-06-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76974",
-        "data": "2025-06-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76987",
-        "data": "2025-06-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77031",
-        "data": "2025-06-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77059",
-        "data": "2025-07-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_76707",
-        "data": "2025-07-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77086",
-        "data": "2025-07-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77106",
-        "data": "2025-07-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77207",
-        "data": "2025-07-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77248",
-        "data": "2025-07-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77294",
-        "data": "2025-07-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77320",
-        "data": "2025-07-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77333",
-        "data": "2025-07-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77363",
-        "data": "2025-07-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77506",
-        "data": "2025-08-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77543",
-        "data": "2025-08-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77588",
-        "data": "2025-08-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77609",
-        "data": "2025-08-13",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77632",
-        "data": "2025-08-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78713",
-        "data": "2025-08-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_77608",
-        "data": "2025-08-19",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78723",
-        "data": "2025-08-20",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78793",
-        "data": "2025-08-21",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78838",
-        "data": "2025-08-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78753",
-        "data": "2025-08-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78693",
-        "data": "2025-08-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78881",
-        "data": "2025-08-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78901",
-        "data": "2025-08-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78979",
-        "data": "2025-09-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78955",
-        "data": "2025-09-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78955",
-        "data": "2025-09-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_78875",
-        "data": "2025-09-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79003",
-        "data": "2025-09-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79025",
-        "data": "2025-09-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79107",
-        "data": "2025-09-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79151",
-        "data": "2025-09-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79236",
-        "data": "2025-09-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79121",
-        "data": "2025-09-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79266",
-        "data": "2025-09-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79315",
-        "data": "2025-09-17",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79317",
-        "data": "2025-09-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79373",
-        "data": "2025-09-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79263",
-        "data": "2025-09-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79385",
-        "data": "2025-09-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79433",
-        "data": "2025-09-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79387",
-        "data": "2025-09-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79517",
-        "data": "2025-09-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79532",
-        "data": "2025-10-01",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79572",
-        "data": "2025-10-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79645",
-        "data": "2025-10-07",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79718",
-        "data": "2025-10-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79765",
-        "data": "2025-10-14",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79805",
-        "data": "2025-10-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79950",
-        "data": "2025-10-22",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79992",
-        "data": "2025-10-23",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80007",
-        "data": "2025-10-27",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80044",
-        "data": "2025-10-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80013",
-        "data": "2025-10-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80070",
-        "data": "2025-10-28",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80072",
-        "data": "2025-10-29",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80073",
-        "data": "2025-10-30",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80157",
-        "data": "2025-11-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80180",
-        "data": "2025-11-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_79961",
-        "data": "2025-11-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80098",
-        "data": "2025-11-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80210",
-        "data": "2025-11-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80010",
-        "data": "2025-11-05",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80206",
-        "data": "2025-11-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80208",
-        "data": "2025-11-06",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80298",
-        "data": "2025-11-11",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80327",
-        "data": "2025-11-12",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80325",
-        "data": "2025-11-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80366",
-        "data": "2025-11-18",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80586",
-        "data": "2025-12-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80613",
-        "data": "2025-12-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80587",
-        "data": "2025-12-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80628",
-        "data": "2025-12-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80737",
-        "data": "2025-12-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80746",
-        "data": "2025-12-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80749",
-        "data": "2025-12-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80697",
-        "data": "2025-12-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80821",
-        "data": "2025-12-15",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80745",
-        "data": "2025-12-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80835",
-        "data": "2025-12-16",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      }
-    ]
-  },
-  "2026": {
-    "ano": 2026,
-    "ultima_atualizacao": "2026-03-04T19:32:11.617458",
-    "sessoes_legislativas_totais": 100,
-    "presencas_totais": 10,
-    "faltas_estimadas": 90,
-    "sessoes_detalhadas": [
-      {
-        "id": "sessao_80872",
-        "data": "2026-02-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_80928",
-        "data": "2026-02-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81002",
-        "data": "2026-02-09",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81011",
-        "data": "2026-02-10",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81075",
-        "data": "2026-02-24",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81084",
-        "data": "2026-02-25",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81115",
-        "data": "2026-02-26",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81154",
-        "data": "2026-03-02",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81178",
-        "data": "2026-03-03",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      },
-      {
-        "id": "sessao_81196",
-        "data": "2026-03-04",
-        "tipo": "Sessao Deliberativa",
-        "local": "DF"
-      }
-    ]
+  "detalhes": {
+    "2023": {
+      "sessoes": [
+        {
+          "id": "sessao_67053",
+          "data": "2023-01-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67087",
+          "data": "2023-02-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67091",
+          "data": "2023-02-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67113",
+          "data": "2023-02-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67116",
+          "data": "2023-02-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67126",
+          "data": "2023-02-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67134",
+          "data": "2023-03-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67185",
+          "data": "2023-03-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67204",
+          "data": "2023-03-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67223",
+          "data": "2023-03-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67239",
+          "data": "2023-03-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67277",
+          "data": "2023-03-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67314",
+          "data": "2023-03-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67330",
+          "data": "2023-03-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67349",
+          "data": "2023-03-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67389",
+          "data": "2023-03-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67417",
+          "data": "2023-03-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67431",
+          "data": "2023-03-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67551",
+          "data": "2023-04-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67487",
+          "data": "2023-04-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67569",
+          "data": "2023-04-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67607",
+          "data": "2023-04-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67660",
+          "data": "2023-04-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67676",
+          "data": "2023-04-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67766",
+          "data": "2023-04-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67771",
+          "data": "2023-04-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67785",
+          "data": "2023-04-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67828",
+          "data": "2023-04-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67877",
+          "data": "2023-05-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67868",
+          "data": "2023-05-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67898",
+          "data": "2023-05-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_67927",
+          "data": "2023-05-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68091",
+          "data": "2023-05-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68085",
+          "data": "2023-05-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68119",
+          "data": "2023-05-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68212",
+          "data": "2023-05-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68208",
+          "data": "2023-05-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68222",
+          "data": "2023-05-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68337",
+          "data": "2023-05-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68364",
+          "data": "2023-05-31",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68430",
+          "data": "2023-06-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68094",
+          "data": "2023-06-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68474",
+          "data": "2023-06-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68539",
+          "data": "2023-06-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68532",
+          "data": "2023-06-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68552",
+          "data": "2023-06-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68633",
+          "data": "2023-06-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68652",
+          "data": "2023-06-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68659",
+          "data": "2023-06-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68637",
+          "data": "2023-06-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68686",
+          "data": "2023-06-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68857",
+          "data": "2023-07-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68792",
+          "data": "2023-07-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68872",
+          "data": "2023-07-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68884",
+          "data": "2023-07-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68889",
+          "data": "2023-07-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69008",
+          "data": "2023-08-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68834",
+          "data": "2023-08-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69027",
+          "data": "2023-08-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69068",
+          "data": "2023-08-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69125",
+          "data": "2023-08-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_68687",
+          "data": "2023-08-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69153",
+          "data": "2023-08-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69203",
+          "data": "2023-08-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69221",
+          "data": "2023-08-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69315",
+          "data": "2023-08-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69372",
+          "data": "2023-08-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69462",
+          "data": "2023-08-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69478",
+          "data": "2023-08-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69535",
+          "data": "2023-08-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69641",
+          "data": "2023-08-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69480",
+          "data": "2023-08-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69493",
+          "data": "2023-08-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69578",
+          "data": "2023-08-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69671",
+          "data": "2023-08-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69577",
+          "data": "2023-08-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69572",
+          "data": "2023-08-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69714",
+          "data": "2023-08-31",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69757",
+          "data": "2023-09-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69679",
+          "data": "2023-09-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69784",
+          "data": "2023-09-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69709",
+          "data": "2023-09-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69776",
+          "data": "2023-09-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69719",
+          "data": "2023-09-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69781",
+          "data": "2023-09-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69873",
+          "data": "2023-09-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69856",
+          "data": "2023-09-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69908",
+          "data": "2023-09-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69881",
+          "data": "2023-09-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69770",
+          "data": "2023-09-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69961",
+          "data": "2023-09-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69998",
+          "data": "2023-09-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70046",
+          "data": "2023-09-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69902",
+          "data": "2023-09-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70013",
+          "data": "2023-09-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69796",
+          "data": "2023-09-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70075",
+          "data": "2023-09-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_69997",
+          "data": "2023-09-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70025",
+          "data": "2023-09-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70199",
+          "data": "2023-09-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70079",
+          "data": "2023-09-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70165",
+          "data": "2023-09-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70134",
+          "data": "2023-09-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70091",
+          "data": "2023-09-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70237",
+          "data": "2023-09-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70334",
+          "data": "2023-10-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70232",
+          "data": "2023-10-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70359",
+          "data": "2023-10-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70535",
+          "data": "2023-10-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70557",
+          "data": "2023-10-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70495",
+          "data": "2023-10-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70558",
+          "data": "2023-10-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70586",
+          "data": "2023-10-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70687",
+          "data": "2023-10-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70599",
+          "data": "2023-10-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70723",
+          "data": "2023-10-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70766",
+          "data": "2023-10-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70841",
+          "data": "2023-10-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70844",
+          "data": "2023-10-31",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70822",
+          "data": "2023-10-31",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70879",
+          "data": "2023-11-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70756",
+          "data": "2023-11-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70948",
+          "data": "2023-11-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70954",
+          "data": "2023-11-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70866",
+          "data": "2023-11-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70980",
+          "data": "2023-11-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70961",
+          "data": "2023-11-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_70991",
+          "data": "2023-11-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71041",
+          "data": "2023-11-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71245",
+          "data": "2023-11-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71060",
+          "data": "2023-11-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71265",
+          "data": "2023-11-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71303",
+          "data": "2023-11-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71348",
+          "data": "2023-11-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71367",
+          "data": "2023-11-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71271",
+          "data": "2023-11-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71382",
+          "data": "2023-11-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71463",
+          "data": "2023-12-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71483",
+          "data": "2023-12-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71449",
+          "data": "2023-12-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71393",
+          "data": "2023-12-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71506",
+          "data": "2023-12-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71538",
+          "data": "2023-12-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71657",
+          "data": "2023-12-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71658",
+          "data": "2023-12-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71513",
+          "data": "2023-12-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71524",
+          "data": "2023-12-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71676",
+          "data": "2023-12-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71713",
+          "data": "2023-12-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71724",
+          "data": "2023-12-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71741",
+          "data": "2023-12-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71744",
+          "data": "2023-12-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71686",
+          "data": "2023-12-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71701",
+          "data": "2023-12-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71765",
+          "data": "2023-12-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71780",
+          "data": "2023-12-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        }
+      ]
+    },
+    "2024": {
+      "sessoes": [
+        {
+          "id": "sessao_71828",
+          "data": "2024-02-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71846",
+          "data": "2024-02-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71852",
+          "data": "2024-02-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71866",
+          "data": "2024-02-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71957",
+          "data": "2024-03-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_71967",
+          "data": "2024-03-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72067",
+          "data": "2024-03-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72080",
+          "data": "2024-03-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72149",
+          "data": "2024-03-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72167",
+          "data": "2024-03-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72199",
+          "data": "2024-03-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72379",
+          "data": "2024-04-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72401",
+          "data": "2024-04-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72483",
+          "data": "2024-04-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72403",
+          "data": "2024-04-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72472",
+          "data": "2024-04-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72511",
+          "data": "2024-04-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72612",
+          "data": "2024-04-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72165",
+          "data": "2024-04-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72567",
+          "data": "2024-04-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72646",
+          "data": "2024-04-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72766",
+          "data": "2024-05-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72786",
+          "data": "2024-05-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72540",
+          "data": "2024-05-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72750",
+          "data": "2024-05-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72795",
+          "data": "2024-05-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72794",
+          "data": "2024-05-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72857",
+          "data": "2024-05-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73028",
+          "data": "2024-05-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72820",
+          "data": "2024-05-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73046",
+          "data": "2024-05-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73088",
+          "data": "2024-05-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73120",
+          "data": "2024-05-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73144",
+          "data": "2024-05-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73216",
+          "data": "2024-06-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_72979",
+          "data": "2024-06-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73259",
+          "data": "2024-06-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73378",
+          "data": "2024-06-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73163",
+          "data": "2024-06-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73414",
+          "data": "2024-06-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73517",
+          "data": "2024-06-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73518",
+          "data": "2024-06-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73605",
+          "data": "2024-06-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73624",
+          "data": "2024-06-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73639",
+          "data": "2024-06-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73677",
+          "data": "2024-07-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73723",
+          "data": "2024-07-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73678",
+          "data": "2024-07-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73694",
+          "data": "2024-07-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73826",
+          "data": "2024-07-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73863",
+          "data": "2024-07-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73890",
+          "data": "2024-07-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73833",
+          "data": "2024-07-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_73902",
+          "data": "2024-07-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74046",
+          "data": "2024-08-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74077",
+          "data": "2024-08-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74111",
+          "data": "2024-08-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74196",
+          "data": "2024-08-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74211",
+          "data": "2024-08-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74120",
+          "data": "2024-08-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74181",
+          "data": "2024-08-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74189",
+          "data": "2024-08-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74191",
+          "data": "2024-08-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74243",
+          "data": "2024-08-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74255",
+          "data": "2024-08-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74293",
+          "data": "2024-09-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74312",
+          "data": "2024-09-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74253",
+          "data": "2024-09-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74240",
+          "data": "2024-09-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74274",
+          "data": "2024-09-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74336",
+          "data": "2024-09-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74362",
+          "data": "2024-09-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74411",
+          "data": "2024-10-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74337",
+          "data": "2024-10-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74413",
+          "data": "2024-10-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74254",
+          "data": "2024-10-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74525",
+          "data": "2024-10-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74542",
+          "data": "2024-10-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74597",
+          "data": "2024-10-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74581",
+          "data": "2024-10-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74390",
+          "data": "2024-10-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74584",
+          "data": "2024-10-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74619",
+          "data": "2024-10-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74683",
+          "data": "2024-11-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74684",
+          "data": "2024-11-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74846",
+          "data": "2024-11-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74868",
+          "data": "2024-11-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74530",
+          "data": "2024-11-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74911",
+          "data": "2024-11-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74948",
+          "data": "2024-11-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_74920",
+          "data": "2024-11-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75052",
+          "data": "2024-11-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75070",
+          "data": "2024-11-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75106",
+          "data": "2024-11-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75154",
+          "data": "2024-12-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75159",
+          "data": "2024-12-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75203",
+          "data": "2024-12-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75231",
+          "data": "2024-12-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75257",
+          "data": "2024-12-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75283",
+          "data": "2024-12-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75271",
+          "data": "2024-12-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75304",
+          "data": "2024-12-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75334",
+          "data": "2024-12-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75344",
+          "data": "2024-12-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75358",
+          "data": "2024-12-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75363",
+          "data": "2024-12-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75369",
+          "data": "2024-12-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75372",
+          "data": "2024-12-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        }
+      ]
+    },
+    "2025": {
+      "sessoes": [
+        {
+          "id": "sessao_75386",
+          "data": "2025-02-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75389",
+          "data": "2025-02-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75392",
+          "data": "2025-02-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75395",
+          "data": "2025-02-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75404",
+          "data": "2025-02-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75405",
+          "data": "2025-02-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75413",
+          "data": "2025-02-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75428",
+          "data": "2025-02-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75415",
+          "data": "2025-02-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75444",
+          "data": "2025-02-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75446",
+          "data": "2025-02-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75445",
+          "data": "2025-02-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75466",
+          "data": "2025-03-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75468",
+          "data": "2025-03-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75499",
+          "data": "2025-03-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75500",
+          "data": "2025-03-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75464",
+          "data": "2025-03-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75585",
+          "data": "2025-03-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75702",
+          "data": "2025-03-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75672",
+          "data": "2025-03-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75760",
+          "data": "2025-04-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75779",
+          "data": "2025-04-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75790",
+          "data": "2025-04-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75874",
+          "data": "2025-04-08",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75921",
+          "data": "2025-04-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75930",
+          "data": "2025-04-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75987",
+          "data": "2025-04-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75988",
+          "data": "2025-04-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_75989",
+          "data": "2025-04-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76126",
+          "data": "2025-04-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76128",
+          "data": "2025-04-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76158",
+          "data": "2025-04-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76209",
+          "data": "2025-05-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76389",
+          "data": "2025-05-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76401",
+          "data": "2025-05-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76185",
+          "data": "2025-05-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76459",
+          "data": "2025-05-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76496",
+          "data": "2025-05-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76513",
+          "data": "2025-05-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76462",
+          "data": "2025-05-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76561",
+          "data": "2025-05-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76551",
+          "data": "2025-05-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76585",
+          "data": "2025-05-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76638",
+          "data": "2025-06-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76720",
+          "data": "2025-06-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76809",
+          "data": "2025-06-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76877",
+          "data": "2025-06-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76915",
+          "data": "2025-06-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76706",
+          "data": "2025-06-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76937",
+          "data": "2025-06-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76974",
+          "data": "2025-06-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76987",
+          "data": "2025-06-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77031",
+          "data": "2025-06-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77059",
+          "data": "2025-07-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_76707",
+          "data": "2025-07-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77086",
+          "data": "2025-07-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77106",
+          "data": "2025-07-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77207",
+          "data": "2025-07-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77248",
+          "data": "2025-07-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77294",
+          "data": "2025-07-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77320",
+          "data": "2025-07-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77333",
+          "data": "2025-07-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77363",
+          "data": "2025-07-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77506",
+          "data": "2025-08-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77543",
+          "data": "2025-08-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77588",
+          "data": "2025-08-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77609",
+          "data": "2025-08-13",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77632",
+          "data": "2025-08-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78713",
+          "data": "2025-08-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_77608",
+          "data": "2025-08-19",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78723",
+          "data": "2025-08-20",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78793",
+          "data": "2025-08-21",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78838",
+          "data": "2025-08-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78753",
+          "data": "2025-08-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78693",
+          "data": "2025-08-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78881",
+          "data": "2025-08-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78901",
+          "data": "2025-08-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78979",
+          "data": "2025-09-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78955",
+          "data": "2025-09-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78955",
+          "data": "2025-09-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_78875",
+          "data": "2025-09-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79003",
+          "data": "2025-09-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79025",
+          "data": "2025-09-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79107",
+          "data": "2025-09-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79151",
+          "data": "2025-09-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79236",
+          "data": "2025-09-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79121",
+          "data": "2025-09-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79266",
+          "data": "2025-09-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79315",
+          "data": "2025-09-17",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79317",
+          "data": "2025-09-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79373",
+          "data": "2025-09-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79263",
+          "data": "2025-09-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79385",
+          "data": "2025-09-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79433",
+          "data": "2025-09-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79387",
+          "data": "2025-09-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79517",
+          "data": "2025-09-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79532",
+          "data": "2025-10-01",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79572",
+          "data": "2025-10-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79645",
+          "data": "2025-10-07",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79718",
+          "data": "2025-10-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79765",
+          "data": "2025-10-14",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79805",
+          "data": "2025-10-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79950",
+          "data": "2025-10-22",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79992",
+          "data": "2025-10-23",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80007",
+          "data": "2025-10-27",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80044",
+          "data": "2025-10-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80013",
+          "data": "2025-10-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80070",
+          "data": "2025-10-28",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80072",
+          "data": "2025-10-29",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80073",
+          "data": "2025-10-30",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80157",
+          "data": "2025-11-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80180",
+          "data": "2025-11-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_79961",
+          "data": "2025-11-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80098",
+          "data": "2025-11-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80210",
+          "data": "2025-11-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80010",
+          "data": "2025-11-05",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80206",
+          "data": "2025-11-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80208",
+          "data": "2025-11-06",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80298",
+          "data": "2025-11-11",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80327",
+          "data": "2025-11-12",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80325",
+          "data": "2025-11-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80366",
+          "data": "2025-11-18",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80586",
+          "data": "2025-12-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80613",
+          "data": "2025-12-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80587",
+          "data": "2025-12-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80628",
+          "data": "2025-12-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80737",
+          "data": "2025-12-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80746",
+          "data": "2025-12-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80749",
+          "data": "2025-12-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80697",
+          "data": "2025-12-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80821",
+          "data": "2025-12-15",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80745",
+          "data": "2025-12-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80835",
+          "data": "2025-12-16",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        }
+      ]
+    },
+    "2026": {
+      "sessoes": [
+        {
+          "id": "sessao_80872",
+          "data": "2026-02-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_80928",
+          "data": "2026-02-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81002",
+          "data": "2026-02-09",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81011",
+          "data": "2026-02-10",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81075",
+          "data": "2026-02-24",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81084",
+          "data": "2026-02-25",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81115",
+          "data": "2026-02-26",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81154",
+          "data": "2026-03-02",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81178",
+          "data": "2026-03-03",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        },
+        {
+          "id": "sessao_81196",
+          "data": "2026-03-04",
+          "tipo": "Sessao Deliberativa",
+          "local": "DF"
+        }
+      ]
+    }
   }
 }

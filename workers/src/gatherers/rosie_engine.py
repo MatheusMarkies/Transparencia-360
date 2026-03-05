@@ -592,7 +592,6 @@ class WeekendHolidayClassifier(BaseClassifier):
             "deputy_id": receipt.get("deputy_id", "unknown"),
         }
 
-
 # =============================================================================
 # CLASSIFIER 6: DUPLICATE RECEIPTS
 # =============================================================================
@@ -600,7 +599,7 @@ class WeekendHolidayClassifier(BaseClassifier):
 class DuplicateReceiptClassifier(BaseClassifier):
     """
     Detects potentially duplicate receipts by creating a fingerprint
-    from (supplier, value, date, category). If two receipts from the
+    from (supplier, value, date). If two receipts from the
     same deputy match, flag both.
     """
 
@@ -611,11 +610,20 @@ class DuplicateReceiptClassifier(BaseClassifier):
 
     def _make_fingerprint(self, receipt: Dict) -> str:
         """Create a deduplication fingerprint."""
+        data_doc = receipt.get("dataEmissao", "")[:10]
+        
+        # CRUCIAL: Se a data estiver vazia, faturas recorrentes (como celular)
+        # de meses diferentes colidiriam no mesmo fingerprint gerando falsos positivos.
+        # Portanto, se não há data exata, geramos um hash único para ignorar a duplicação.
+        if not data_doc or len(data_doc) < 8:
+            import uuid
+            return str(uuid.uuid4())
+
         parts = [
             str(receipt.get("deputy_id", "")),
             str(receipt.get("nomeFornecedor", "")).strip().upper(),
             f"{receipt.get('valorDocumento', 0.0):.2f}",
-            receipt.get("dataEmissao", "")[:10],
+            data_doc,
         ]
         raw = "|".join(parts)
         return hashlib.md5(raw.encode()).hexdigest()
@@ -641,27 +649,41 @@ class DuplicateReceiptClassifier(BaseClassifier):
 
         valor = receipt.get("valorDocumento", 0.0)
         fornecedor = receipt.get("nomeFornecedor", "Unknown")
+        cat = receipt.get("categoria", "").strip().upper()
+        data_doc = receipt.get("dataEmissao", "")[:10]
         n_duplicates = len(group)
 
         confidence = min(0.7 + (n_duplicates - 2) * 0.1, 0.95)
+
+        # MUDANÇA DE LÓGICA PARA TELEFONIA:
+        # Faturas de TELEFONIA no mesmo dia SÃO suspeitas (podem ser a mesma fatura submetida 2x),
+        # mas damos o benefício da dúvida se o número do documento/fatura for comprovadamente diferente,
+        # pois podem ser duas linhas de celular do gabinete pagas no mesmo dia.
+        if cat == "TELEFONIA":
+            docs_in_group = {str(r.get("numDocumento", "")).strip() for r in group if str(r.get("numDocumento", "")).strip() not in ("", "0", "S/N")}
+            if len(docs_in_group) > 1:
+                # O deputado submeteu várias faturas no mesmo dia e mesmo valor, mas com NÚMEROS DIFERENTES.
+                # Logo, não é fraude, são apenas múltiplas contas telefónicas.
+                return {"is_suspicious": False, "classifier": self.name,
+                        "confidence": 0.0, "reason": "", "details": {}}
 
         return {
             "is_suspicious": True,
             "classifier": self.name,
             "confidence": round(confidence, 3),
             "reason": (f"Recibo potencialmente duplicado: {n_duplicates} recibos de "
-                       f"R$ {valor:.2f} para '{fornecedor}' na mesma data"),
+                       f"R$ {valor:.2f} para '{fornecedor}' emitidos exatamente no mesmo dia ({data_doc})."),
             "details": {
                 "fingerprint": fp,
                 "n_duplicates": n_duplicates,
                 "fornecedor": fornecedor,
                 "valor": valor,
+                "data_emissao": data_doc,
                 "receipt_ids": [r.get("id", "?") for r in group],
             },
             "receipt_id": receipt.get("id", "unknown"),
             "deputy_id": receipt.get("deputy_id", "unknown"),
         }
-
 
 # =============================================================================
 # CLASSIFIER 7: CNPJ BLACKLIST (CEIS / CNEP)
@@ -1280,8 +1302,10 @@ class RosieEngine:
             n_classifiers_triggered = len(set(a["classifier"] for a in anomalies))
             n_anomalies = len(anomalies)
 
+            # ---> MÁGICA: Contar as infrações por tipo para o Frontend <---
+            clf_counts = Counter(a["classifier"] for a in anomalies)
+
             # Risk formula: combines volume, severity, and breadth
-            # Higher score = more suspicious
             risk_score = (
                 total_confidence * 0.4 +
                 n_classifiers_triggered * 10.0 * 0.3 +
@@ -1296,6 +1320,7 @@ class RosieEngine:
                 "n_classifiers_triggered": n_classifiers_triggered,
                 "total_confidence": round(total_confidence, 3),
                 "top_anomalies": sorted(anomalies, key=lambda x: -x["confidence"])[:10],
+                "classifier_counts": dict(clf_counts) # <-- INJETADO AQUI O DICIONÁRIO
             }
 
         # Phase 4: Build report

@@ -228,6 +228,10 @@ class RosieWorker:
         try:
             for dep_id, scores in report.get("deputy_risk_scores", {}).items():
                 external_id = f"camara_{dep_id}"
+                
+                # Pegar as contagens recém criadas na Engine
+                counts = scores.get("classifier_counts", {})
+                
                 payload = {
                     "externalId": external_id,
                     "rosieRiskScore": scores["risk_score"],
@@ -241,6 +245,12 @@ class RosieWorker:
                         }
                         for a in scores.get("top_anomalies", [])[:5]
                     ],
+                    # ---> RESTAURANDO OS DADOS QUE O REACT EXPECTA <---
+                    "rosieBenfordCount": counts.get("BenfordLawClassifier", 0),
+                    "rosieDuplicateCount": counts.get("DuplicateReceiptClassifier", 0),
+                    "rosieWeekendCount": counts.get("WeekendHolidayClassifier", 0),
+                    "rosieHealthCount": counts.get("PersonalHealthExpenseClassifier", 0),
+                    "rosieLuxuryCount": counts.get("LuxuryPersonalExpenseClassifier", 0)
                 }
                 resp = requests.post(f"{self.backend_url}/api/internal/workers/ingest/rosie-score", json=payload, timeout=10)
         except Exception as e:

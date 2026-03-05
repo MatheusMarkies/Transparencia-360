@@ -7,9 +7,9 @@ Strategy:
 3. Compares to calculate how many sessions they missed.
 
 Optimization: 
-Saves results per deputy in `data/absences/absences_<nome>.json`. 
-If data for the target year exists and is fresh (less than 7 days old or from a past year),
-it skips the slow API calls and reads from the local cache.
+Saves results per deputy in `data/absences/absences_<nome>_<id>.json`. 
+O JSON possui uma chave "resumo" no topo com os dados vitais para relatórios LLM rápidos,
+e uma chave "detalhes" com os arrays pesados para ingestão no Grafo.
 """
 import sys
 import json
@@ -56,12 +56,16 @@ class AbsencesWorker:
         """Fetch detailed sessions from the API and returns a list of sessions."""
         sessions_found = []
         page = 1
+        
+        # Trava a pesquisa no dia de hoje para o ano atual
+        data_fim = datetime.now().strftime("%Y-%m-%d") if self.year == self.current_year else f"{self.year}-12-31"
+
         while True:
             resp = self.api.get(
                 f"deputados/{deputy_id}/eventos",
                 params={
                     "dataInicio": f"{self.year}-01-01",
-                    "dataFim": f"{self.year}-12-31",
+                    "dataFim": data_fim,
                     "pagina": page,
                     "itens": 100
                 }
@@ -91,12 +95,16 @@ class AbsencesWorker:
         """Estimates total plenary sessions in the year by checking the main events endpoint."""
         total = 0
         page = 1
+        
+        # Trava a data no dia de hoje se for o ano atual para a API não falhar
+        data_fim = datetime.now().strftime("%Y-%m-%d") if self.year == self.current_year else f"{self.year}-12-31"
+
         while True:
             resp = self.api.get(
                 "eventos",
                 params={
                     "dataInicio": f"{self.year}-01-01",
-                    "dataFim": f"{self.year}-12-31",
+                    "dataFim": data_fim,
                     "codTipoEvento": 100,  # Sessão Deliberativa
                     "pagina": page,
                     "itens": 100
@@ -133,16 +141,15 @@ class AbsencesWorker:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-    def _is_cache_valid(self, year_data: dict) -> bool:
+    def _is_cache_valid(self, year_summary: dict) -> bool:
         """
         Check if the data for this year is fresh enough to use without API calls.
-        - If it's a past year, it's always valid (historical data doesn't change).
-        - If it's the current year, it must have been updated in the last 7 days.
+        Lê estritamente o bloco de resumo.
         """
-        if not year_data:
+        if not year_summary:
             return False
             
-        last_update_str = year_data.get("ultima_atualizacao")
+        last_update_str = year_summary.get("ultima_atualizacao")
         if not last_update_str:
             return False
 
@@ -157,14 +164,17 @@ class AbsencesWorker:
         return False
 
     def run(self, limit: int = 50):
-        """Main execution flow with Cache-First strategy."""
+        """Main execution flow with Cache-First strategy and Summary Object."""
         logger.info(f"=== Absences Worker - Calculating {self.year} absences ===")
 
         logger.info("Step 1: Estimating total plenary sessions...")
-        total_sessions = self._estimate_total_sessions()
-        if total_sessions == 0:
-            total_sessions = 100  # Fallback estimate
-        logger.info(f"  -> Estimated {total_sessions} plenary sessions in {self.year}")
+        base_total_sessions = self._estimate_total_sessions()
+        
+        # Só aplicamos o chute de 100 sessões para os ANOS PASSADOS, caso a API caia. Nunca para o ano atual.
+        if base_total_sessions == 0 and self.year < self.current_year:
+            base_total_sessions = 100
+            
+        logger.info(f"  -> Estimated {base_total_sessions} plenary sessions globally in {self.year}")
 
         logger.info("Step 2: Fetching deputies...")
         deputies = self._fetch_all_deputies()
@@ -179,36 +189,51 @@ class AbsencesWorker:
             cache_data = self._load_cache(cache_file)
             str_year = str(self.year)
             
-            year_record = cache_data.get(str_year, {})
+            # --- NOVA ESTRUTURA: LER APENAS O BLOCO RESUMO ---
+            resumo = cache_data.get("resumo", {})
+            year_summary = resumo.get(str_year, {})
 
-            # Verifica o Sistema de Cache
-            if self._is_cache_valid(year_record):
-                logger.info(f"[{i+1}/{limit}] {name} - 📂 Lendo do Cache Local (Atualizado em {year_record['ultima_atualizacao']})")
-                attended = year_record.get("presencas_totais", 0)
-                absences = year_record.get("faltas_estimadas", 0)
-                sessions = year_record.get("sessoes_detalhadas", [])
+            if self._is_cache_valid(year_summary):
+                logger.info(f"[{i+1}/{limit}] {name} - 📂 Lendo do Cache Local (Atualizado em {year_summary['ultima_atualizacao']})")
+                attended = year_summary.get("presencas_totais", 0)
+                absences = year_summary.get("faltas_estimadas", 0)
+                real_total = year_summary.get("sessoes_legislativas_totais", base_total_sessions)
                 
-                # Injeta sessões no Backend para formar o Grafo de anomalia Espacial
+                # Para carregar no Neo4j, pegamos os detalhes de forma separada
+                detalhes = cache_data.get("detalhes", {})
+                sessions = detalhes.get(str_year, {}).get("sessoes", [])
+                
                 for sessao in sessions:
                     self.backend.ingest_sessao(external_id, sessao)
             else:
                 logger.info(f"[{i+1}/{limit}] {name} - 🌐 Consultando API Câmara...")
                 sessions = self._count_plenary_events(dep_id, external_id)
                 attended = len(sessions)
-                absences = max(0, total_sessions - attended)
                 
-                # Atualiza e salva o Cache
-                cache_data[str_year] = {
+                # Se a API geral encontrou 0 sessões, mas ele participou em 10, o total passa a ser no mínimo 10!
+                real_total = max(base_total_sessions, attended)
+                absences = max(0, real_total - attended)
+                
+                # --- ATUALIZA E SALVA A NOVA ESTRUTURA DO JSON ---
+                if "resumo" not in cache_data:
+                    cache_data["resumo"] = {}
+                if "detalhes" not in cache_data:
+                    cache_data["detalhes"] = {}
+                    
+                cache_data["resumo"][str_year] = {
                     "ano": self.year,
                     "ultima_atualizacao": datetime.now().isoformat(),
-                    "sessoes_legislativas_totais": total_sessions,
+                    "sessoes_legislativas_totais": real_total,
                     "presencas_totais": attended,
-                    "faltas_estimadas": absences,
-                    "sessoes_detalhadas": sessions
+                    "faltas_estimadas": absences
+                }
+                
+                cache_data["detalhes"][str_year] = {
+                    "sessoes": sessions
                 }
                 self._save_cache(cache_file, cache_data)
 
-            logger.info(f"  -> Attended {attended}/{total_sessions} = {absences} absences")
+            logger.info(f"  -> Attended {attended}/{real_total} = {absences} absences")
 
             # Atualiza o Político no BD Analítico
             self.backend.ingest_politician({
@@ -222,7 +247,6 @@ class AbsencesWorker:
             })
 
         logger.info("=== Absences Worker Complete ===")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Worker de Absenças com Data Lake Cache")

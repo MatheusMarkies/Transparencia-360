@@ -2,8 +2,9 @@
 Super Report Worker - O Cérebro da Operação (Gerador de Dossiês)
 
 Estratégia:
-Lê os relatórios isolados de cada módulo (Rosie, Absences, etc.) no Data Lake
-e compila um dossiê pronto para a IA analisar.
+Lê os relatórios isolados de cada módulo (Rosie, Absences, etc.) no Data Lake,
+filtra detalhes pesados desnecessários (como listas de sessões diárias ou spam de Benford) e 
+compila um dossiê super concentrado e pronto para a IA analisar.
 """
 
 import logging
@@ -51,60 +52,55 @@ class SuperReportWorker:
         if filepath.exists():
             try:
                 with open(filepath, 'r', encoding='utf-8') as f:
-                    return json.load(f)
+                    dados_completos = json.load(f)
+                    # Retorna apenas o resumo!
+                    return dados_completos.get("resumo", {})
             except Exception as e:
                 logger.error(f"  ❌ Erro ao ler faltas para {name}: {e}")
         return {}
 
     def generate_detective_prompt(self, base_data: dict, rosie_data: dict, absences_data: dict) -> str:
         """
-        Gera o Prompt de Mestre para a LLM investigar os dados estruturados.
+        Gera o Prompt passando os dados em JSON puro para a LLM interpretar.
         """
-        nome = base_data.get("name", "Desconhecido")
+        import json
         
-        # Montar secção da Rosie (Gastos)
-        rosie_text = "Sem dados anómalos detetados na cota parlamentar."
-        if rosie_data and rosie_data.get("total_anomalias", 0) > 0:
-            score = rosie_data.get("risco_score", 0)
-            rosie_text = f"ALERTA DE RISCO CEAP: Nível {score}/100. Foram detetadas {rosie_data['total_anomalias']} anomalias pelo motor de IA.\n\nPrincipais suspeitas levantadas:\n"
-            
-            for anomalia in rosie_data.get("principais_anomalias", [])[:5]:
-                clf = anomalia.get('classifier', 'Desconhecido')
-                motivo = anomalia.get('reason', 'Sem justificação')
-                rosie_text += f"- [{clf}]: {motivo}\n"
+        # Converte os dicionários Python para strings JSON formatadas
+        json_base = json.dumps(base_data, indent=2, ensure_ascii=False)
+        
+        if not rosie_data:
+            json_rosie = '{"status": "Sem anomalias detetadas"}'
+        else:
+            json_rosie = json.dumps(rosie_data, indent=2, ensure_ascii=False)
 
-        # Montar secção de Faltas
-        faltas_text = "Sem dados de assiduidade."
-        if absences_data:
-            anos = sorted([k for k in absences_data.keys() if k.isdigit()], reverse=True)
-            if anos:
-                ano_recente = anos[0]
-                dados_ano = absences_data[ano_recente]
-                presencas = dados_ano.get('presencas_totais', 0)
-                faltas = dados_ano.get('faltas_estimadas', 0)
-                sessoes = dados_ano.get('sessoes_legislativas_totais', 0)
-                faltas_text = f"Ano {ano_recente}: Esteve presente em {presencas} sessões de um total de {sessoes} (Faltas estimadas: {faltas})."
+        if not absences_data:
+            json_faltas = '{"status": "Sem dados de assiduidade"}'
+        else:
+            json_faltas = json.dumps(absences_data, indent=2, ensure_ascii=False)
 
-        prompt = f"""Você é um Investigador Sênior da Polícia Federal do Brasil e Auditor Especialista em Dados do TCU. O seu foco é investigar crimes financeiros, peculato (rachadinha), lavagem de dinheiro e o uso indevido de verbas públicas.
+        prompt = f"""Você é um Investigador Sênior da Polícia Federal do Brasil e Auditor Especialista em Dados do TCU. 
+O seu foco é investigar crimes financeiros, peculato (rachadinha), lavagem de dinheiro e o uso indevido de verbas públicas.
 
-Analise o dossiê de dados do parlamentar abaixo. NÃO INVENTE DADOS. Baseie-se ESTRITAMENTE nas evidências apresentadas.
+Abaixo estão três blocos de dados estruturados em formato JSON referentes a um parlamentar.
+NÃO INVENTE DADOS. Baseie-se ESTRITAMENTE nos valores contidos nestes JSONs.
 
---- ALVO DA INVESTIGAÇÃO ---
-Nome: {nome}
-ID Câmara: {base_data.get('id', 'N/A')}
+=== BLOCO 1: DADOS CADASTRAIS ===
+{json_base}
 
---- RELATÓRIO DO MOTOR DE IA DE NOTAS FISCAIS (ROSIE) ---
-{rosie_text}
+=== BLOCO 2: LAUDO DE ANOMALIAS (MOTOR IA ROSIE) ===
+{json_rosie}
 
---- ASSIDUIDADE EM PLENÁRIO ---
-{faltas_text}
+=== BLOCO 3: HISTÓRICO DE ASSIDUIDADE (RESUMO ANUAL) ===
+{json_faltas}
 
 --- TAREFA ---
-1. Faça uma avaliação de risco de corrupção ou uso indevido de dinheiro público (Baixo, Médio, Alto, Crítico).
-2. Destaque os pontos mais alarmantes (se houver) com base nos relatórios de IA e nas faltas.
-3. Sugira 2 a 3 linhas de investigação que um auditor humano deveria seguir para confirmar estas suspeitas.
+Leia os JSONs acima e gere um laudo investigativo contendo:
+1. Nível de Risco Geral (Baixo, Médio, Alto, Crítico) justificado pelos dados.
+2. Descrição das principais anomalias financeiras (se o total_anomalias for > 0 no Bloco 2).
+3. Avaliação do custo-benefício do parlamentar (cruzando os gastos com a assiduidade no Bloco 3).
+4. Sugestão de 2 a 3 linhas de investigação formais baseadas nos fornecedores ou padrões suspeitos encontrados no JSON.
 
-Gere a resposta num tom estritamente profissional, técnico e imparcial.
+Gere a resposta num tom estritamente profissional, técnico e forense.
 """
         return prompt
 
@@ -114,7 +110,7 @@ Gere a resposta num tom estritamente profissional, técnico e imparcial.
         logger.info("╚══════════════════════════════════════════════════════════╝")
 
         try:
-            # Em vez de ir ao Backend, descobre quem processar lendo os ficheiros da Rosie!
+            # Descobre quem processar lendo os ficheiros da Rosie!
             rosie_files = glob.glob(str(ROSIE_REPORTS_DIR / "rosie_report_*.json"))
             
             if not rosie_files:
@@ -135,10 +131,50 @@ Gere a resposta num tom estritamente profissional, técnico e imparcial.
                 # 1. Carregar os dados base 
                 base_data = {"name": name, "id": dep_id}
 
-                # 2. Carregar as faltas do Data Lake local
-                absences_data = self._load_absences_dossier(name, dep_id)
+                # 2. Carregar as faltas do Data Lake local bruto
+                absences_data_raw = self._load_absences_dossier(name, dep_id)
 
-                # 3. Gerar Dossiê de Dados Consolidados
+                # =========================================================
+                # MÁGICA DE OTIMIZAÇÃO: Filtrar detalhes e gerar um resumo
+                # =========================================================
+                absences_summary = {}
+                if absences_data_raw:
+                    for year, data in absences_data_raw.items():
+                        if isinstance(data, dict):
+                            absences_summary[year] = {
+                                "ano": data.get("ano", year),
+                                "sessoes_legislativas_totais": data.get("sessoes_legislativas_totais", 0),
+                                "presencas_totais": data.get("presencas_totais", 0),
+                                "faltas_estimadas": data.get("faltas_estimadas", 0)
+                            }
+                
+                # =========================================================
+                # COMPRESSÃO ROSIE: Resumir spam da Lei de Benford
+                # =========================================================
+                if rosie_data and "todas_anomalias_detalhadas" in rosie_data:
+                    anomalias = rosie_data["todas_anomalias_detalhadas"]
+                    
+                    # Separa as anomalias da Lei de Benford das restantes
+                    benford_items = [a for a in anomalias if a.get("classifier") == "BenfordLawClassifier"]
+                    outras_anomalias = [a for a in anomalias if a.get("classifier") != "BenfordLawClassifier"]
+                    
+                    # Se existirem alertas de Benford, cria apenas 1 item consolidado
+                    if benford_items:
+                        ref = benford_items[0]
+                        resumo_benford = {
+                            "is_suspicious": True,
+                            "classifier": "BenfordLawClassifier",
+                            "confidence": ref.get("confidence"),
+                            "reason": f"RESUMO COMPACTO: O modelo matemático sinalizou em bloco {len(benford_items)} notas fiscais. {ref.get('reason')}",
+                            "details": ref.get("details"),
+                            "deputy_id": dep_id
+                        }
+                        outras_anomalias.append(resumo_benford)
+                        
+                    # Sobrescreve a lista longa com a lista limpa e comprimida
+                    rosie_data["todas_anomalias_detalhadas"] = outras_anomalias
+
+                # 3. Gerar Dossiê de Dados Consolidados Limpos
                 dossier = {
                     "metadata": {
                         "gerado_em": datetime.now().isoformat(),
@@ -146,11 +182,11 @@ Gere a resposta num tom estritamente profissional, técnico e imparcial.
                         "nome": name
                     },
                     "evidencias_rosie": rosie_data,
-                    "evidencias_assiduidade": absences_data
+                    "evidencias_assiduidade": absences_summary
                 }
 
                 # 4. Gerar o Prompt da LLM
-                prompt_para_llm = self.generate_detective_prompt(base_data, rosie_data, absences_data)
+                prompt_para_llm = self.generate_detective_prompt(base_data, rosie_data, absences_summary)
                 dossier["00_llm_detective_prompt"] = prompt_para_llm
 
                 # 5. Gravar no Disco
@@ -162,7 +198,7 @@ Gere a resposta num tom estritamente profissional, técnico e imparcial.
                     json.dump(dossier, f, indent=4, ensure_ascii=False)
 
                 risco_rosie = rosie_data.get("risco_score", 0)
-                logger.info(f"  ✅ Dossiê compilado: {name} (Risco Rosie: {risco_rosie:.1f}/100) -> Salvo em {filename}")
+                logger.info(f"  ✅ Dossiê compilado e compactado: {name} (Risco Rosie: {risco_rosie:.1f}/100) -> Salvo em {filename}")
 
         except Exception as e:
             logger.error(f"❌ Falha crítica no SuperReportWorker: {e}")
