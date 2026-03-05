@@ -138,18 +138,19 @@ class RosieWorker:
             for row in reader:
                 row_lower = {k.lower(): v for k, v in row.items() if k}
 
-                dep_id_str = row_lower.get("idecadastro", "") or row_lower.get("idcadastro", "")
-                dep_id_str = dep_id_str.strip()
+                # Pegar o ID com segurança
+                dep_id_raw = row_lower.get("idecadastro", "") or row_lower.get("idcadastro", "")
+                dep_id_raw = str(dep_id_raw).strip().split('.')[0]
                 
-                if not dep_id_str.isdigit():
+                if not dep_id_raw.isdigit():
                     skipped += 1
                     continue
 
-                # Filtro Impermeável em String! 
-                if safe_target_ids and dep_id_str not in safe_target_ids:
+                # Filtro Impermeável em String Exata! (Ex: '204379')
+                if safe_target_ids and dep_id_raw not in safe_target_ids:
                     continue
 
-                dep_id = int(dep_id_str)
+                dep_id = int(dep_id_raw)
 
                 try:
                     valor = float(row_lower.get("vlrliquido", "0").replace(",", "."))
@@ -190,8 +191,10 @@ class RosieWorker:
         return receipts
 
     def _fetch_deputy_ids(self, limit: int) -> set:
+        """Fetch active deputy IDs maintaining the exact same order as ExpensesWorker (Alphabetical)"""
         try:
-            all_ids = set()
+            # NOVO: Usar uma list para preservar a ordem exata de chegada (ordem alfabética por nome)
+            all_ids = []
             page = 1
             while True:
                 resp = requests.get(
@@ -203,11 +206,20 @@ class RosieWorker:
                 data = resp.json()
                 if not data.get("dados"): break
                 for d in data["dados"]:
-                    all_ids.add(d["id"])
+                    # Adiciona na ordem que veio (A-Z)
+                    all_ids.append(d["id"])
+                    
                 if not any(l.get("rel") == "next" for l in data.get("links", [])):
                     break
                 page += 1
-            return set(sorted(all_ids)[:limit]) if limit else all_ids
+                
+                # Se já apanhou o limite suficiente na primeira página, pode parar logo para ser mais rápido
+                if limit and len(all_ids) >= limit:
+                    break
+
+            # Devolve um set com base nos X primeiros da lista ALFABÉTICA!
+            return set(all_ids[:limit]) if limit else set(all_ids)
+            
         except Exception as e:
             logger.error(f"  Failed to fetch deputy IDs: {e}")
             return set()

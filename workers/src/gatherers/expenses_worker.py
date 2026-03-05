@@ -121,11 +121,16 @@ class ExpensesWorker:
                 # Normaliza as chaves
                 row_lower = {k.lower(): v for k, v in row.items() if k}
                 
-                dep_id_str = row_lower.get("idecadastro", "").strip()
-                if not dep_id_str.isdigit():
+                # Pegar o ID com segurança
+                dep_id_raw = row_lower.get("idecadastro", "") or row_lower.get("idcadastro", "")
+                dep_id_raw = str(dep_id_raw).strip().split('.')[0] # Tira decimais
+                
+                if not dep_id_raw.isdigit():
                     continue
                     
-                dep_id = int(dep_id_str)
+                dep_id = int(dep_id_raw)
+                
+                # SE O ID NÃO FOR O DO NOSSO DEPUTADO, DESCARTA IMEDIATAMENTE A NOTA FISCAL
                 if dep_id not in target_ids:
                     continue
                     
