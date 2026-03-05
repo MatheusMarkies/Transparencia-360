@@ -232,29 +232,21 @@ class RosieWorker:
                 # Pegar as contagens recém criadas na Engine
                 counts = scores.get("classifier_counts", {})
                 
+                # Payload alinhado com a entidade Politician.java do Backend
                 payload = {
                     "externalId": external_id,
-                    "rosieRiskScore": scores["risk_score"],
-                    "rosieAnomalies": scores["n_anomalies"],
-                    "rosieClassifiersTriggered": scores["n_classifiers_triggered"],
-                    "rosieTopFindings": [
-                        {
-                            "classifier": a["classifier"],
-                            "confidence": a["confidence"],
-                            "reason": a["reason"],
-                        }
-                        for a in scores.get("top_anomalies", [])[:5]
-                    ],
-                    # ---> RESTAURANDO OS DADOS QUE O REACT EXPECTA <---
+                    "name": f"dep_{dep_id}",  # Defensivo: campo obrigatório, será preservado pelo upsert
                     "rosieBenfordCount": counts.get("BenfordLawClassifier", 0),
                     "rosieDuplicateCount": counts.get("DuplicateReceiptClassifier", 0),
                     "rosieWeekendCount": counts.get("WeekendHolidayClassifier", 0),
                     "rosieHealthCount": counts.get("PersonalHealthExpenseClassifier", 0),
                     "rosieLuxuryCount": counts.get("LuxuryPersonalExpenseClassifier", 0)
                 }
-                resp = requests.post(f"{self.backend_url}/api/internal/workers/ingest/rosie-score", json=payload, timeout=10)
+                resp = requests.post(f"{self.backend_url}/api/internal/workers/ingest/politician", json=payload, timeout=10)
+                if resp.status_code != 200:
+                    logger.warning(f"  ⚠️ Backend rejeitou Rosie push para {external_id}: HTTP {resp.status_code}")
         except Exception as e:
-            pass
+            logger.error(f"  ❌ Erro ao enviar dados Rosie para o backend: {e}")
 
     def _save_report(self, report: Dict, all_receipts: List[Dict]):
         """Save individual Rosie reports per deputy with their names."""
