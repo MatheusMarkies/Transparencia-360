@@ -137,13 +137,13 @@ class BigQueryCNPJClient:
             sql = f"""
             SELECT
                 cnpj_basico,
-                identificador_socio,
-                nome_socio_razao_social AS nome_socio,
-                cpf_cnpj_socio AS cnpj_cpf_socio,
-                codigo_qualificacao_socio AS qualificacao_socio,
+                tipo AS identificador_socio,
+                nome AS nome_socio,
+                documento AS cnpj_cpf_socio,
+                qualificacao AS qualificacao_socio,
                 data_entrada_sociedade AS data_entrada
             FROM `{BQ_SOCIOS}`
-            WHERE UPPER(nome_socio_razao_social) IN ({names_str})
+            WHERE UPPER(nome) IN ({names_str})
             """
         else:
             # Para listas grandes, usa tabela temporária via UNNEST
@@ -154,14 +154,14 @@ class BigQueryCNPJClient:
             )
             SELECT
                 s.cnpj_basico,
-                s.identificador_socio,
-                s.nome_socio_razao_social AS nome_socio,
-                s.cpf_cnpj_socio AS cnpj_cpf_socio,
-                s.codigo_qualificacao_socio AS qualificacao_socio,
+                s.tipo AS identificador_socio,
+                s.nome AS nome_socio,
+                s.documento AS cnpj_cpf_socio,
+                s.qualificacao AS qualificacao_socio,
                 s.data_entrada_sociedade AS data_entrada
             FROM `{BQ_SOCIOS}` s
             INNER JOIN target_names t
-                ON UPPER(s.nome_socio_razao_social) = t.name
+                ON UPPER(s.nome) = t.name
             """
 
         return self.query(sql)
@@ -181,13 +181,13 @@ class BigQueryCNPJClient:
         sql = f"""
         SELECT
             cnpj_basico,
-            identificador_socio,
-            nome_socio_razao_social AS nome_socio,
-            cpf_cnpj_socio AS cnpj_cpf_socio,
-            codigo_qualificacao_socio AS qualificacao_socio,
+            tipo AS identificador_socio,
+            nome AS nome_socio,
+            documento AS cnpj_cpf_socio,
+            qualificacao AS qualificacao_socio,
             data_entrada_sociedade AS data_entrada
         FROM `{BQ_SOCIOS}`
-        WHERE cpf_cnpj_socio IN ({cpfs_str})
+        WHERE documento IN ({cpfs_str})
         """
         return self.query(sql)
 
@@ -228,38 +228,56 @@ class BigQueryCNPJClient:
         return self.query(sql)
 
     def cross_reference_donors_companies(
-        self, donor_names: List[str]
+        self, donors_chunk: List[Tuple[str, str]]
     ) -> Dict[str, list]:
         """
-        A QUERY MAIS PODEROSA: em uma única chamada, cruza nomes de
-        doadores de campanha com o QSA E retorna as empresas onde são sócios.
-
-        Retorna: { "nome_socio": [ { empresa_info }, ... ] }
-
-        Esta query substitui HORAS de download + varredura CSV por ~10 segundos.
+        A QUERY SNIPER OTIMIZADA: Cruza Nome e CPF, mas 'esmaga' o histórico 
+        (mensal/anual) da Base dos Dados para não gerar explosão cartesiana.
         """
-        if not donor_names:
+        if not donors_chunk:
             return {}
 
-        names_upper = [n.upper().replace("'", "\\'") for n in donor_names if n]
-        names_str = ", ".join(f"'{n}'" for n in names_upper[:500])
+        # Cria uma tabela temporária virtual dentro do SQL com os alvos
+        union_clauses = []
+        for nome, doc in donors_chunk:
+            nome_clean = nome.replace("'", "\\'")
+            doc_clean = doc.replace("'", "\\'")
+            union_clauses.append(f"SELECT '{nome_clean}' AS target_nome, '{doc_clean}' AS target_doc")
+        
+        targets_sql = " UNION ALL ".join(union_clauses)
 
+        # 🚀 O SEGREDO: Usamos GROUP BY MAX() para remover as repetições do histórico
+        # Além disso, tiramos o "UPPER(s.nome)" para que o banco use índices nativos!
         sql = f"""
+        WITH targets AS (
+            {targets_sql}
+        ),
+        matched_socios AS (
+            SELECT 
+                s.nome,
+                s.documento,
+                s.cnpj_basico,
+                MAX(s.qualificacao) AS qualificacao,
+                MAX(s.data_entrada_sociedade) AS data_entrada
+            FROM `basedosdados.br_me_cnpj.socios` s
+            INNER JOIN targets t
+                ON s.nome = t.target_nome AND s.documento = t.target_doc
+            GROUP BY 1, 2, 3
+        )
         SELECT
-            s.nome_socio_razao_social AS nome_socio,
-            s.cpf_cnpj_socio,
-            s.cnpj_basico,
-            s.codigo_qualificacao_socio AS qualificacao,
-            s.data_entrada_sociedade AS data_entrada,
-            e.razao_social,
-            e.natureza_juridica,
-            e.capital_social,
-            e.porte
-        FROM `{BQ_SOCIOS}` s
-        LEFT JOIN `{BQ_EMPRESAS}` e
-            ON s.cnpj_basico = e.cnpj_basico
-        WHERE UPPER(s.nome_socio_razao_social) IN ({names_str})
-        ORDER BY s.nome_socio_razao_social, e.capital_social DESC
+            m.nome AS nome_socio,
+            m.documento AS cpf_cnpj_socio,
+            m.cnpj_basico,
+            m.qualificacao,
+            m.data_entrada,
+            MAX(e.razao_social) AS razao_social,
+            MAX(e.natureza_juridica) AS natureza_juridica,
+            MAX(e.capital_social) AS capital_social,
+            MAX(e.porte) AS porte
+        FROM matched_socios m
+        LEFT JOIN `basedosdados.br_me_cnpj.empresas` e
+            ON m.cnpj_basico = e.cnpj_basico
+        GROUP BY 1, 2, 3, 4, 5
         """
 
         rows = self.query(sql)
@@ -270,12 +288,10 @@ class BigQueryCNPJClient:
             result[row.get("nome_socio", "")].append(row)
 
         logger.info(
-            f"   🏢 Cruzamento completo: {len(donor_names)} doadores → "
-            f"{len(rows)} participações societárias em "
-            f"{len(set(r.get('cnpj_basico', '') for r in rows))} empresas"
+            f"   🏢 Cruzamento limpo: {len(donors_chunk)} doadores processados → "
+            f"{len(rows)} participações ÚNICAS encontradas."
         )
         return dict(result)
-
 
 # =============================================================================
 # STRATEGY 2: CSV FALLBACK (Original — para quando BigQuery indisponível)
@@ -455,15 +471,6 @@ class RFBCNPJLoader:
     def run_targeted_donor_ingestion(
         self, neo4j_uri: str, neo4j_user: str, neo4j_pass: str
     ):
-        """
-        Cruzamento Malha Fina: Doadores de campanha × Receita Federal.
-
-        Fluxo:
-        1. Busca doadores no Neo4j (já ingeridos pelo TSE Loader)
-        2. Tenta BigQuery (Base dos Dados) — ~10 segundos
-        3. Se falhar, cai para CSV bruto — ~6-12 horas
-        4. Ingere resultados no Neo4j como grafo (Doador → Empresa)
-        """
         logger.info("╔══════════════════════════════════════════════════════════╗")
         logger.info("║  🕵️ Cruzamento Malha Fina: Doadores × Receita Federal  ║")
         logger.info("╚══════════════════════════════════════════════════════════╝")
@@ -471,63 +478,59 @@ class RFBCNPJLoader:
         driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
 
         # ── Step 1: Buscar Doadores Alvo no Neo4j ──────────────────
-        target_donors_names = set()
-        target_donors_cpfs = set()
+        # Agora guardamos um Set ÚNICO de Tuplas (Nome, CPF Mascarado)
+        target_donors = set()
 
         with driver.session() as session:
             logger.info("🔍 Buscando doadores de campanha no Neo4j...")
             result = session.run(
                 "MATCH (p:Pessoa)-[:DOOU_PARA_CAMPANHA]->() "
-                "WHERE p.name IS NOT NULL "
+                "WHERE p.name IS NOT NULL AND p.cpf IS NOT NULL "
                 "RETURN DISTINCT p.cpf AS cpf, p.name AS name"
             )
             for record in result:
                 name = (record["name"] or "").strip().upper()
                 cpf = (record["cpf"] or "").strip()
-                if name:
-                    target_donors_names.add(name)
-                if cpf:
-                    target_donors_cpfs.add(cpf)
+                if not name or not cpf:
+                    continue
+                
+                # Regra da Receita: CPFs são mascarados, CNPJs de empresas não
+                if len(cpf) == 11:
+                    mask = f"***{cpf[3:9]}**"
+                    target_donors.add((name, mask))
+                else:
+                    target_donors.add((name, cpf))
 
-        logger.info(
-            f"🎯 {len(target_donors_names)} doadores únicos / "
-            f"{len(target_donors_cpfs)} CPFs/CNPJs para rastreio"
-        )
+        logger.info(f"🎯 {len(target_donors)} pares únicos (Nome + Documento) prontos para a Malha Fina")
 
-        if not target_donors_names:
+        if not target_donors:
             logger.warning("⚠️ Nenhum doador no Neo4j. Execute o TSE Loader primeiro.")
             driver.close()
             return
 
         # ── Step 2: Tentar BigQuery (rápido) ───────────────────────
         if self.bq.available:
-            logger.info("\n🚀 Usando Base dos Dados (BigQuery) — modo rápido!")
+            logger.info("\n🚀 Usando Base dos Dados (BigQuery) — modo ultra-rápido!")
             try:
-                self._run_bigquery_strategy(driver, target_donors_names)
+                self._run_bigquery_strategy(driver, target_donors) # Passando a Tupla inteira!
                 driver.close()
                 return
             except Exception as e:
                 logger.warning(f"⚠️ BigQuery falhou: {e}")
                 logger.info("   Caindo para estratégia CSV (download bruto)...")
 
-        # ── Step 3: Fallback CSV (lento) ───────────────────────────
-        logger.info("\n📥 Usando download CSV bruto (pode levar horas)...")
-        self._run_csv_fallback_strategy(driver, target_donors_names, target_donors_cpfs)
-        driver.close()
-
     # ── BigQuery Strategy ───────────────────────────────────────────
 
-    def _run_bigquery_strategy(self, driver, donor_names: Set[str]):
+    def _run_bigquery_strategy(self, driver, target_donors: Set[Tuple[str, str]]):
         """
         Estratégia rápida via Base dos Dados BigQuery.
-        Uma query JOIN faz tudo em ~10 segundos.
         """
-        names_list = list(donor_names)
+        donors_list = list(target_donors)
 
-        # Processar em chunks de 500 nomes (limite IN clause)
         all_socios = []
-        for i in range(0, len(names_list), 500):
-            chunk = names_list[i : i + 500]
+        # Chunk de 500 em 500 doadores (Tuplas: Nome, CPF)
+        for i in range(0, len(donors_list), 500):
+            chunk = donors_list[i : i + 500]
             result = self.bq.cross_reference_donors_companies(chunk)
 
             for name, companies in result.items():
@@ -537,11 +540,10 @@ class RFBCNPJLoader:
             logger.info("   Nenhuma participação societária encontrada.")
             return
 
-        logger.info(f"   📊 Total: {len(all_socios)} relações sócio↔empresa")
+        logger.info(f"   📊 Total Real: {len(all_socios)} relações sócio↔empresa a serem inseridas no Neo4j")
 
-        # Ingerir no Neo4j em batches
+        # Ingerir no Neo4j em batches (Mantenha o código de ingestão igual ao seu original)
         with driver.session() as session:
-            # QSA relationships
             qsa_batch = []
             empresa_batch = []
 
@@ -567,7 +569,6 @@ class RFBCNPJLoader:
                     qsa_batch = []
                     empresa_batch = []
 
-            # Flush
             if empresa_batch:
                 self.ingest_empresas_to_neo4j(session, empresa_batch)
             if qsa_batch:

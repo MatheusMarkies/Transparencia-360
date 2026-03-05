@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 os.environ["PORTAL_API_KEY"] = "7c582554ddd97a21198f7bd9c1d4d4e9"
 os.environ["NEO4J_PASSWORD"] = "admin123"
-os.environ["GOOGLE_CLOUD_PROJECT"] = "tactile-sentry-284814"
+os.environ["GOOGLE_CLOUD_PROJECT"] = "skilful-lock-258021"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.expanduser("~"), ".config", "gcloud", "application_default_credentials.json")
 
 # Ensure imports work
@@ -227,7 +227,7 @@ def main():
             loader = RFBCNPJLoader(data_dir=rfb_dir)
             loader.run_targeted_donor_ingestion(uri, user, password)
             
-        run_step(7.5, "RFB Malha Fina (Ligando Doadores a Empresas)", step_7_5_receita_federal_doadores)
+        #run_step(7.5, "RFB Malha Fina (Ligando Doadores a Empresas)", step_7_5_receita_federal_doadores)
 
         def step_19():
             import requests

@@ -1,16 +1,20 @@
-﻿import os, json, warnings
-warnings.filterwarnings('ignore')
+﻿import os
+from google.cloud import bigquery
 
-# Carrega credenciais direto do arquivo
+# Aponta para as suas credenciais
 cred_path = os.path.join(os.path.expanduser('~'), '.config', 'gcloud', 'application_default_credentials.json')
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = cred_path
 
-from google.cloud import bigquery
-client = bigquery.Client(project='tactile-sentry-284814')
+# Injetando o nome do seu projeto explicitamente
+project_id = "tactile-sentry-284814"
+client = bigquery.Client(project=project_id)
 
-sql = "SELECT cnpj_basico, razao_social FROM basedosdados.br_me_cnpj.empresas LIMIT 3"
-rows = client.query(sql).result()
-for r in rows:
-    print(r.cnpj_basico, r.razao_social)
+print("=== COLUNAS DA TABELA SOCIOS ===")
+query_socios = f"SELECT column_name FROM `basedosdados.br_me_cnpj.INFORMATION_SCHEMA.COLUMNS` WHERE table_name = 'socios'"
+for row in client.query(query_socios):
+    print(row.column_name)
 
-print('\nFuncionou! BigQuery pronto para uso.')
+print("\n=== COLUNAS DA TABELA EMPRESAS ===")
+query_empresas = f"SELECT column_name FROM `basedosdados.br_me_cnpj.INFORMATION_SCHEMA.COLUMNS` WHERE table_name = 'empresas'"
+for row in client.query(query_empresas):
+    print(row.column_name)
