@@ -30,6 +30,7 @@
 - [Modos de Execução](#-modos-de-execução)
 - [Estrutura de Pastas](#-estrutura-de-pastas)
 - [O que o Pipeline faz?](#-o-que-o-pipeline-faz)
+- [Motor Rosie (Auditoria CEAP)](#-motor-rosie-auditoria-ceap)
 - [Fontes de Dados](#-fontes-de-dados)
 - [Verificação Rápida (Smoke Test)](#-verificação-rápida-smoke-test)
 - [Troubleshooting](#-troubleshooting)
@@ -45,6 +46,7 @@ O **Transparência 360** é um radar de irregularidades que consome APIs públic
 |:---|:---|
 | 🕵️ **Rachadinha Scoring** | Assessores que devolvem salário ao político (cruzamento gabinete × doadores × fornecedores) |
 | 📈 **Anomalia Patrimonial** | Crescimento incompatível do patrimônio declarado (TSE 2014→2018→2022) |
+| 🤖 **Rosie Engine (14 cls.)** | Outliers estatísticos, duplicatas, Lei de Benford, gastos de saúde/luxo, empresas blacklist |
 | 🏢 **Empresas Fantasma** | Fornecedores recém-criados, sem funcionários, que recebem CEAP |
 | 🌐 **Teletransporte** | Despesas em cidade X no mesmo dia de presença registrada em Brasília |
 | 💸 **Ciclo das Emendas Pix** | Emenda → Prefeitura → Licitação → Empresa do doador de campanha |
@@ -61,11 +63,11 @@ O **Transparência 360** é um radar de irregularidades que consome APIs públic
 │                        TRANSPARÊNCIA 360                        │
 ├──────────────┬──────────────────┬────────────────────────────────┤
 │   Frontend   │     Backend      │     Workers (Python)           │
-│  Vite+React  │  Spring Boot     │  Pipeline de 26 etapas         │
-│  :5173       │  :8080           │  (Extração + Análise + ML)     │
+│  Vite+React  │  Spring Boot     │  Pipeline de Extração          │
+│  :5173       │  :8080           │  (Extração + Rosie + ML)       │
 │              │                  │                                │
 │  • Dashboard │  • REST API      │  • APIs Governamentais         │
-│  • Grafos    │  • Ingestão      │  • Dumps TSE/Receita Federal   │
+│  • Grafos    │  • Ingestão      │  • Rosie Engine (14 classif.)  │
 │  • Tabelas   │  • Deduplicação  │  • NLP, Scoring, Cross-Match   │
 ├──────────────┴──────┬───────────┴────────────────────────────────┤
 │                     │                                            │
@@ -197,6 +199,7 @@ pip install -r requirements.txt
 - `httpx` — Cliente HTTP assíncrono (APIs da Câmara e Portal)
 - `polars` / `pandas` — Processamento de dados tabulares
 - `duckdb` — Queries analíticas locais em Parquet
+- `numpy` — Cálculos estatísticos (z-score, chi², IQR na Rosie Engine)
 - `spacy` — NLP para análise de Diários Oficiais
 - `PyMuPDF` — Extração de texto de PDFs (notas fiscais)
 
@@ -218,7 +221,12 @@ export PORTAL_API_KEY="SUA_CHAVE_AQUI"
 
 #### 5.3 Executar o Pipeline
 
-**Execução rápida (15 deputados — ideal para teste):**
+**Execução rápida (1 deputado — smoke test):**
+```bash
+python run_all_extractions.py --limit 1
+```
+
+**Execução média (15 deputados — ideal para desenvolvimento):**
 ```bash
 python run_all_extractions.py --limit 15
 ```
@@ -234,7 +242,7 @@ python run_all_extractions.py --limit 15 --keep-db
 ```
 
 > [!TIP]
-> O flag `--keep-db` pula as Fases 1 e 2 (download + ingestão) e executa apenas a Fase 3 (análises, scoring, grafos). Isso é muito útil quando você já tem os dados no banco e quer apenas recalcular os scores ou rodar um novo worker.
+> O flag `--keep-db` pula as Fases 1 e 2 (download + ingestão) e executa apenas a Fase 3 (análises, scoring, Rosie, grafos). Isso é muito útil quando você já tem os dados no banco e quer apenas recalcular os scores ou rodar um novo worker.
 
 ---
 
@@ -267,12 +275,15 @@ Transparencia-360/
 │
 ├── backend/                          # API REST (Spring Boot 3.2 + Java 17)
 │   ├── src/main/java/com/tp360/
-│   │   ├── core/controller/          # Endpoints REST (Search, Graph, Worker Integration)
+│   │   ├── core/controller/          # 3 Controllers REST
+│   │   │   ├── FrontendSearchController.java   # /api/v1/politicians/ (dashboard)
+│   │   │   ├── GraphController.java            # /api/graph/ (Neo4j)
+│   │   │   └── WorkerIntegrationController.java # /api/internal/workers/ingest/ (Python)
 │   │   ├── core/domain/              # Entidades JPA (Politician, Vote, Promise)
-│   │   ├── core/entities/neo4j/      # Nós do Neo4j (PoliticoNode, DespesaNode)
+│   │   ├── core/entities/neo4j/      # 7 Nós: Politico, Despesa, Empresa, Pessoa, Municipio...
 │   │   ├── core/repositories/neo4j/  # Queries Cypher (Triangulação, Follow The Money)
-│   │   ├── core/service/             # Lógica de Negócio (Ingestão, Deduplicação)
-│   │   └── core/dto/                 # DTOs para o Frontend
+│   │   ├── core/service/             # DataIngestionService, Neo4jGraphService
+│   │   └── core/dto/                 # PoliticianResponseDTO, GraphDataDTO
 │   ├── src/main/resources/
 │   │   ├── application.yml           # Config Produção (PostgreSQL + Neo4j)
 │   │   └── application-dev.yml       # Config Dev (H2, sem Neo4j)
@@ -280,36 +291,47 @@ Transparencia-360/
 │
 ├── frontend/                         # Dashboard Interativo (Vite 7 + React 19)
 │   ├── src/
-│   │   ├── App.tsx                   # Componente principal (Search, Tabs, Grafos)
-│   │   └── components/               # Componentes reutilizáveis
+│   │   ├── App.tsx                   # Barra de pesquisa, 6 Abas, Grafos
+│   │   └── components/
 │   │       ├── RadarRisco.tsx        # Radar circular de probabilidade de fraude
-│   │       ├── Dossie/               # Ranking Table, Politician Card
-│   │       ├── Patrimonio/           # Gráfico de evolução patrimonial
-│   │       └── Rastreabilidade/      # Tags de fonte e badges de confiança
+│   │       ├── Dossie/
+│   │       │   └── PoliticianCard.tsx # Card de perfil do político
+│   │       ├── Patrimonio/
+│   │       │   └── WealthChart.tsx   # Gráfico de evolução patrimonial (Recharts)
+│   │       └── Rastreabilidade/
+│   │           └── ConfidenceBadge.tsx # Badge de confiança dos dados
 │   └── package.json
 │
 ├── workers/                          # Pipeline de Extração (Python 3.10+)
-│   ├── run_all_extractions.py        # Orquestrador principal (26 etapas)
+│   ├── run_all_extractions.py        # Orquestrador principal (v3.1, 3 fases)
 │   ├── ingest_parquet.py             # Ingestão de Parquet para a API
 │   ├── requirements.txt              # Dependências Python
-│   └── src/gatherers/                # Workers individuais
-│       ├── camara_gatherer.py        # Câmara dos Deputados (base data)
-│       ├── expenses_worker.py        # Despesas CEAP
-│       ├── absences_worker.py        # Presenças no plenário
-│       ├── emendas_gatherer.py       # Emendas parlamentares
-│       ├── rachadinha_worker.py      # Motor de Scoring (ML)
-│       ├── staff_anomaly_worker.py   # Anomalias de pessoal
-│       ├── wealth_anomaly_worker.py  # Anomalia patrimonial
-│       ├── ghost_employee_worker.py  # Funcionários fantasma
-│       ├── spatial_anomaly_worker.py # Teletransporte
-│       ├── querido_diario_gatherer.py # NLP Diários Oficiais
-│       ├── tcu_worker.py             # TCU (contas irregulares)
-│       ├── pncp_worker.py            # Licitações PNCP
-│       ├── super_report_worker.py    # Gerador de Laudo JSON unificado
-│       └── ...                       # + outros 14 workers especializados
+│   └── src/
+│       ├── gatherers/                # 29 Workers individuais
+│       │   ├── camara_gatherer.py    # Câmara dos Deputados (base data)
+│       │   ├── expenses_worker.py    # Despesas CEAP
+│       │   ├── absences_worker.py    # Presenças no plenário
+│       │   ├── rosie_engine.py       # Motor ROSIE (58KB, 14 classificadores)
+│       │   ├── rosie_worker.py       # Orquestrador da Rosie
+│       │   ├── rachadinha_worker.py  # Motor de Scoring (31KB, o maior arquivo)
+│       │   ├── cross_match_orchestrator.py  # Grafo profundo Neo4j
+│       │   ├── emendas_gatherer.py   # Emendas parlamentares
+│       │   ├── staff_anomaly_worker.py # Anomalias de pessoal (Isolation Forest)
+│       │   ├── wealth_anomaly_worker.py # Anomalia patrimonial
+│       │   ├── ghost_employee_worker.py # Funcionários fantasma
+│       │   ├── spatial_anomaly_worker.py # Teletransporte
+│       │   ├── super_report_worker.py # Gerador de Laudo JSON unificado
+│       │   └── ...                   # + 16 outros workers
+│       ├── nlp/                      # Módulo NLP
+│       │   ├── gazette_text_fetcher.py   # Busca em Diários Oficiais
+│       │   ├── gazette_nlp_extractor.py  # Extração de CNPJs e valores
+│       │   ├── gazette_neo4j_ingester.py # Ingestão no Neo4j
+│       │   ├── coherence_worker.py       # Promessas vs Votos
+│       │   └── ...
+│       └── core/                     # API Clients (Backend, Gov APIs)
 │
-├── extractors/                       # Extractors de APIs (Async + Polars)
-│   ├── camara_deputados.py           # CEAP + Presenças
+├── extractors/                       # Extractors de APIs (Async + httpx)
+│   ├── camara_deputados.py           # Presenças (assíncrono)
 │   ├── portal_transparencia.py       # Emendas + Servidores
 │   └── querido_diario.py             # Diários Oficiais municipais
 │
@@ -318,10 +340,9 @@ Transparencia-360/
 │   └── receita_federal.py            # QSA (Sócios) + Empresas
 │
 ├── data/                             # Dados baixados e processados
-│   ├── downloads/                    # Arquivos brutos das APIs
-│   └── processed/                    # Parquet limpo + Super Reports
+│   ├── downloads/                    # Arquivos temporários
+│   └── processed/                    # Parquet limpo + Super Reports + Rosie outputs
 │
-├── docs/plans/                       # Planos arquiteturais por módulo
 ├── docker-compose.yml                # PostgreSQL 15 + Neo4j 5.26
 ├── ARQUITETURA_PIPELINE.md           # Documentação técnica completa
 ├── DATA_SOURCES.md                   # Dicionário de APIs e fontes
@@ -332,74 +353,95 @@ Transparencia-360/
 
 ## 🔬 O que o Pipeline faz?
 
-O script `run_all_extractions.py` executa **26 etapas** organizadas em 3 fases:
+O script `run_all_extractions.py` (v3.1) executa etapas organizadas em 3 fases:
 
 ### Fase 1 — Extração de Dados (Download)
-Consome APIs públicas em paralelo e salva os dados brutos no disco.
+Consome APIs públicas e salva os dados brutos no disco.
 
-| Etapa | Worker | Fonte |
-|:---|:---|:---|
-| 1 | `CamaraGatherer` | Câmara dos Deputados (dados base) |
-| 2 | `CamaraExtractors` | CEAP + Presenças (assíncrono) |
-| 3 | `PortalTransparência` | Emendas + Servidores (assíncrono) |
-| 7 | `TSE ETL` | Doações e Bens (2014, 2018, 2022) |
-| 22 | `Receita Federal ETL` | QSA (Sócios) + Empresas |
+| Etapa | Worker | Fonte | Status |
+|:---|:---|:---|:---|
+| 1 | `CamaraGatherer` | Câmara dos Deputados (dados base) | ✅ Ativo |
+| 2 | `CamaraExtractors` | Presenças (assíncrono) | ✅ Ativo |
+| 7 | `TSE ETL` | Doações e Bens (2014, 2018, 2022) | 💤 Requer dumps |
+| 22 | `Receita Federal ETL` | QSA (Sócios) + Empresas | 💤 Requer dumps |
 
 ### Fase 2 — Ingestão e Limpeza
 Carrega dados no PostgreSQL/Neo4j, deduplicando registros.
 
-| Etapa | Worker | Função |
-|:---|:---|:---|
-| 4-5 | `ExpensesWorker` / `AbsencesWorker` | Despesas e presenças |
-| 6 | `Ingestão Parquet` | Carga bulk de Parquet → API |
-| 19 | `Deduplicação` | Remove duplicatas no backend |
+| Etapa | Worker | Função | Status |
+|:---|:---|:---|:---|
+| 4 | `ExpensesWorker` | Despesas da CEAP (2023-2026) | ✅ Ativo |
+| 5 | `AbsencesWorker` | Presenças e ausências (2023-2026) | ✅ Ativo |
+| 19 | `Deduplicação` | Remove duplicatas no backend | ✅ Ativo |
 
 ### Fase 3 — Análise e Enriquecimento (executa sempre, mesmo com `--keep-db`)
 
-| Etapa | Worker | O que detecta |
-|:---|:---|:---|
-| 8 | `CamaraCabinetScraper` | Raspa lista de funcionários do gabinete |
-| 9 | `TSE Worker` | Match TSE ↔ Deputados (patrimônio) |
-| 10 | `CrossMatchOrchestrator` | Cruza assessores × fornecedores × doadores |
-| 11 | `WealthAnomalyWorker` | Crescimento incompatível do patrimônio |
-| 12 | `GhostEmployeeWorker` | Funcionários fantasma |
-| 13 | `StaffAnomalyWorker` | Anomalias de contratação |
-| 14 | `SpatialAnomalyWorker` | Detector de Teletransporte |
-| 15 | `RachadinhaWorker` | Motor de Scoring ML |
-| 16 | `EmendasGatherer` | Emendas parlamentares (multi-ano) |
-| 17 | `EmendasPixWorker` | Ciclo das Emendas Pix (Follow The Money) |
-| 18 | `NLP Gazette` | Diários Oficiais (Querido Diário) |
-| 20 | `CamaraNLP` | Coerência de Voto (NLP) |
-| 21 | `PNCP` | Licitações públicas |
-| 23 | `JudicialAggregator` | Processos de improbidade (DataJud) |
-| 24 | `TCU Worker` | Contas irregulares |
-| 25 | `Pruning` | Remove registros fantasma do banco |
-| 26 | `SuperReportWorker` | Gera laudo JSON unificado de auditoria |
+| Etapa | Worker | O que detecta | Status |
+|:---|:---|:---|:---|
+| 10 | `RachadinhaScoringWorker` | Motor de Scoring ML (5 heurísticas, score 0-100) | ✅ Ativo |
+| 12 | `CrossMatchOrchestrator` | Grafo profundo Neo4j (7 sub-etapas) | ✅ Ativo |
+| **15** | **`ROSIE Engine`** | **14 classificadores de anomalia CEAP** | ✅ Ativo |
+| 17 | `GazetteGraphBuilder` | Diários Oficiais → Neo4j | ✅ Ativo |
+| 18 | `GazetteAggregator` | Consolidação NLP → PostgreSQL | ✅ Ativo |
+| 20 | `JudicialAggregator` | Processos judiciais (DataJud, 7 tribunais) | ✅ Ativo |
+| 21 | `DocumentaryEvidenceWorker` | Trilha de auditoria determinística | ✅ Ativo |
+| 23 | `RAISWorker` | Funcionários fantasma (CLT 40h) | ✅ Ativo |
+| 24 | `TCUWorker` | Contas irregulares TCU | ✅ Ativo |
+| 25 | `Database Pruning` | Remove registros fantasma | ✅ Ativo |
+| 26 | `SuperReportWorker` | Dossiê JSON completo de auditoria | ✅ Ativo |
+
+---
+
+## 🤖 Motor Rosie (Auditoria CEAP)
+
+O **ROSIE** é um motor de detecção de anomalias inspirado na [Operação Serenata de Amor](https://serenata.ai), baseado no projeto original [okfn-brasil/serenata-de-amor/rosie](https://github.com/okfn-brasil/serenata-de-amor/tree/main/rosie). Arquivo: `rosie_engine.py` (58KB, 1.369 linhas).
+
+Roda **14 classificadores** sobre todas as notas fiscais da Cota Parlamentar:
+
+| # | Classificador | Método | O que detecta |
+|:---|:---|:---|:---|
+| 1 | `MealPriceOutlier` | IQR | Refeições com valor fora do padrão |
+| 2 | `TravelSpeed` | Haversine | Viagens fisicamente impossíveis |
+| 3 | `MonthlySubquotaLimit` | Regras | Subcota mensal estourada |
+| 4 | `ElectionPeriod` | Calendário | Gastos durante campanha eleitoral |
+| 5 | `WeekendHoliday` | Calendário | Despesas em fins de semana/feriados |
+| 6 | `DuplicateReceipt` | Hash MD5 | Mesma nota fiscal enviada 2x |
+| 7 | `CNPJBlacklist` | Cruzamento | Empresas no CEIS/CNEP (inidôneas) |
+| 8 | `CompanyAge` | Data | Pagamentos a empresas muito novas |
+| 9 | `BenfordLaw` | Chi² | Distribuição de dígitos manipulada |
+| 10 | `HighValueOutlier` | Z-score | Valor fora da curva por categoria |
+| 11 | `SuspiciousSupplier` | Limiar | Fornecedor servindo >30 deputados |
+| 12 | `SequentialReceipt` | Runs | Notas fiscais com numeração sequencial |
+| 13 | `PersonalHealthExpense` | RegEx | Gastos médicos/estéticos proibidos |
+| 14 | `LuxuryPersonalExpense` | RegEx | Pet shops, joalherias, resorts |
+
+**Saídas:** Relatório JSON, CSV de anomalias, ranking de risco, e campos `rosieBenfordCount`, `rosieDuplicateCount`, `rosieWeekendCount`, `rosieHealthCount`, `rosieLuxuryCount` no PostgreSQL.
+
+---
 
 ### Relatórios Gerados (Super Reports)
 
-A última etapa do pipeline (`SuperReportWorker`) gera um **dossiê JSON completo** para cada político processado. Esses arquivos ficam salvos em:
+A última etapa do pipeline (`SuperReportWorker`) gera um **dossiê JSON completo** para cada político, incluindo todas as anomalias da Rosie. Salvos em:
 
 ```
-workers/data/processed/super_reports/
+data/processed/super_reports/
+├── super_report_acácio_favacho_204379.json
 ├── super_report_alberto_fraga_camara_73579.json
-├── super_report_alice_portugal_camara_74057.json
 ├── super_report_...
 ```
 
-Cada JSON contém **4 seções**:
+Cada JSON contém **3 seções**:
 
 | Seção | O que contém |
 |:---|:---|
-| `01_metadados` | Nome, partido, estado, ID da Câmara, data de extração |
-| `02_documentos_lidos_e_grafos` | Quantos nós foram processados no Neo4j (despesas, empresas, emendas, promessas, votos) |
-| `03_estatisticas_patrimoniais` | Total gasto na CEAP, taxa de ausência, patrimônio declarado ao TSE, fator de anomalia |
-| `04_alertas_de_inteligencia` | Score de rachadinha (0-100) com evidências detalhadas por heurística, anomalias de gabinete, teletransporte espacial, menções em diários oficiais, processos judiciais |
+| `metadata` | Nome, ID, data de geração |
+| `evidencias_rosie` | Score de risco, total de anomalias, classificadores acionados, top 10 anomalias, lista completa |
+| `resumo` | Total CEAP, ausências, patrimônio TSE, score de rachadinha, alertas diversos |
 
 > [!TIP]
 > Os Super Reports são a forma mais fácil de **auditar os resultados** do pipeline. Abra qualquer JSON na pasta e confira se os dados batem com as fontes oficiais.
 
-
+---
 
 ## 🗃️ Fontes de Dados
 
@@ -444,6 +486,9 @@ Após rodar o pipeline:
 # Verificar se os dados foram ingeridos
 curl http://localhost:8080/api/v1/politicians/search?name=
 # Esperado: Lista com N políticos (conforme --limit)
+
+# Verificar se a Rosie populou os dados
+# Busque um político e confira se rosieBenfordCount, rosieDuplicateCount etc. estão preenchidos
 
 # Verificar o grafo de um político (substitua {id})
 curl http://localhost:8080/api/v1/politicians/1/graph
@@ -525,6 +570,12 @@ python -m spacy download pt_core_news_sm
 ```
 </details>
 
+<details>
+<summary><strong>Rosie: Dados não aparecem no frontend</strong></summary>
+
+Verifique se o `rosie_worker.py` está fazendo POST para `/api/internal/workers/ingest/politician` (endpoint correto). Se estiver usando uma versão antiga que aponta para `/rosie-score`, esse endpoint não existe e os dados não serão gravados.
+</details>
+
 ---
 
 ## 🤝 Como Contribuir
@@ -541,6 +592,7 @@ python -m spacy download pt_core_news_sm
 | **Frontend** | React + TypeScript | Novos componentes (Timeline, mapas, filtros avançados) |
 | **Backend** | Java + Spring Boot | Novos endpoints, queries Cypher otimizadas |
 | **Workers** | Python + NLP/ML | Novos detectores de fraude, melhorias de scoring |
+| **Rosie** | Python + Estatística | Novos classificadores, calibração de limiares |
 | **Infra** | Docker + CI/CD | Pipeline de deploy, testes automatizados |
 | **Dados** | Polars + DuckDB | Otimização de processamento de dumps massivos |
 

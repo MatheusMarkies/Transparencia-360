@@ -14,12 +14,12 @@ O Transparência 360 tem **3 grandes peças** que trabalham juntas:
 │                                                                            │
 │   ┌──────────────┐    ┌──────────────────┐    ┌──────────────────────────┐ │
 │   │   Frontend    │    │    Backend        │    │  Workers (Python)        │ │
-│   │  Vite+React   │◄──►│  Spring Boot     │◄──►│  Pipeline de 26 etapas   │ │
+│   │  Vite+React   │◄──►│  Spring Boot     │◄──►│  Pipeline de Extração    │ │
 │   │  :5173        │    │  :8080           │    │                          │ │
 │   │               │    │                  │    │  • Coleta de dados       │ │
-│   │  O que o      │    │  O "cérebro"     │    │  • Análises de risco     │ │ 
-│   │  usuário vê   │    │  que organiza    │    │  • Construção de grafos  │ │
-│   │  (dashboard)  │    │  tudo            │    │  • NLP em documentos     │ │
+│   │  O que o      │    │  O "cérebro"     │    │  • Rosie Engine (14 clf) │ │
+│   │  usuário vê   │    │  que organiza    │    │  • Análises de risco     │ │
+│   │  (dashboard)  │    │  tudo            │    │  • Construção de grafos  │ │
 │   └──────────────┘    └────────┬─────────┘    └──────────────────────────┘ │
 │                                │                                           │
 │                    ┌───────────┴───────────┐                               │
@@ -52,13 +52,41 @@ Armazena os dados estruturados dos políticos em tabelas tradicionais.
 - Scores de risco calculados (rachadinha, anomalia patrimonial, judiciário)
 - Promessas de campanha e votos no plenário
 - Contagem de ausências, proposições
+- **Contagens da Rosie** — Anomalias detectadas por tipo de classificador (Benford, Duplicatas, Fim de Semana, Saúde, Luxo)
+- Anomalias de teletransporte, emendas Pix, funcionários fantasma
 
-**Entidades JPA (Java):**
+**Entidade Principal — `Politician` (39 campos):**
+
+| Campo | Tipo | Fonte |
+|:---|:---|:---|
+| `name`, `party`, `state`, `position` | String | CamaraGatherer |
+| `absences`, `presences` | Integer | AbsencesWorker |
+| `expenses` | Double | ExpensesWorker |
+| `stateAffinity` | Double | StateAffinityWorker |
+| `propositions`, `frentes` | Integer | CamaraGatherer |
+| `declaredAssets` (2014, 2018, 2022) | Double | TSE ETL |
+| `wealthAnomaly` | Double | WealthAnomalyWorker |
+| `staffAnomalyCount` + Details | Integer/TEXT | StaffAnomalyWorker |
+| `cabinetRiskScore` + Details | Integer/TEXT | RachadinhaWorker |
+| `ghostEmployeeCount` + Details | Integer/TEXT | GhostEmployeeWorker |
+| `nlpGazetteCount` + Score + Details | Integer/TEXT | GazetteAggregator |
+| `judicialRiskScore` + Details | Integer/TEXT | JudicialAggregator |
+| `cabinetSize` + Details | Integer/TEXT | CamaraCabinetScraper |
+| `rosieBenfordCount` | Integer | RosieWorker |
+| `rosieDuplicateCount` | Integer | RosieWorker |
+| `rosieWeekendCount` | Integer | RosieWorker |
+| `rosieHealthCount` | Integer | RosieWorker |
+| `rosieLuxuryCount` | Integer | RosieWorker |
+| `teleportAnomalyCount` + Details | Integer/TEXT | SpatialAnomalyWorker |
+| `emendasPixAnomalyCount` + Details | Integer/TEXT | EmendasPixWorker |
+| `overallRiskScore` *(calculado)* | Double | Fórmula: 75% Rachadinha + 25% Faltas |
+
+**Outras Entidades:**
 | Classe Java | Tabela | O que guarda |
 |:---|:---|:---|
-| `Politician` | `politician` | Dados consolidados do parlamentar |
-| `Promise` | `promise` | Promessas extraídas de discursos |
-| `Vote` | `vote` | Votos nominais no plenário |
+| `Politician` | `politicians` | Dados consolidados do parlamentar |
+| `Promise` | `promises` | Promessas extraídas de discursos |
+| `Vote` | `votes` | Votos nominais no plenário |
 
 **Arquivo de configuração:** `backend/src/main/resources/application.yml`
 ```yaml
@@ -69,13 +97,13 @@ spring:
     password: password
 ```
 
-> 🧑‍🔧 **Explicação Simples:** O PostgreSQL é como uma planilha Excel gigante onde guardamos os dados de cada político em linhas e colunas. "Quanto ele gastou?", "Qual o patrimônio dele?" — tudo fica aqui.
+> 🧑‍🔧 **Explicação Simples:** O PostgreSQL é como uma planilha Excel gigante onde guardamos os dados de cada político em linhas e colunas. "Quanto ele gastou?", "Qual o patrimônio dele?", "Quantas anomalias a Rosie encontrou?" — tudo fica aqui.
 
 ### 2.2 Neo4j (Banco de Grafos) — `:7687` (dados) / `:7474` (interface web)
 
 Armazena as **conexões entre entidades** — quem pagou quem, quem é sócio de quem, para qual prefeitura foi a emenda.
 
-**Nós (Nodes) realmente implementados:**
+**Nós (Nodes) implementados:**
 | Nó | Propriedades | Criado por |
 |:---|:---|:---|
 | `Politico` | `id`, `name`, `party`, `state` | `DataIngestionService.upsertNeo4jPolitico()` |
@@ -88,7 +116,7 @@ Armazena as **conexões entre entidades** — quem pagou quem, quem é sócio de
 | `Licitacao` | `numero`, `modalidade` | `GazetteNeo4jIngester` |
 | `Emenda` (via relacionamento `ENVIOU_EMENDA`) | `id`, `ano`, `valor`, `tipo` | `EmendasGatherer` |
 
-**Relacionamentos realmente implementados:**
+**Relacionamentos implementados:**
 ```
 (:Politico)-[:GEROU_DESPESA]->(:Despesa)
 (:Politico)-[:ESTEVE_PRESENTE_EM]->(:SessaoPlenario)
@@ -112,7 +140,7 @@ Político ──(ENVIOU_EMENDA)──► Prefeitura ──(CONTRATOU)──► E
 
 ## 3. O Pipeline de Extração (`run_all_extractions.py`)
 
-O arquivo `workers/run_all_extractions.py` é o **orquestrador principal**. Ele executa **26 etapas** divididas em **3 fases**.
+O arquivo `workers/run_all_extractions.py` é o **orquestrador principal** (v3.1). Ele executa etapas divididas em **3 fases**.
 
 ### Como rodar:
 ```bash
@@ -128,7 +156,7 @@ python run_all_extractions.py --limit 513
 python run_all_extractions.py --limit 30 --keep-db
 ```
 
-> 🧑‍🔧 **Explicação Simples:** Esse é o "botão vermelho" do sistema. Quando você roda esse script, ele dispara uma série de robôs que vão buscar dados em sites do governo, calcular risks, montar grafos e gerar laudos. O `--limit` controla quantos políticos processar (comece com 10 para testar). O `--keep-db` pula as fases de download pesado e só roda as análises.
+> 🧑‍🔧 **Explicação Simples:** Esse é o "botão vermelho" do sistema. Quando você roda esse script, ele dispara uma série de robôs que vão buscar dados em sites do governo, calcular riscos, montar grafos e gerar laudos. O `--limit` controla quantos políticos processar (comece com 1 para testar). O `--keep-db` pula as fases de download pesado e só roda as análises.
 
 ---
 
@@ -150,45 +178,26 @@ python run_all_extractions.py --limit 30 --keep-db
 
 > Só executa se `--keep-db` NÃO foi passado.
 
-Estes 4 passos rodam **em paralelo** (ao mesmo tempo) usando `ThreadPoolExecutor`:
-
 #### Step 1: `CamaraGatherer` (Base Data)
 **Script:** `workers/src/gatherers/camara_gatherer.py`
 **O que faz:** Busca a lista de deputados na API da Câmara e envia cada um para o backend via `POST /api/internal/workers/ingest/politician`.
 
 > 🧑‍🔧 **Explicação Simples:** É o primeiro passo — descobre quem são os deputados em exercício e salva os dados de base (nome, partido, estado, foto).
 
-#### Step 2: `Camara Extractors` (CEAP + Presenças)
+#### Step 2: `Camara Extractors` (Presenças)
 **Script:** `extractors/camara_deputados.py`
-**O que faz:** Baixa todas as notas fiscais da Cota Parlamentar (CEAP) e registros de presença no plenário e salva em formato `.parquet` no disco (`data/raw/camara/`).
+**O que faz:** Baixa registros de presença no plenário usando HTTP assíncrono (httpx).
 
 **API usada:** `https://dadosabertos.camara.leg.br/api/v2`
-- `GET /deputados/{id}/despesas?ano=YYYY` → Notas fiscais
 - `GET /eventos?dataInicio=YYYY-MM-DD` → Presenças
 
-> 🧑‍🔧 **Explicação Simples:** Baixa todas as "notinhas" de gastos dos deputados (passagens, restaurantes, escritórios) e o registro de quando eles estiveram (ou não) no plenário.
+> 🧑‍🔧 **Explicação Simples:** Baixa o registro de quando os deputados estiveram (ou não) no plenário.
 
-#### Step 3: `Portal Transparência Extractors`
-**Script:** `extractors/portal_transparencia.py`
-**O que faz:** Baixa as emendas parlamentares e a lista de servidores públicos do Portal da Transparência (CGU).
-
-**API usada:** `https://api.portaldatransparencia.gov.br/api-de-dados`
-- `GET /emendas-parlamentares?ano=YYYY` → Emendas Pix
-- `GET /servidores?pagina=N` → Servidores (para cruzar com assessores)
-
-**⚠️ Requer:** `PORTAL_API_KEY` (solicite em https://portaldatransparencia.gov.br/api-de-dados)
-
-#### Step 7: `TSE ETL` (Eleições)
-**Script:** `etl/tse.py`
-**O que faz:** Processa os dumps massivos do TSE (doações de campanha e declaração de bens) para os anos de 2014, 2018 e 2022. Salva em `.parquet`.
-
-> 🧑‍🔧 **Explicação Simples:** Lê os arquivos enormes do tribunal eleitoral para saber quanto cada político declarou ter de patrimônio e quem doou para as campanhas dele.
-
-#### Step 22: `Receita Federal ETL` (QSA/Empresas)
-**Script:** `etl/receita_federal.py`
-**O que faz:** Processa os dumps gigantes da Receita Federal (Quadro de Sócios — QSA — e cadastro de empresas) usando Polars (processador de dados ultrarrápido escrito em Rust).
-
-> 🧑‍🔧 **Explicação Simples:** Descobre quem é dono de cada empresa no Brasil. Isso é fundamental para detectar "laranjas" — quando o sócio de uma empresa contratada pelo político é parente dele.
+#### Steps Opcionais (comentados no pipeline):
+| Step | Worker | Status | Motivo |
+|:---|:---|:---|:---|
+| 7 | `TSE ETL` | 💤 Comentado | Requer dumps CSV massivos (~30GB). Descomente quando os arquivos estiverem em `data/raw/tse/` |
+| 22 | `Receita Federal ETL` | 💤 Comentado | Requer dumps QSA da Receita Federal em `data/raw/receita/` |
 
 ---
 
@@ -198,17 +207,11 @@ Estes 4 passos rodam **em paralelo** (ao mesmo tempo) usando `ThreadPoolExecutor
 
 #### Step 4: `ExpensesWorker` (Legacy Sync)
 **Script:** `workers/src/gatherers/expenses_worker.py`
-**O que faz:** Busca despesas da Câmara API e envia para o backend via `POST /api/internal/workers/ingest/politician/{externalId}/despesa` — gravando tanto no PostgreSQL (total acumulado) quanto no Neo4j (cada nota individual como nó `Despesa`).
+**O que faz:** Busca despesas da Câmara API (anos 2023-2026) e envia para o backend via `POST /api/internal/workers/ingest/politician/{externalId}/despesa` — gravando tanto no PostgreSQL (total acumulado) quanto no Neo4j (cada nota individual como nó `Despesa`).
 
 #### Step 5: `AbsencesWorker`
 **Script:** `workers/src/gatherers/absences_worker.py`
-**O que faz:** Busca presenças e ausências no plenário, ingerindo sessões no Neo4j via `POST /api/internal/workers/ingest/politician/{externalId}/sessao`.
-
-#### Step 6: `Ingestão de Parquet`
-**Script:** `workers/ingest_parquet.py`
-**O que faz:** Lê os arquivos `.parquet` gerados na Fase 1 e os carrega em batch no backend via chamadas REST. É a fase mais pesada. Contém duas funções:
-- `ingest_camara_despesas()` — Carrega despesas CEAP dos Parquets
-- `ingest_emendas()` — Carrega emendas parlamentares
+**O que faz:** Busca presenças e ausências no plenário (anos 2023-2026), ingerindo sessões no Neo4j via `POST /api/internal/workers/ingest/politician/{externalId}/sessao`. Possui **cache local** com estrutura `{"resumo": {...}, "detalhes": [...]}` para evitar re-downloads.
 
 #### Step 19: `Backend Deduplication`
 **O que faz:** Chama `POST /api/internal/workers/ingest/deduplicate` no backend para remover políticos duplicados. O algoritmo mantém o registro com mais campos preenchidos e mescla os dados dos duplicados no sobrevivente.
@@ -227,52 +230,8 @@ Estes 4 passos rodam **em paralelo** (ao mesmo tempo) usando `ThreadPoolExecutor
 
 > **Esta fase SEMPRE executa**, mesmo com `--keep-db`.
 
-Os primeiros 4 passos rodam **em paralelo**:
-
-#### Step 8: `WealthAnomalyWorker` (Anomalia Patrimonial)
-**Script:** `workers/src/gatherers/wealth_anomaly_worker.py`
-**O que faz:** Compara o patrimônio declarado ao TSE (2014 → 2018 → 2022) com o salário do deputado (R$44.000/mês). Se o crescimento patrimonial exceder o que seria possível poupando 100% do salário por 8 anos (R$2.102.400), levanta um alerta.
-**Saída:** Atualiza o campo `wealthAnomalyDetails` do político no PostgreSQL.
-
-> 🧑‍🔧 **Explicação Simples:** Se um deputado que ganha R$44 mil/mês declarou ao TSE que ficou R$5 milhões mais rico em 4 anos, algo não bate. Esse robô faz essa conta.
-
-#### Step 9: `StaffAnomalyWorker` (Anomalia de Gabinete)
-**Script:** `workers/src/gatherers/staff_anomaly_worker.py` (13.437 bytes — o maior worker)
-**O que faz:**
-1. Busca todas as despesas de cada deputado na API da Câmara
-2. Agrega por fornecedor (total pago, número de notas)
-3. Calcula estatísticas globais (média, desvio padrão, limiar de anomalia)
-4. Usa **Isolation Forest** (algoritmo de Machine Learning) para identificar fornecedores com padrões atípicos
-5. Marca alertas: `SUPER_PAGAMENTO` (acima do limiar) e `CONCENTRACAO` (fornecedor que só recebe deste deputado)
-6. Salva relatório JSON em `data/processed/staff_anomalies/`
-
-**Saída:** Atualiza `staffAnomalyCount` e `staffAnomalyDetails` no PostgreSQL.
-
-> 🧑‍🔧 **Explicação Simples:** Analisa as "notas fiscais" do deputado e procura padrões estranhos — tipo uma empresa que recebeu R$80 mil de um só deputado, mas de nenhum outro. Ou um fornecedor com pagamentos muito fora da média. Usa inteligência artificial (Isolation Forest) para isso.
-
-#### Step 11: `SpatialAnomalyWorker` (Teletransporte)
-**Script:** `workers/src/gatherers/spatial_anomaly_worker.py`
-**O que faz:** Consulta o Neo4j cruzando presenças no plenário com despesas do mesmo dia:
-```cypher
-MATCH (p:Politico)-[:ESTEVE_PRESENTE_EM]->(s:SessaoPlenario),
-      (p)-[:GEROU_DESPESA]->(d:Despesa)
-WHERE s.data = d.dataEmissao
-      AND d.ufFornecedor <> 'DF'
-      AND d.ufFornecedor <> 'NA'
-RETURN ...
-```
-Se o deputado registrou presença em Brasília (DF) mas tem despesa emitida no mesmo dia em outro estado, isso é um "teletransporte".
-
-> 🧑‍🔧 **Explicação Simples:** Se o deputado votou em Brasília na segunda-feira e tem uma nota fiscal de hotel em São Paulo no mesmo dia... ele se teletransportou? Esse robô encontra essas inconsistências.
-
-#### Step 15: `CamaraNLPGatherer` (Download de Discursos)
-**Script:** `workers/src/gatherers/camara_nlp_gatherer.py`
-**O que faz:** Baixa os discursos parlamentares de cada deputado na API da Câmara para posterior análise de coerência (Step 16).
-
----
-
 #### Step 10: `RachadinhaScoringWorker v2.0` (Motor de Risk Score)
-**Script:** `workers/src/gatherers/rachadinha_worker.py` (31.659 bytes — **o maior arquivo do projeto**)
+**Script:** `workers/src/gatherers/rachadinha_worker.py` (31.683 bytes — **o maior arquivo do projeto**)
 
 O coração do sistema. Calcula um **score de risco de 0 a 100** usando **5 heurísticas reais** (sem simulação):
 
@@ -316,47 +275,60 @@ src/loaders/datajud_loader.py            → Processos judiciais (DataJud)
 
 ---
 
-#### Step 13: `EmendasGatherer` (Emendas Parlamentares)
-**Script:** `workers/src/gatherers/emendas_gatherer.py`
-**O que faz:** Para cada político no banco, busca TODAS as emendas parlamentares de 2022 até hoje no **Portal da Transparência** (via CPF do autor). Para cada emenda encontrada, envia para o backend via `POST /api/internal/workers/ingest/politician/{externalId}/emenda_pix/{municipioIbge}`, que cria:
-- O nó `Municipio` (se não existir)
-- O relacionamento `(:Politico)-[:ENVIOU_EMENDA {id, ano, valor, tipo}]->(:Municipio)`
+#### Step 15: `ROSIE — Full CEAP Anomaly Detection Engine`
+**Scripts:** `workers/src/gatherers/rosie_worker.py` + `workers/src/gatherers/rosie_engine.py` (58.267 bytes)
 
-#### Step 14: `EmendasPixWorker` (Detecção de Fluxo Circular)
-**Script:** `workers/src/gatherers/emendas_pix_worker.py`
-**O que faz:** Consulta o Neo4j procurando o **ciclo completo das Emendas Pix**:
-```
-Deputado -[ENVIOU_EMENDA]-> Prefeitura -[CONTRATOU]-> Empresa -[SOCIO]-> Pessoa -[DOOU]-> Deputado
-```
-Se encontra, levanta alerta de fluxo circular.
+Motor de detecção de anomalias inspirado na [Operação Serenata de Amor](https://serenata.ai), baseado no projeto original [okfn-brasil/serenata-de-amor/rosie](https://github.com/okfn-brasil/serenata-de-amor/tree/main/rosie). Roda **14 classificadores** sobre todas as notas fiscais da CEAP (anos 2023-2026):
 
-> 🧑‍🔧 **Explicação Simples:** O deputado manda dinheiro público (emenda) para uma prefeitura. A prefeitura contrata uma empresa. O dono dessa empresa doou para a campanha do mesmo deputado. Coincidência? Esse robô rastreia esse ciclo.
+| # | Classificador | O que detecta | Método |
+|:---|:---|:---|:---|
+| 1 | `MealPriceOutlier` | Refeições com valor fora do padrão | IQR (Intervalo Interquartil) por categoria |
+| 2 | `TravelSpeed` | Viagens fisicamente impossíveis | Haversine (velocidade entre despesas) |
+| 3 | `MonthlySubquotaLimit` | Subcota mensal estourada | Limites reais por UF/subcota |
+| 4 | `ElectionPeriod` | Gastos durante campanha eleitoral | Calendário eleitoral TSE |
+| 5 | `WeekendHoliday` | Despesas em fins de semana e feriados | Calendário + categoria |
+| 6 | `DuplicateReceipt` | Recibos duplicados (mesma nota 2x) | Hash MD5 (fornecedor+valor+data) |
+| 7 | `CNPJBlacklist` | Empresas no CEIS/CNEP (inidôneas) | Cruzamento com blacklist |
+| 8 | `CompanyAge` | Pagamentos a empresas muito novas | Data fundação via Receita Federal |
+| 9 | `BenfordLaw` | Distribuição de dígitos manipulada | Chi² (Lei de Benford) |
+| 10 | `HighValueOutlier` | Valor fora da curva (z-score global) | Z-score por categoria |
+| 11 | `SuspiciousSupplier` | Fornecedor que atende muitos deputados | Limiar de 30 deputados |
+| 12 | `SequentialReceipt` | Notas fiscais com numeração sequencial | Detecção de runs consecutivos |
+| 13 | `PersonalHealthExpense` | Gastos médicos/estéticos proibidos na CEAP | RegEx em nomes de fornecedores |
+| 14 | `LuxuryPersonalExpense` | Pet shops, joalherias, resorts | RegEx em nomes de fornecedores |
 
-#### Step 14.5: `PNCPWorker` (Licitações Municipais)
-**Script:** `workers/src/gatherers/pncp_worker.py`
-**O que faz:** Para cada município que recebeu emenda (encontrado no Neo4j), busca contratos públicos no **PNCP** (Portal Nacional de Contratações Públicas) e registra no grafo via `POST /api/internal/workers/ingest/municipio/{ibge}/contrato`.
+**Pipeline interno:**
+1. **Fit** — Cada classificador é treinado no dataset completo (calcula estatísticas, limites, fingerprints)
+2. **Predict** — Cada recibo é avaliado por todos os 14 classificadores
+3. **Risk Score** — Score de 0 a 100 por deputado (combina volume, severidade e amplitude)
+4. **Push** — Envia contagens para o backend via `POST /api/internal/workers/ingest/politician`
+5. **Punishment** — Lê o CSV de anomalias e injeta penalidades no `cabinetRiskScore` existente
 
-#### Step 16: `CoherenceWorker` (Coerência de Voto)
-**Script:** `workers/src/nlp/coherence_worker.py`
-**O que faz:** Analisa se os votos do deputado são coerentes com suas promessas. Compara texto dos projetos votados com as promessas registradas usando NLP.
+**Saídas geradas:**
+- `data/processed/rosie_report.json` — Relatório estruturado completo
+- `data/processed/rosie_anomalies.csv` — Lista flat de anomalias
+- `data/processed/rosie_risk_ranking.txt` — Ranking legível por humanos
+- `data/processed/rosie_reports/` — Relatório individual por deputado (JSON)
+- Campos no PostgreSQL: `rosieBenfordCount`, `rosieDuplicateCount`, `rosieWeekendCount`, `rosieHealthCount`, `rosieLuxuryCount`
 
-#### Step 17: `GazetteGraphBuilder` (Diários Oficiais → Neo4j)
-**Scripts:**
-- `workers/src/nlp/gazette_text_fetcher.py` — Busca diários na API do Querido Diário
-- `workers/src/nlp/gazette_nlp_extractor.py` — Extrai CNPJs, valores e modalidades de licitação via RegEx e NLP
-- `workers/src/nlp/gazette_neo4j_ingester.py` — Ingere os resultados no Neo4j como nós `DiarioOficial` e `Licitacao`
+> 🧑‍🔧 **Explicação Simples:** A Rosie é como uma auditora fiscal automática. Ela lê TODAS as notas fiscais de cada deputado e aplica 14 testes matemáticos diferentes. Se a nota fiscal de refeição custa R$800 (outlier), se o deputado teve gastos em joalherias (proibido), se a distribuição de valores viola a Lei de Benford (possível manipulação) — tudo isso é flagado automaticamente. O resultado é um "raio-X completo" dos gastos de cada parlamentar.
 
-**O que faz:** Busca o termo "dispensa de licitação" nos Diários Oficiais municipais, roda NLP para extrair CNPJs e valores, e cria nós no Neo4j conectando empresas a publicações oficiais.
+---
 
-#### Step 18: `GazetteAggregator` (Consolidação → PostgreSQL)
-**Script:** `workers/src/nlp/gazette_aggregator_worker.py`
-**O que faz:** Lê os findings do Neo4j (diários oficiais) e consolida em campos do PostgreSQL (`nlpGazetteCount`, `nlpGazetteDetails`).
+#### Steps 17-18: `GazetteGraphBuilder` + `GazetteAggregator`
+**Scripts:** `workers/src/nlp/gazette_text_fetcher.py` + `gazette_neo4j_ingester.py` + `gazette_aggregator_worker.py`
 
-#### Step 20: `JudicialAggregator` (DataJud → PostgreSQL)
+**O que fazem (em sequência):**
+1. Busca "dispensa de licitação" nos Diários Oficiais municipais via **Querido Diário API**
+2. Extrai CNPJs, valores e modalidades via RegEx + NLP
+3. Ingere no Neo4j como nós `DiarioOficial` e `Licitacao`
+4. Consolida findings no PostgreSQL (`nlpGazetteCount`, `nlpGazetteScore`, `nlpGazetteDetails`)
+
+#### Step 20: `JudicialAggregator`
 **Script:** `workers/src/gatherers/judicial_aggregator_worker.py`
 **O que faz:** Consulta 7 tribunais (TRF1-5, STJ, TST) via **DataJud API** buscando processos de improbidade administrativa associados a cada político. Consolida no PostgreSQL (`judicialRiskScore`, `judicialRiskDetails`).
 
-#### Step 21: `DocumentaryEvidenceWorker` (Trilha de Auditoria)
+#### Step 21: `DocumentaryEvidenceWorker`
 **Script:** `workers/src/gatherers/documentary_evidence_worker.py`
 **O que faz:** Gera relatórios determinísticos (não-ML) para cada político, baixando despesas do ano corrente direto da API da Câmara e salvando um JSON de auditoria em `data/processed/audit_reports/`.
 
@@ -366,84 +338,77 @@ Se encontra, levanta alerta de fluxo circular.
 
 **⚠️ Requer:** Dumps em `data/raw/rais/` (arquivos CSV da RAIS/PDET).
 
-#### Step 24: `TCUWorker` (Contas Irregulares)
+#### Step 24: `TCUWorker`
 **Script:** `workers/src/gatherers/tcu_worker.py`
 **O que faz:** Consulta a API do TCU (Tribunal de Contas da União) buscando contas julgadas irregulares.
 
 **API usada:** `https://dadosabertos.tcu.gov.br/api/rest/v2/contas-irregulares`
 
-#### Step 25: `Database Pruning` (Limpeza)
+#### Step 25: `Database Pruning`
 **O que faz:** Chama `DELETE /api/internal/workers/ingest/prune-empty` no backend. O backend remove políticos "fantasmas" que foram criados por acidente mas não têm nenhum dado útil (sem despesas, sem scores).
 
 #### Step 26: `SuperReportWorker` (Laudo Unificado)
 **Script:** `workers/src/gatherers/super_report_worker.py`
-**O que faz:** Para cada político que sobreviveu a todo o pipeline, gera um **Super Relatório JSON** unificado que consolida TODOS os dados em um único arquivo de auditoria. Salva em `workers/data/processed/super_reports/`.
+**O que faz:** Para cada político que sobreviveu a todo o pipeline, gera um **Super Relatório JSON** unificado que consolida TODOS os dados em um único arquivo de auditoria. Salva em `data/processed/super_reports/`.
 
-**Nome do arquivo gerado:** `super_report_{nome}_{externalId}.json`
-**Exemplo real:** `super_report_alberto_fraga_camara_73579.json`
+**Nome do arquivo gerado:** `super_report_{nome}_{id}.json`
+**Exemplo real:** `super_report_acácio_favacho_204379.json`
 
-**Estrutura do JSON (4 seções):**
+**Estrutura do JSON (3 seções):**
 
 ```json
 {
-    "01_metadados": {
-        "internal_id": 412,
-        "camara_id": "camara_73579",
-        "nome": "Alberto Fraga",
-        "partido_estado": "PL - DF",
-        "data_extracao": "2026-03-03 14:07:33"
+    "metadata": {
+        "gerado_em": "2026-03-05T00:49:04",
+        "deputado_id": "204379",
+        "nome": "Acácio Favacho"
     },
-    "02_documentos_lidos_e_grafos": {
-        "notas_fiscais_agrupadas": 15,
-        "empresas_qsa_e_contratos_mapeados": 3,
-        "municipios_recebedores_de_emendas": 2,
-        "promessas_campanha_identificadas": 5,
-        "votacoes_analisadas_nlp": 12
-    },
-    "03_estatisticas_patrimoniais_e_uso_maquina": {
-        "total_gasto_cota_parlamentar": 430570.17,
-        "taxa_ausencia_plenario": 0,
-        "patrimonio_declarado_2022": null,
-        "fator_anomalia_patrimonial": null
-    },
-    "04_alertas_de_inteligencia": {
-        "motor_rachadinha_score": 10,
-        "motor_rachadinha_evidencias": [
+    "evidencias_rosie": {
+        "deputado_nome": "Acácio Favacho",
+        "risco_score": 100.0,
+        "total_anomalias": 1383,
+        "classificadores_acionados": 6,
+        "principais_anomalias": [
             {
-                "heuristic": "Doador Compulsório (CEAP Pessoal)",
-                "points": 0,
-                "max": 40,
-                "detail": "Distribuição de gastos com pessoal dentro da normalidade.",
-                "source": "Dados abertos da Câmara (CEAP)",
-                "proof": "Sem evidências de concentração atípica.",
-                "proofData": null
+                "classifier": "HighValueOutlierClassifier",
+                "confidence": 0.95,
+                "reason": "Valor R$ 98,350.00 é outlier para 'DIVULGAÇÃO'..."
             }
         ],
-        "anomalias_contratacao_gabinete_qtd": 3,
-        "anomalias_contratacao_gabinete_evidencias": [
-            {
-                "type": "DESPESA_FISCAL",
-                "severity": "MEDIUM",
-                "detail": "Documento extraído: BROAD BRASIL LTDA",
-                "totalValue": 1050.0,
-                "evidence_url": "https://www.camara.leg.br/cota-parlamentar/..."
-            }
-        ],
-        "anomalia_espacial_teletransporte_qtd": null,
-        "mencoes_suspeitas_diarios_oficiais": null,
-        "processos_judiciais_improbidade": null
+        "todas_anomalias_detalhadas": ["... (lista completa)"]
+    },
+    "resumo": {
+        "total_gasto_cota": 856231.17,
+        "ausencias": 15,
+        "presencas": 204,
+        "patrimonio_2022": null,
+        "anomalias_gabinete": 3,
+        "score_rachadinha": 10,
+        "teletransporte": null,
+        "diarios_oficiais": null,
+        "processos_judiciais": null
     }
 }
 ```
 
-| Seção | O que contém |
-|:---|:---|
-| `01_metadados` | ID interno, ID da Câmara, nome, partido-estado, data de geração |
-| `02_documentos_lidos_e_grafos` | Quantidades de nós processados no Neo4j (despesas, empresas, emendas, promessas, votos) |
-| `03_estatisticas_patrimoniais` | Total gasto na CEAP, taxa de ausência, patrimônio declarado, fator de anomalia |
-| `04_alertas_de_inteligencia` | Score de rachadinha (0-100) com evidências detalhadas, anomalias de gabinete, teletransporte, diários oficiais, processos judiciais |
+> 🧑‍🔧 **Explicação Simples:** No final de tudo, esse robô gera um "dossiê completo" de cada político em formato JSON — um arquivo que contém absolutamente tudo que o sistema descobriu sobre ele, incluindo TODAS as anomalias da Rosie com os detalhes de cada infração. É como o "boletim escolar" do parlamentar.
 
-> 🧑‍🔧 **Explicação Simples:** No final de tudo, esse robô gera um "dossiê completo" de cada político em formato JSON — um arquivo que contém absolutamente tudo que o sistema descobriu sobre ele. É como o "boletim escolar" do parlamentar: tem as notas em cada matéria (riscos), as provas que fundamentam cada nota, e links para as fontes originais. Qualquer pessoa pode abrir esses arquivos na pasta `workers/data/processed/super_reports/` e auditar os resultados.
+---
+
+#### Steps Opcionais (comentados no pipeline):
+| Step | Worker | Status | Motivo |
+|:---|:---|:---|:---|
+| 8 | `WealthAnomalyWorker` | 💤 Comentado | Requer dados do TSE pré-carregados |
+| 9 | `StaffAnomalyWorker` | 💤 Comentado | Depende de dados completos de despesas |
+| 11 | `SpatialAnomalyWorker` | 💤 Comentado | Depende de dados de presenças no Neo4j |
+| 13 | `EmendasGatherer` | 💤 Comentado | Requer Portal da Transparência (lento) |
+| 14 | `EmendasPixWorker` | 💤 Comentado | Depende de Step 13 |
+| 14.5 | `PNCPWorker` | 💤 Comentado | Depende do grafo de emendas |
+| 15 (antigo) | `CamaraNLPGatherer` | 💤 Comentado | Download pesado de discursos |
+| 16 | `CoherenceWorker` | 💤 Comentado | Análise NLP de promessas vs votos |
+
+> [!NOTE]
+> Esses workers estão funcionais mas desabilitados no pipeline principal para economizar tempo de execução. Para ativá-los, descomente as linhas correspondentes em `run_all_extractions.py`.
 
 ---
 
@@ -460,24 +425,29 @@ Para o **dashboard** (o que o usuário vê):
 |:---|:---|:---|
 | `/search?name=` | GET | Lista de políticos (busca por nome) |
 | `/{id}` | GET | Dados detalhados de um político |
+| `/external/{externalId}` | GET | Busca por externalId (ex: `camara_204379`) |
 | `/{id}/graph` | GET | Dados do grafo (promessas + votos) |
 | `/{id}/sources` | GET | Status das fontes de dados |
 | `/{id}/expenses` | GET | Lista de despesas (Neo4j → `DespesaNode`) |
 | `/{id}/emendas` | GET | Lista de emendas (Neo4j → `ENVIOU_EMENDA`) |
+| `/{id}/top-fornecedores` | GET | Top fornecedores por valor gasto |
+| `/{id}/gastos-categoria` | GET | Gastos agrupados por categoria |
+| *(POST)* | POST | Atualiza/cria um político (usado pela Rosie punishment) |
 
 #### `GraphController` — `/api/graph/`
 Para os **grafos do Neo4j**:
 
 | Endpoint | Método | O que retorna |
 |:---|:---|:---|
-| `/network/{externalId}` | GET | Grafo completo (Super Bolhas + Emendas + Follow The Money) |
+| `/triangulation/{politicoId}` | GET | Caminhos de triangulação de 3° grau |
+| `/network/{politicoId}` | GET | Grafo completo (Super Bolhas + Emendas + Follow The Money) |
 
 #### `WorkerIntegrationController` — `/api/internal/workers/ingest/`
 Para os **workers Python** (ingestão de dados):
 
 | Endpoint | Método | O que faz |
 |:---|:---|:---|
-| `/politician` | POST | Cria/atualiza um político |
+| `/politician` | POST | Cria/atualiza um político (upsert por `externalId` ou `name`) |
 | `/politician/{id}/promise` | POST | Adiciona uma promessa |
 | `/politician/{id}/vote` | POST | Adiciona um voto |
 | `/politician/{id}/despesa` | POST | Adiciona uma despesa no Neo4j |
@@ -491,10 +461,10 @@ Para os **workers Python** (ingestão de dados):
 
 ### 4.2 DataIngestionService (Lógica de Negócio)
 
-**Arquivo:** `backend/src/main/java/com/tp360/core/service/DataIngestionService.java` (509 linhas)
+**Arquivo:** `backend/src/main/java/com/tp360/core/service/DataIngestionService.java`
 
 Este é o serviço que faz a "mágica" de gravar nos dois bancos ao mesmo tempo:
-- **`ingestPolitician()`** — Cria ou atualiza um político no PostgreSQL E cria o nó no Neo4j
+- **`ingestPolitician()`** — Cria ou atualiza um político no PostgreSQL E cria o nó no Neo4j. Usa **upsert inteligente**: campos não-nulos do payload atualizam o registro existente, campos nulos são ignorados.
 - **`ingestDespesa()`** — Cria o nó `Despesa` no Neo4j E vincula ao `Politico` com `GEROU_DESPESA`
 - **`ingestEmendaPix()`** — Cria o nó `Municipio` (se não existir), o nó `Emenda`, e o relacionamento `ENVIOU_EMENDA`
 - **`deduplicatePoliticians()`** — Algoritmo inteligente de merge de duplicados
@@ -506,7 +476,7 @@ Este é o serviço que faz a "mágica" de gravar nos dois bancos ao mesmo tempo:
 | Query | Usado por | O que faz |
 |:---|:---|:---|
 | `getFullConnectionGraph()` | GraphController | Monta o grafo "Follow The Money" com Super Bolhas (despesas agrupadas por fornecedor) + emendas + contratos |
-| `findTriangulationPath()` | (interno) | Busca o caminho de triangulação de 3º grau no Neo4j |
+| `findTriangulationPath()` | GraphController | Busca o caminho de triangulação de 3° grau no Neo4j |
 | `findDespesasByPoliticoId()` | FrontendSearchController | Lista as 15 despesas mais recentes |
 | `findEmendasByPoliticoId()` | FrontendSearchController | Lista emendas parlamentares |
 
@@ -518,7 +488,7 @@ Este é o serviço que faz a "mágica" de gravar nos dois bancos ao mesmo tempo:
 
 ## 5. O Frontend (Dashboard React)
 
-**Arquivo principal:** `frontend/src/App.tsx` (634 linhas)
+**Arquivo principal:** `frontend/src/App.tsx`
 **Framework:** Vite 7 + React 19 + TypeScript + TailwindCSS
 
 ### 5.1 Abas do Dashboard
@@ -526,7 +496,7 @@ Este é o serviço que faz a "mágica" de gravar nos dois bancos ao mesmo tempo:
 | Aba | Estado `activeTab` | O que mostra |
 |:---|:---|:---|
 | **Visão Geral** | `geral` | Evolução patrimonial (gráfico), custos operacionais, últimas despesas |
-| **Deep Match** | `inteligencia` | Radar de Risco (RadarRisco), anomalias de pessoal, risco judiciário, menções em diários oficiais |
+| **Deep Match** | `inteligencia` | Radar de Risco (RadarRisco), anomalias de pessoal, risco judiciário, menções em diários oficiais, **contagens da Rosie** (Benford, Duplicatas, Fim de Semana, Saúde, Luxo) |
 | **Grafo de Influência** | `grafo` | Grafo interativo "Follow The Money" (ForceGraph2D) |
 | **Extrato CEAP** | `despesas` | Tabela com todas as despesas brutas (até 500 registros) |
 | **Emendas (Orçamento)** | `emendas` | Tabela com todas as emendas parlamentares |
@@ -541,7 +511,55 @@ Este é o serviço que faz a "mágica" de gravar nos dois bancos ao mesmo tempo:
 | `WealthChart` | `components/Patrimonio/WealthChart.tsx` | Gráfico de barras da evolução patrimonial (Recharts) |
 | `ConfidenceBadge` | `components/Rastreabilidade/ConfidenceBadge.tsx` | Badge de nível de confiança dos dados |
 
-### 5.3 Fluxo de Dados no Frontend
+### 5.3 Interface `Politician` (TypeScript)
+
+A interface que define os dados que o frontend espera receber do backend:
+
+```typescript
+interface Politician {
+  id: number;
+  externalId: string;
+  name: string;
+  party: string;
+  state: string;
+  position: string;
+  absences: number;
+  presences: number;
+  expenses: number;
+  stateAffinity: number;
+  propositions: number;
+  frentes: number;
+  declaredAssets: number;
+  declaredAssets2018: number;
+  declaredAssets2014: number;
+  wealthAnomaly: number;
+  staffAnomalyCount: number;
+  staffAnomalyDetails: string;       // JSON
+  cabinetRiskScore: number;
+  cabinetRiskDetails: string;         // JSON
+  ghostEmployeeCount: number;
+  ghostEmployeeDetails: string;       // JSON
+  nlpGazetteCount: number;
+  nlpGazetteScore: number;
+  nlpGazetteDetails: string;          // JSON
+  judicialRiskScore: number;
+  judicialRiskDetails: string;         // JSON
+  cabinetSize: number;
+  cabinetDetails: string;              // JSON
+  rosieBenfordCount: number;           // ← Rosie
+  rosieDuplicateCount: number;         // ← Rosie
+  rosieWeekendCount: number;           // ← Rosie
+  rosieHealthCount: number;            // ← Rosie
+  rosieLuxuryCount: number;            // ← Rosie
+  teleportAnomalyCount: number;
+  teleportAnomalyDetails: string;      // JSON
+  emendasPixAnomalyCount: number;
+  emendasPixAnomalyDetails: string;    // JSON
+  overallRiskScore: number;            // Calculado pelo backend
+}
+```
+
+### 5.4 Fluxo de Dados no Frontend
 
 Quando o usuário seleciona um político, a função `selectPolitician()` faz **5 chamadas simultâneas**:
 
@@ -550,27 +568,77 @@ Quando o usuário seleciona um político, a função `selectPolitician()` faz **
 2. GET /api/v1/politicians/{id}/expenses   → Despesas brutas (tabela CEAP)
 3. GET /api/v1/politicians/{id}/emendas    → Emendas parlamentares
 4. GET /api/v1/politicians/{id}/sources    → Status das fontes
-5. GET /api/v1/politicians/{id}/expenses   → Detalhamento das últimas despesas
+5. GET /api/v1/politicians/{id}            → Detalhamento completo (todos os campos)
 ```
 
 > 🧑‍🔧 **Explicação Simples:** Quando você clica no nome de um deputado, o dashboard busca TODOS os dados dele de uma vez — o grafo, as despesas, as emendas, tudo. É por isso que o dashboard carrega tão rápido.
 
 ---
 
-## 6. Fontes de Dados Reais Utilizadas
+## 6. A Rosie Engine em Detalhe
 
-| Fonte | Tipo | Requer API Key? | Workers que a consomem |
-|:---|:---|:---|:---|
-| **Câmara dos Deputados** | REST API | ❌ | CamaraGatherer, ExpensesWorker, AbsencesWorker, RachadinhaWorker, StaffAnomalyWorker, CrossMatch, CamaraNLP |
-| **Portal da Transparência (CGU)** | REST API | ✅ `PORTAL_API_KEY` | EmendasGatherer, TransparenciaGatherer, CrossMatch |
-| **TSE (Dados Eleitorais)** | Dumps CSV | ❌ | TSE ETL, WealthAnomalyWorker, TSEBatchLoader |
-| **Receita Federal (QSA)** | Dumps CSV | ❌ | Receita Federal ETL |
-| **BrasilAPI** | REST API | ❌ | CrossMatchOrchestrator (Step 3), RachadinhaWorker (H3) |
-| **Querido Diário (OKBR)** | REST API | ❌ | GazetteTextFetcher, CrossMatch (Step 5), RachadinhaWorker (H4) |
-| **DataJud (CNJ)** | REST API | ❌ | JudicialAggregator, CrossMatch (Step 6), RachadinhaWorker (H5) |
-| **PNCP** | REST API | ❌ | PNCPWorker |
-| **TCU** | REST API | ❌ | TCUWorker |
-| **RAIS/PDET** | Dumps CSV | ❌ | RAISWorker |
+**Arquivo:** `workers/src/gatherers/rosie_engine.py` (1.369 linhas, 58KB)
+**Origem:** [okfn-brasil/serenata-de-amor/rosie](https://github.com/okfn-brasil/serenata-de-amor/tree/main/rosie) (Operação Serenata de Amor)
+
+A Rosie Engine é o **maior módulo individual** do projeto. Ela opera em um pipeline de 4 fases:
+
+```
+ Recibos CEAP ──► [FIT] Treina 14 classificadores
+                   │
+                   ▼
+              [PREDICT] Avalia cada recibo
+                   │
+                   ▼
+              [RISK SCORE] Pontuação 0-100 por deputado
+                   │
+                   ▼
+              [REPORT] JSON + CSV + Ranking
+```
+
+### 6.1 Hierarquia de Classes
+
+```
+BaseClassifier (ABC)
+├── MealPriceOutlierClassifier   — IQR por categoria de despesa
+├── TravelSpeedClassifier         — Haversine entre despesas consecutivas
+├── MonthlySubquotaLimitClassifier — Limites mensais por subcota/UF
+├── ElectionPeriodClassifier      — Calendário eleitoral TSE
+├── WeekendHolidayClassifier      — Fins de semana + feriados nacionais
+├── DuplicateReceiptClassifier    — Hash fingerprint (MD5)
+├── CNPJBlacklistClassifier       — CEIS/CNEP
+├── CompanyAgeClassifier          — Idade da empresa vs data da despesa
+├── BenfordLawClassifier          — Chi² sobre distribuição de primeiro dígito
+├── HighValueOutlierClassifier    — Z-score global por categoria
+├── SuspiciousSupplierClassifier  — Fornecedor servindo > 30 deputados
+├── SequentialReceiptClassifier   — Numeração sequencial de notas
+├── PersonalHealthExpenseClassifier — RegEx: clínicas, odonto, farmácia
+└── LuxuryPersonalExpenseClassifier — RegEx: pet shop, joalheria, resort
+```
+
+### 6.2 Fórmula de Risk Score
+
+```python
+risk_score = (
+    total_confidence * 0.4 +           # Soma das confianças de todas as anomalias
+    n_classifiers_triggered * 10 * 0.3 + # Amplitude (quantos classificadores diferentes)
+    min(n_anomalies, 50) * 0.3          # Volume (até 50 anomalias)
+)
+risk_score = min(risk_score, 100.0)    # Normalizado para 0-100
+```
+
+### 6.3 Fluxo de Dados: Rosie → Backend → Frontend
+
+```
+rosie_engine.py                    rosie_worker.py                 Backend (Java)              Frontend (React)
+┌──────────────┐    analyze()     ┌──────────────────┐  POST      ┌─────────────────┐  GET    ┌──────────────────┐
+│ 14 classifiers├───────────────►│ classifier_counts ├──────────►│ Politician       ├────────►│ Politician       │
+│ fit() + predict()              │ por deputado      │ /ingest/  │ .rosieBenfordCount│ /api/ │ .rosieBenfordCount│
+│                                │                   │ politician│ .rosieDuplicateCount      │ .rosieDuplicateCount
+│ report["deputy_risk_scores"]   │ counts = scores   │           │ .rosieWeekendCount│       │ .rosieWeekendCount│
+│   └─ "classifier_counts"      │   .get("classifier_counts")  │ .rosieHealthCount │       │ .rosieHealthCount │
+│      └─ {"BenfordLaw": 42}    │                   │           │ .rosieLuxuryCount │       │ .rosieLuxuryCount │
+└──────────────┘                 └──────────────────┘           └─────────────────┘         └──────────────────┘
+```
 
 ---
 
@@ -592,7 +660,24 @@ O projeto tem um módulo NLP dedicado em `workers/src/nlp/`:
 
 ---
 
-## 8. Mapa de Diretórios de Dados
+## 8. Fontes de Dados Reais Utilizadas
+
+| Fonte | Tipo | Requer API Key? | Workers que a consomem |
+|:---|:---|:---|:---|
+| **Câmara dos Deputados** | REST API | ❌ | CamaraGatherer, ExpensesWorker, AbsencesWorker, RachadinhaWorker, StaffAnomalyWorker, CrossMatch, CamaraNLP, **RosieWorker** |
+| **Portal da Transparência (CGU)** | REST API | ✅ `PORTAL_API_KEY` | EmendasGatherer, TransparenciaGatherer, CrossMatch |
+| **TSE (Dados Eleitorais)** | Dumps CSV | ❌ | TSE ETL, WealthAnomalyWorker, TSEBatchLoader |
+| **Receita Federal (QSA)** | Dumps CSV | ❌ | Receita Federal ETL |
+| **BrasilAPI** | REST API | ❌ | CrossMatchOrchestrator (Step 3), RachadinhaWorker (H3) |
+| **Querido Diário (OKBR)** | REST API | ❌ | GazetteTextFetcher, CrossMatch (Step 5), RachadinhaWorker (H4) |
+| **DataJud (CNJ)** | REST API | ❌ | JudicialAggregator, CrossMatch (Step 6), RachadinhaWorker (H5) |
+| **PNCP** | REST API | ❌ | PNCPWorker |
+| **TCU** | REST API | ❌ | TCUWorker |
+| **RAIS/PDET** | Dumps CSV | ❌ | RAISWorker |
+
+---
+
+## 9. Mapa de Diretórios de Dados
 
 ```
 data/
@@ -610,19 +695,45 @@ data/
 │
 ├── downloads/                    # Arquivos temporários
 │   ├── diarios_oficiais/         # PDFs e textos
-│   └── notas_fiscais/            # PDFs de notas fiscais
+│   ├── notas_fiscais/            # PDFs de notas fiscais
+│   └── camara_docs/              # Documentos baixados
 │
 └── processed/                    # Saídas finais dos workers
     ├── rachadinha_reports/        # JSONs do RachadinhaWorker
     ├── staff_anomalies/          # JSONs do StaffAnomalyWorker
     ├── audit_reports/            # JSONs do DocumentaryEvidenceWorker
-    ├── super_reports/            # JSONs do SuperReportWorker
+    ├── rosie_reports/            # JSONs individuais da Rosie por deputado
+    ├── super_reports/            # JSONs do SuperReportWorker (dossiê completo)
+    ├── rosie_report.json         # Relatório geral da Rosie
+    ├── rosie_anomalies.csv       # Lista flat de anomalias
+    ├── rosie_risk_ranking.txt    # Ranking legível
     └── pipeline_summary.json     # Relatório final do pipeline
 ```
 
 ---
 
-## 9. API de Integração (Workers ↔ Backend)
+## 10. Workers Auxiliares (Gatherers Internos)
+
+Além dos workers que rodam como steps do pipeline, existem módulos auxiliares:
+
+| Worker | Arquivo | O que faz |
+|:---|:---|:---|
+| `BrasilAPIGatherer` | `brasil_api_gatherer.py` | Consulta QSA de CNPJs na BrasilAPI |
+| `TransparenciaGatherer` | `transparencia_gatherer.py` | Contratos federais no Portal da Transparência |
+| `TransparenciaWorker` | `transparencia_worker.py` | Worker de extração do Portal |
+| `QueridoDiarioGatherer` | `querido_diario_gatherer.py` | Busca em Diários Oficiais municipais |
+| `CamaraCabinetScraper` | `camara_cabinet_scraper.py` | Raspa lista de funcionários do gabinete |
+| `CamaraNLPGatherer` | `camara_nlp_gatherer.py` | Baixa discursos parlamentares |
+| `SenadoGatherer` | `senado_gatherer.py` | Extrai dados do Senado Federal |
+| `TSEWorker` | `tse_worker.py` | Match de patrimônio TSE ↔ Deputados |
+| `StateAffinityWorker` | `state_affinity_worker.py` | Calcula afinidade estadual dos gastos |
+| `GhostEmployeeWorker` | `ghost_employee_worker.py` | Detecção de funcionários fantasma |
+| `SpatialAnomalyWorker` | `spatial_anomaly_worker.py` | Detecção de teletransporte |
+| `EmendasPixWorker` | `emendas_pix_worker.py` | Detecção de fluxo circular |
+
+---
+
+## 11. API de Integração (Workers ↔ Backend)
 
 Todos os workers Python se comunicam com o backend Java via chamadas HTTP REST. O módulo `workers/src/core/api_client.py` fornece 3 clientes:
 
@@ -636,18 +747,39 @@ Todos os workers Python se comunicam com o backend Java via chamadas HTTP REST. 
 
 ---
 
-## 10. Como Contribuir (Pontos de Extensão)
+## 12. Infraestrutura (Docker Compose)
+
+O `docker-compose.yml` define 3 serviços:
+
+| Serviço | Imagem | Container | Porta | Volume Local |
+|:---|:---|:---|:---|:---|
+| **PostgreSQL 15** | `postgres:15-alpine` | `tp360-db` | `5433` | `./db_data/postgres/` |
+| **Neo4j 5.26** | `neo4j:5.26.0` | `tp360-neo4j` | `7474` / `7687` | `./db_data/neo4j/` |
+| **Backend** | Build local | `tp360-backend` | `8080` | — |
+
+Ambos os bancos têm **healthchecks** configurados e os dados são persistidos em pastas locais (`db_data/`), não em volumes Docker anônimos.
+
+---
+
+## 13. Como Contribuir (Pontos de Extensão)
 
 Se você quer adicionar um novo detector de fraude ao sistema:
 
 1. **Crie um novo worker** em `workers/src/gatherers/meu_novo_worker.py`
 2. **Registre no pipeline** adicionando um novo `run_step(N, "Nome", step_N)` em `run_all_extractions.py`
-3. **Se precisar gravar no PostgreSQL:** Adicione um campo na entidade `Politician.java` e use o `BackendClient` para enviar via PUT
+3. **Se precisar gravar no PostgreSQL:** Adicione um campo na entidade `Politician.java`, adicione getter/setter, e use o endpoint `POST /api/internal/workers/ingest/politician` para enviar via upsert
 4. **Se precisar gravar no Neo4j:** Use o `WorkerIntegrationController` para enviar nós e relacionamentos
+
+Se você quer adicionar um novo classificador à **Rosie Engine**:
+
+1. Crie uma nova classe em `rosie_engine.py` que herde de `BaseClassifier`
+2. Implemente `fit()` e `predict()` seguindo o padrão existente
+3. Adicione a instância na lista `self.classifiers` do `RosieEngine.__init__()`
+4. Se quiser contabilizar no frontend, adicione o campo correspondente em `Politician.java`, `PoliticianResponseDTO.java` e na interface TypeScript em `App.tsx`
 
 Se você quer melhorar o frontend:
 1. **Novos componentes** vão em `frontend/src/components/`
-2. **Novas abas** precisam: adicionar o valor no tipo do `activeTab`, criar o botão, e adicionar o bloco `{activeTab === 'minha_aba' && (...)}` no JSX
+2. **Novas abas** precisam: adicionar o valor no tipo do `activeTab`, criar o botão no `PoliticianCard`, e adicionar o bloco `{activeTab === 'minha_aba' && (...)}` no JSX
 
 ---
 
