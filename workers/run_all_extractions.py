@@ -8,9 +8,9 @@ import shutil
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
-os.environ["PORTAL_API_KEY"] = "7c582554ddd97a21198f7bd9c1d4d4e9"
-os.environ["NEO4J_PASSWORD"] = "admin123"
-os.environ["GOOGLE_CLOUD_PROJECT"] = "skilful-lock-258021"
+os.environ["PORTAL_API_KEY"] = ""
+os.environ["NEO4J_PASSWORD"] = ""
+os.environ["GOOGLE_CLOUD_PROJECT"] = ""
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.expanduser("~"), ".config", "gcloud", "application_default_credentials.json")
 
 # Ensure imports work
